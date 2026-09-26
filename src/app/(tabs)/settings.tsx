@@ -72,7 +72,12 @@ export default function SettingsScreen() {
                 return (
                   <Pressable
                     key={opt.id}
-                    onPress={() => setPreference(opt.id)}
+                    onPress={(e) =>
+                      setPreference(opt.id, {
+                        x: e.nativeEvent.pageX,
+                        y: e.nativeEvent.pageY,
+                      })
+                    }
                     className={`flex-row items-center p-3.5 rounded-2xl border ${
                       isSelected
                         ? 'bg-orange-500/10 border-crunchyroll-primary'
