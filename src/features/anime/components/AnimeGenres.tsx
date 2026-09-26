@@ -1,10 +1,16 @@
+import React from 'react';
 import { Text, View } from 'react-native';
+
+import { useAppTheme } from '@/context/theme-context';
 
 interface AnimeGenresProps {
   genres?: string[];
 }
 
 export function AnimeGenres({ genres }: AnimeGenresProps) {
+  const { activeScheme } = useAppTheme();
+  const isDark = activeScheme === 'dark';
+
   if (!genres || genres.length === 0) return null;
 
   return (
@@ -12,8 +18,17 @@ export function AnimeGenres({ genres }: AnimeGenresProps) {
       {genres.map((genre) => (
         <View
           key={genre}
-          className="px-3.5 py-1.5 rounded-full border border-orange-500/40 bg-orange-500/10">
-          <Text className="text-crunchyroll-primary font-bold text-xs">{genre}</Text>
+          className={`px-3 py-1 rounded-xl border ${
+            isDark
+              ? 'bg-[#2F241E] border-[#3E3028]'
+              : 'bg-[#EDE5DF] border-[#D8CDC5]'
+          }`}>
+          <Text
+            className={`font-semibold text-xs ${
+              isDark ? 'text-[#E09F7D]' : 'text-[#8B4F26]'
+            }`}>
+            {genre}
+          </Text>
         </View>
       ))}
     </View>

@@ -4,15 +4,31 @@
 @import "nativewind/theme";
 
 @theme {
-  --color-crunchyroll-primary: #F47521;
-  --color-crunchyroll-primary-hover: #FF8A3D;
-  --color-crunchyroll-secondary: #FAB818;
-  --color-crunchyroll-dark-bg: #0B0E14;
-  --color-crunchyroll-dark-surface: #141A23;
-  --color-crunchyroll-dark-surface-high: #1E2533;
-  --color-crunchyroll-dark-border: #2B3342;
-  --color-crunchyroll-light-bg: #F7F8FA;
+  --color-crunchyroll-primary: #E09F7D;
+  --color-crunchyroll-primary-hover: #F2AF8E;
+  --color-crunchyroll-secondary: #F59E0B;
+  --color-crunchyroll-dark-bg: #141211;
+  --color-crunchyroll-dark-surface: #221A16;
+  --color-crunchyroll-dark-surface-high: #2F241E;
+  --color-crunchyroll-dark-border: #3E3028;
+  --color-crunchyroll-light-bg: #FCF8F6;
   --color-crunchyroll-light-surface: #FFFFFF;
-  --color-crunchyroll-light-surface-high: #EAEFF5;
-  --color-crunchyroll-light-border: #DDE2EB;
+  --color-crunchyroll-light-surface-high: #EDE5DF;
+  --color-crunchyroll-light-border: #D8CDC5;
+
+  --color-m3-dark-bg: #141211;
+  --color-m3-dark-surface: #221A16;
+  --color-m3-dark-surface-high: #2F241E;
+  --color-m3-dark-border: #3E3028;
+  --color-m3-dark-pill: #58392B;
+  --color-m3-dark-pill-text: #FFDCC2;
+  --color-m3-light-bg: #FCF8F6;
+  --color-m3-light-surface: #FFFFFF;
+  --color-m3-light-surface-high: #EDE5DF;
+  --color-m3-light-border: #D8CDC5;
+  --color-m3-light-pill: #FFDCC2;
+  --color-m3-light-pill-text: #351A08;
+
+  --color-m3-favorite: #E53935;
+  --color-m3-amber: #F59E0B;
 }

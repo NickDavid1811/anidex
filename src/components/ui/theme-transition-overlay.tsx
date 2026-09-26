@@ -69,7 +69,7 @@ export function ThemeTransitionOverlay({
   }));
 
   // Color de fondo del tema de destino
-  const bgColor = targetScheme === 'dark' ? '#0B0E14' : '#F7F8FA';
+  const bgColor = targetScheme === 'dark' ? '#141211' : '#FCF8F6';
 
   return (
     <View
@@ -92,7 +92,7 @@ export function ThemeTransitionOverlay({
             height: diameter,
             borderRadius: radius,
             backgroundColor: bgColor,
-            borderColor: '#F47521',
+            borderColor: '#E09F7D',
             borderWidth: 3.5,
           },
           animatedStyle,

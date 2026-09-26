@@ -6,6 +6,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
+import { FavoritesProvider } from '@/context/favorites-context';
 import { ThemeProviderWrapper, useAppTheme } from '@/context/theme-context';
 
 SplashScreen.preventAutoHideAsync();
@@ -21,7 +22,7 @@ function ThemeContent() {
         screenOptions={{
           headerShown: false,
           contentStyle: {
-            backgroundColor: activeScheme === 'dark' ? '#0B0E14' : '#FAFAFA',
+            backgroundColor: activeScheme === 'dark' ? '#141211' : '#FCF8F6',
           },
         }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -40,7 +41,9 @@ function ThemeContent() {
 export default function RootLayout() {
   return (
     <ThemeProviderWrapper>
-      <ThemeContent />
+      <FavoritesProvider>
+        <ThemeContent />
+      </FavoritesProvider>
     </ThemeProviderWrapper>
   );
 }

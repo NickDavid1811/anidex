@@ -1,12 +1,75 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
-import { Platform } from 'react-native';
+import React from 'react';
+import { Platform, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { useFavorites } from '@/context/favorites-context';
 import { useAppTheme } from '@/context/theme-context';
+
+interface TabIconProps {
+  name: keyof typeof Ionicons.glyphMap;
+  focusedName: keyof typeof Ionicons.glyphMap;
+  focused: boolean;
+  isDark: boolean;
+  badge?: number;
+}
+
+function TabPillIcon({ name, focusedName, focused, isDark, badge }: TabIconProps) {
+  return (
+    <View
+      style={{
+        backgroundColor: focused
+          ? isDark
+            ? '#58392B'
+            : '#FFDCC2'
+          : 'transparent',
+        borderRadius: 16,
+        paddingHorizontal: 16,
+        paddingVertical: 3,
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'relative',
+      }}>
+      <Ionicons
+        name={focused ? focusedName : name}
+        size={22}
+        color={
+          focused
+            ? isDark
+              ? '#FFDCC2'
+              : '#351A08'
+            : isDark
+            ? '#A89C94'
+            : '#776962'
+        }
+      />
+      {badge !== undefined && badge > 0 && (
+        <View
+          style={{
+            position: 'absolute',
+            top: -2,
+            right: 8,
+            backgroundColor: '#D32F2F',
+            borderRadius: 9,
+            minWidth: 16,
+            height: 16,
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingHorizontal: 3,
+          }}>
+          <Text style={{ color: '#FFFFFF', fontSize: 9, fontWeight: 'bold' }}>
+            {badge}
+          </Text>
+        </View>
+      )}
+    </View>
+  );
+}
 
 export default function TabLayout() {
   const { activeScheme } = useAppTheme();
+  const { count: favoritesCount } = useFavorites();
   const insets = useSafeAreaInsets();
   const isDark = activeScheme === 'dark';
 
@@ -14,13 +77,13 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#F47521',
-        tabBarInactiveTintColor: isDark ? '#71717A' : '#94A3B8',
+        tabBarActiveTintColor: isDark ? '#FFDCC2' : '#351A08',
+        tabBarInactiveTintColor: isDark ? '#A89C94' : '#776962',
         tabBarStyle: {
-          backgroundColor: isDark ? '#141822' : '#FFFFFF',
-          borderTopColor: isDark ? '#232938' : '#E5E7EB',
+          backgroundColor: isDark ? '#221A16' : '#FFFFFF',
+          borderTopColor: isDark ? '#3E3028' : '#D8CDC5',
           borderTopWidth: 1,
-          height: Platform.OS === 'ios' ? 56 + insets.bottom : 62 + insets.bottom,
+          height: Platform.OS === 'ios' ? 60 + insets.bottom : 68 + insets.bottom,
           paddingBottom: insets.bottom > 0 ? insets.bottom : 8,
           paddingTop: 8,
           elevation: 8,
@@ -32,31 +95,48 @@ export default function TabLayout() {
         tabBarLabelStyle: {
           fontSize: 11,
           fontWeight: '700',
-          marginBottom: 4,
+          marginTop: 2,
         },
       }}>
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Tendencias',
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? 'flame' : 'flame-outline'}
-              size={23}
-              color={color}
+          title: 'Inicio',
+          tabBarIcon: ({ focused }) => (
+            <TabPillIcon
+              name="home-outline"
+              focusedName="home"
+              focused={focused}
+              isDark={isDark}
             />
           ),
         }}
       />
       <Tabs.Screen
-        name="search"
+        name="explore"
         options={{
-          title: 'Buscar',
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? 'search' : 'search-outline'}
-              size={23}
-              color={color}
+          title: 'Explorar',
+          tabBarIcon: ({ focused }) => (
+            <TabPillIcon
+              name="compass-outline"
+              focusedName="compass"
+              focused={focused}
+              isDark={isDark}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="favorites"
+        options={{
+          title: 'Favoritos',
+          tabBarIcon: ({ focused }) => (
+            <TabPillIcon
+              name="heart-outline"
+              focusedName="heart"
+              focused={focused}
+              isDark={isDark}
+              badge={favoritesCount}
             />
           ),
         }}
@@ -65,11 +145,12 @@ export default function TabLayout() {
         name="settings"
         options={{
           title: 'Ajustes',
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? 'settings' : 'settings-outline'}
-              size={23}
-              color={color}
+          tabBarIcon: ({ focused }) => (
+            <TabPillIcon
+              name="settings-outline"
+              focusedName="settings"
+              focused={focused}
+              isDark={isDark}
             />
           ),
         }}
