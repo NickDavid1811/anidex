@@ -8,7 +8,13 @@
     "scheme": "anidex",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/expo.icon",
+      "bundleIdentifier": "com.nickydavis.anidex",
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSBonjourServices": ["_expo._tcp"],
+        "NSLocalNetworkUsageDescription": "Permitir a la app conectarse al servidor de desarrollo de Expo en tu red local."
+      }
     },
     "android": {
       "adaptiveIcon": {
