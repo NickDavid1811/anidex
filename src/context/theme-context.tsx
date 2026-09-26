@@ -32,7 +32,6 @@ export function ThemeProviderWrapper({ children }: { children: React.ReactNode }
   const deviceScheme = useDeviceColorScheme();
   const [preference, setPreferenceState] = useState<ThemePreference>('system');
   const [transition, setTransition] = useState<TransitionState | null>(null);
-  const isTransitioningRef = useRef(false);
 
   const activeScheme: 'light' | 'dark' =
     preference === 'system'
@@ -44,44 +43,29 @@ export function ThemeProviderWrapper({ children }: { children: React.ReactNode }
   const setPreference = useCallback(
     (newPref: ThemePreference, coords?: TouchCoords) => {
       if (newPref === preference) return;
-      if (isTransitioningRef.current) return;
 
       const targetScheme: 'light' | 'dark' =
         newPref === 'system'
           ? (deviceScheme === 'light' ? 'light' : 'dark')
           : newPref;
 
-      // Si el esquema visual real cambia (light <-> dark), ejecutamos la animación de barrido circular
-      if (targetScheme !== activeScheme) {
-        isTransitioningRef.current = true;
-        const { width, height } = Dimensions.get('screen');
-        const originX = coords?.x ?? width / 2;
-        const originY = coords?.y ?? height / 2;
+      const schemeChanged = targetScheme !== activeScheme;
 
+      // 1. Cambiar el tema e interfaz de forma INMEDIATA (0ms de retraso)
+      setPreferenceState(newPref);
+      if (newPref === 'system') {
+        Appearance.setColorScheme('unspecified' as any);
+      } else {
+        Appearance.setColorScheme(newPref);
+      }
+
+      // 2. Si el esquema visual cambia y tenemos coordenadas, activar el barrido ultra rápido
+      if (schemeChanged && coords) {
         setTransition({
-          x: originX,
-          y: originY,
+          x: coords.x,
+          y: coords.y,
           targetScheme,
         });
-
-        // Conmutar el tema en React Native a la mitad del barrido (180ms)
-        // para que el redibujado ocurra cubierto por el círculo expansivo
-        setTimeout(() => {
-          setPreferenceState(newPref);
-          if (newPref === 'system') {
-            Appearance.setColorScheme('unspecified' as any);
-          } else {
-            Appearance.setColorScheme(newPref);
-          }
-        }, 180);
-      } else {
-        // Si el esquema visual no cambia (ej. de system-dark a dark explícito)
-        setPreferenceState(newPref);
-        if (newPref === 'system') {
-          Appearance.setColorScheme('unspecified' as any);
-        } else {
-          Appearance.setColorScheme(newPref);
-        }
       }
     },
     [preference, activeScheme, deviceScheme]
@@ -89,7 +73,6 @@ export function ThemeProviderWrapper({ children }: { children: React.ReactNode }
 
   const handleTransitionComplete = useCallback(() => {
     setTransition(null);
-    isTransitioningRef.current = false;
   }, []);
 
   return (

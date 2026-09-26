@@ -23,10 +23,10 @@ export function ThemeTransitionOverlay({
 }: ThemeTransitionOverlayProps) {
   const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('screen');
 
-  // Calcular el radio máximo necesario desde el punto de toque (x, y) hasta la esquina más lejana
+  // Calcular el radio máximo necesario desde el punto de toque hasta la esquina más lejana
   const maxDistX = Math.max(x, SCREEN_WIDTH - x);
   const maxDistY = Math.max(y, SCREEN_HEIGHT - y);
-  const radius = Math.ceil(Math.hypot(maxDistX, maxDistY)) + 30;
+  const radius = Math.ceil(Math.hypot(maxDistX, maxDistY)) + 20;
   const diameter = radius * 2;
 
   const scale = useSharedValue(0);
@@ -36,21 +36,21 @@ export function ThemeTransitionOverlay({
     scale.value = 0;
     opacity.value = 1;
 
-    // Animación de barrido expansivo
+    // Animación de barrido expansivo ultra rápida y fluida (180ms)
     scale.value = withTiming(
       1,
       {
-        duration: 380,
-        easing: Easing.bezier(0.2, 0, 0, 1),
+        duration: 180,
+        easing: Easing.out(Easing.cubic),
       },
       (finished) => {
         if (finished) {
-          // Desvanecimiento suave al finalizar la cobertura
+          // Desvanecimiento rápido (70ms)
           opacity.value = withTiming(
             0,
             {
-              duration: 160,
-              easing: Easing.out(Easing.ease),
+              duration: 70,
+              easing: Easing.linear,
             },
             (fadeFinished) => {
               if (fadeFinished) {
@@ -68,7 +68,6 @@ export function ThemeTransitionOverlay({
     opacity: opacity.value,
   }));
 
-  // Color de fondo del tema de destino
   const bgColor = targetScheme === 'dark' ? '#141211' : '#FCF8F6';
 
   return (
@@ -93,7 +92,7 @@ export function ThemeTransitionOverlay({
             borderRadius: radius,
             backgroundColor: bgColor,
             borderColor: '#E09F7D',
-            borderWidth: 3.5,
+            borderWidth: 2.5,
           },
           animatedStyle,
         ]}
