@@ -1,39 +1,34 @@
 import { Image } from 'expo-image';
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
 import { ErrorState } from '@/components/ui/error-state';
 import { LoadingState } from '@/components/ui/loading-state';
-import { MaxContentWidth, Spacing } from '@/constants/theme';
 import { AnimeGenres } from '@/features/anime/components/AnimeGenres';
 import { AnimeScoreBadge } from '@/features/anime/components/AnimeScoreBadge';
 import { useAnimeDetail } from '@/features/anime/hooks/useAnimeDetail';
-import { useTheme } from '@/hooks/use-theme';
 
 export default function AnimeDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { anime, isLoading, error, refetch } = useAnimeDetail(id);
-  const theme = useTheme();
   const insets = useSafeAreaInsets();
 
   if (isLoading) {
     return (
-      <ThemedView style={styles.container}>
+      <View className="flex-1 bg-crunchyroll-light-bg dark:bg-crunchyroll-dark-bg justify-center items-center">
         <Stack.Screen options={{ title: 'Cargando...', headerBackTitle: 'Volver' }} />
         <LoadingState message="Cargando detalles del anime..." />
-      </ThemedView>
+      </View>
     );
   }
 
   if (error || !anime) {
     return (
-      <ThemedView style={styles.container}>
+      <View className="flex-1 bg-crunchyroll-light-bg dark:bg-crunchyroll-dark-bg justify-center items-center">
         <Stack.Screen options={{ title: 'Detalle', headerBackTitle: 'Volver' }} />
         <ErrorState message={error || 'No se encontró el anime'} onRetry={refetch} />
-      </ThemedView>
+      </View>
     );
   }
 
@@ -43,49 +38,50 @@ export default function AnimeDetailScreen() {
     : 'Sin descripción disponible.';
 
   return (
-    <ThemedView style={styles.container}>
+    <View className="flex-1 bg-crunchyroll-light-bg dark:bg-crunchyroll-dark-bg">
       <Stack.Screen
         options={{
           title,
           headerBackTitle: 'Atrás',
-          headerTintColor: theme.text,
-          headerStyle: { backgroundColor: theme.background },
         }}
       />
 
       <ScrollView
-        contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom + Spacing.six }]}
-        showsVerticalScrollIndicator={false}>
+        contentContainerStyle={{ paddingBottom: insets.bottom + 64 }}
+        showsVerticalScrollIndicator={false}
+        className="w-full max-w-[800px] self-center">
+        {/* Banner Superior */}
         {anime.bannerImage ? (
           <Image
             source={{ uri: anime.bannerImage }}
-            style={styles.banner}
+            className="w-full h-48"
             contentFit="cover"
           />
         ) : null}
 
-        <View style={styles.content}>
-          <View style={styles.mainInfo}>
+        <View className="p-4 gap-4">
+          {/* Header con Póster y Títulos */}
+          <View className="flex-row gap-3">
             <Image
               source={{ uri: anime.coverImage.large || anime.coverImage.medium }}
-              style={styles.poster}
+              className="w-28 h-40 rounded-2xl shadow-sm"
               contentFit="cover"
               transition={200}
             />
 
-            <View style={styles.headerDetails}>
-              <ThemedText type="subtitle" style={styles.mainTitle}>
+            <View className="flex-1 justify-center gap-1.5">
+              <Text className="text-xl font-bold text-slate-900 dark:text-white leading-6">
                 {title}
-              </ThemedText>
+              </Text>
               {anime.title.native && (
-                <Text style={[styles.nativeTitle, { color: theme.textSecondary }]}>
+                <Text className="text-xs text-slate-500 dark:text-zinc-400">
                   {anime.title.native}
                 </Text>
               )}
-              <View style={styles.badgesRow}>
+              <View className="flex-row gap-2 items-center mt-1">
                 <AnimeScoreBadge score={anime.averageScore} />
-                <View style={[styles.statusBadge, { backgroundColor: theme.backgroundSelected }]}>
-                  <Text style={[styles.statusText, { color: theme.text }]}>
+                <View className="px-2 py-0.5 rounded-lg bg-crunchyroll-light-surface-high dark:bg-crunchyroll-dark-surface-high">
+                  <Text className="text-[11px] font-bold text-slate-800 dark:text-zinc-200">
                     {anime.status || 'STATUS'}
                   </Text>
                 </View>
@@ -93,132 +89,44 @@ export default function AnimeDetailScreen() {
             </View>
           </View>
 
+          {/* Chips de Géneros */}
           <AnimeGenres genres={anime.genres} />
 
-          <View
-            style={[
-              styles.metaGrid,
-              {
-                backgroundColor: theme.backgroundElement,
-                borderColor: theme.border,
-              },
-            ]}>
-            <View style={styles.metaItem}>
-              <Text style={[styles.metaLabel, { color: theme.textSecondary }]}>Episodios</Text>
-              <Text style={[styles.metaValue, { color: theme.text }]}>
+          {/* Grid de Metadatos estilo Material Design 3 */}
+          <View className="flex-row justify-around p-3.5 rounded-2xl border border-crunchyroll-light-border dark:border-crunchyroll-dark-border bg-crunchyroll-light-surface dark:bg-crunchyroll-dark-surface">
+            <View className="items-center gap-1">
+              <Text className="text-xs text-slate-500 dark:text-zinc-400">Episodios</Text>
+              <Text className="text-sm font-bold text-slate-900 dark:text-white">
                 {anime.episodes ?? 'N/A'}
               </Text>
             </View>
 
-            <View style={styles.metaItem}>
-              <Text style={[styles.metaLabel, { color: theme.textSecondary }]}>Formato</Text>
-              <Text style={[styles.metaValue, { color: theme.text }]}>
+            <View className="items-center gap-1">
+              <Text className="text-xs text-slate-500 dark:text-zinc-400">Formato</Text>
+              <Text className="text-sm font-bold text-slate-900 dark:text-white">
                 {anime.format ?? 'TV'}
               </Text>
             </View>
 
-            <View style={styles.metaItem}>
-              <Text style={[styles.metaLabel, { color: theme.textSecondary }]}>Temporada</Text>
-              <Text style={[styles.metaValue, { color: theme.text }]}>
+            <View className="items-center gap-1">
+              <Text className="text-xs text-slate-500 dark:text-zinc-400">Temporada</Text>
+              <Text className="text-sm font-bold text-slate-900 dark:text-white">
                 {anime.season ? `${anime.season} ${anime.seasonYear ?? ''}` : 'N/A'}
               </Text>
             </View>
           </View>
 
-          <View style={styles.synopsisSection}>
-            <ThemedText type="default" style={styles.sectionHeading}>
+          {/* Sección de Sinopsis */}
+          <View className="gap-2 p-4 rounded-2xl border border-crunchyroll-light-border dark:border-crunchyroll-dark-border bg-crunchyroll-light-surface dark:bg-crunchyroll-dark-surface">
+            <Text className="text-base font-bold text-slate-900 dark:text-white">
               Sinopsis
-            </ThemedText>
-            <Text style={[styles.description, { color: theme.textSecondary }]}>
+            </Text>
+            <Text className="text-sm leading-6 text-slate-600 dark:text-zinc-300">
               {cleanDescription}
             </Text>
           </View>
         </View>
       </ScrollView>
-    </ThemedView>
+    </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  scrollContent: {
-    maxWidth: MaxContentWidth,
-    alignSelf: 'center',
-    width: '100%',
-  },
-  banner: {
-    width: '100%',
-    height: 180,
-  },
-  content: {
-    padding: Spacing.four,
-    gap: Spacing.four,
-  },
-  mainInfo: {
-    flexDirection: 'row',
-    gap: Spacing.three,
-  },
-  poster: {
-    width: 110,
-    height: 160,
-    borderRadius: 12,
-  },
-  headerDetails: {
-    flex: 1,
-    justifyContent: 'center',
-    gap: 6,
-  },
-  mainTitle: {
-    fontSize: 20,
-    lineHeight: 24,
-  },
-  nativeTitle: {
-    fontSize: 13,
-  },
-  badgesRow: {
-    flexDirection: 'row',
-    gap: 8,
-    alignItems: 'center',
-    marginTop: 4,
-  },
-  statusBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 6,
-  },
-  statusText: {
-    fontSize: 11,
-    fontWeight: '700',
-  },
-  metaGrid: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    padding: Spacing.three,
-    borderRadius: 16,
-    borderWidth: 1,
-  },
-  metaItem: {
-    alignItems: 'center',
-    gap: 4,
-  },
-  metaLabel: {
-    fontSize: 12,
-  },
-  metaValue: {
-    fontSize: 14,
-    fontWeight: '700',
-  },
-  synopsisSection: {
-    gap: 8,
-  },
-  sectionHeading: {
-    fontSize: 18,
-    fontWeight: '700',
-  },
-  description: {
-    fontSize: 14,
-    lineHeight: 22,
-  },
-});

@@ -1,11 +1,7 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { MaxContentWidth, Spacing } from '@/constants/theme';
 import { ThemePreference, useAppTheme } from '@/context/theme-context';
-import { useTheme } from '@/hooks/use-theme';
 
 interface OptionItem {
   id: ThemePreference;
@@ -37,77 +33,70 @@ const THEME_OPTIONS: OptionItem[] = [
 
 export default function SettingsScreen() {
   const { preference, setPreference } = useAppTheme();
-  const theme = useTheme();
   const insets = useSafeAreaInsets();
 
   return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
-        <View style={styles.header}>
-          <ThemedText type="subtitle">Ajustes</ThemedText>
-          <ThemedText style={{ color: theme.textSecondary }}>
+    <View className="flex-1 bg-crunchyroll-light-bg dark:bg-crunchyroll-dark-bg">
+      <SafeAreaView className="flex-1 w-full max-w-[800px] self-center" edges={['top', 'left', 'right']}>
+        <View className="px-4 pt-2 pb-3 gap-0.5">
+          <Text className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+            Ajustes
+          </Text>
+          <Text className="text-xs font-semibold text-crunchyroll-primary">
             Personaliza la apariencia y preferencias de Anidex
-          </ThemedText>
+          </Text>
         </View>
 
-        <View style={[styles.content, { paddingBottom: insets.bottom + Spacing.six + 50 }]}>
+        <View
+          className="px-4 gap-4"
+          style={{ paddingBottom: insets.bottom + 90 }}>
           {/* Card Material 3 de Tema */}
-          <View
-            style={[
-              styles.sectionCard,
-              {
-                backgroundColor: theme.backgroundElement,
-                borderColor: theme.border,
-              },
-            ]}>
-            <View style={styles.sectionHeader}>
-              <View style={[styles.iconCircle, { backgroundColor: 'rgba(244, 117, 33, 0.15)' }]}>
-                <Text style={styles.iconCircleText}>🎨</Text>
+          <View className="rounded-3xl border border-crunchyroll-light-border dark:border-crunchyroll-dark-border bg-crunchyroll-light-surface dark:bg-crunchyroll-dark-surface p-4 gap-3">
+            <View className="flex-row items-center gap-3">
+              <View className="w-11 h-11 rounded-full items-center justify-center bg-orange-500/15">
+                <Text className="text-xl">🎨</Text>
               </View>
-              <View style={styles.sectionTitles}>
-                <Text style={[styles.sectionTitle, { color: theme.text }]}>Tema de la aplicación</Text>
-                <Text style={[styles.sectionSubtitle, { color: theme.textSecondary }]}>
+              <View className="flex-1 gap-0.5">
+                <Text className="text-base font-bold text-slate-900 dark:text-white">
+                  Tema de la aplicación
+                </Text>
+                <Text className="text-xs text-slate-500 dark:text-zinc-400">
                   Material Design 3 & Crunchyroll Palette
                 </Text>
               </View>
             </View>
 
-            <View style={styles.optionsList}>
+            <View className="gap-2.5 mt-1">
               {THEME_OPTIONS.map((opt) => {
                 const isSelected = preference === opt.id;
                 return (
                   <Pressable
                     key={opt.id}
                     onPress={() => setPreference(opt.id)}
-                    style={({ pressed }) => [
-                      styles.optionButton,
-                      {
-                        backgroundColor: isSelected
-                          ? 'rgba(244, 117, 33, 0.12)'
-                          : theme.backgroundSelected,
-                        borderColor: isSelected ? '#F47521' : 'transparent',
-                      },
-                      pressed && styles.pressed,
-                    ]}>
-                    <Text style={styles.optionEmoji}>{opt.icon}</Text>
-                    <View style={styles.optionInfo}>
+                    className={`flex-row items-center p-3.5 rounded-2xl border ${
+                      isSelected
+                        ? 'bg-orange-500/10 border-crunchyroll-primary'
+                        : 'bg-crunchyroll-light-surface-high dark:bg-crunchyroll-dark-surface-high border-transparent'
+                    } active:opacity-80`}>
+                    <Text className="text-xl mr-3">{opt.icon}</Text>
+                    <View className="flex-1 gap-0.5">
                       <Text
-                        style={[
-                          styles.optionTitle,
-                          { color: isSelected ? '#F47521' : theme.text },
-                        ]}>
+                        className={`text-sm font-bold ${
+                          isSelected ? 'text-crunchyroll-primary' : 'text-slate-900 dark:text-white'
+                        }`}>
                         {opt.title}
                       </Text>
-                      <Text style={[styles.optionSubtitle, { color: theme.textSecondary }]}>
+                      <Text className="text-xs text-slate-500 dark:text-zinc-400">
                         {opt.subtitle}
                       </Text>
                     </View>
                     <View
-                      style={[
-                        styles.radioCircle,
-                        { borderColor: isSelected ? '#F47521' : theme.textSecondary },
-                      ]}>
-                      {isSelected && <View style={styles.radioInnerCircle} />}
+                      className={`w-5 h-5 rounded-full border-2 items-center justify-center ${
+                        isSelected ? 'border-crunchyroll-primary' : 'border-slate-400 dark:border-zinc-500'
+                      }`}>
+                      {isSelected && (
+                        <View className="w-2.5 h-2.5 rounded-full bg-crunchyroll-primary" />
+                      )}
                     </View>
                   </Pressable>
                 );
@@ -116,131 +105,16 @@ export default function SettingsScreen() {
           </View>
 
           {/* Información de la App */}
-          <View
-            style={[
-              styles.infoCard,
-              {
-                backgroundColor: theme.backgroundElement,
-                borderColor: theme.border,
-              },
-            ]}>
-            <Text style={[styles.appName, { color: theme.text }]}>Anidex Mobile</Text>
-            <Text style={[styles.appVersion, { color: theme.textSecondary }]}>
-              Versión 1.0.0 • Impulsado por AniList GraphQL
+          <View className="rounded-2xl border border-crunchyroll-light-border dark:border-crunchyroll-dark-border bg-crunchyroll-light-surface dark:bg-crunchyroll-dark-surface p-4 items-center gap-1">
+            <Text className="text-sm font-bold text-slate-900 dark:text-white">
+              Anidex Mobile
+            </Text>
+            <Text className="text-xs text-slate-500 dark:text-zinc-400">
+              Versión 1.0.0 • NativeWind v5 & Tailwind v4
             </Text>
           </View>
         </View>
       </SafeAreaView>
-    </ThemedView>
+    </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  safeArea: {
-    flex: 1,
-    maxWidth: MaxContentWidth,
-    alignSelf: 'center',
-    width: '100%',
-  },
-  header: {
-    paddingHorizontal: Spacing.four,
-    paddingTop: Spacing.two,
-    paddingBottom: Spacing.three,
-  },
-  content: {
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
-  },
-  sectionCard: {
-    borderRadius: 20,
-    borderWidth: 1,
-    padding: Spacing.four,
-    gap: Spacing.three,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  iconCircle: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  iconCircleText: {
-    fontSize: 20,
-  },
-  sectionTitles: {
-    flex: 1,
-    gap: 2,
-  },
-  sectionTitle: {
-    fontSize: 17,
-    fontWeight: '700',
-  },
-  sectionSubtitle: {
-    fontSize: 13,
-  },
-  optionsList: {
-    gap: 10,
-    marginTop: 4,
-  },
-  optionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 14,
-    borderRadius: 14,
-    borderWidth: 1.5,
-    gap: 12,
-  },
-  pressed: {
-    opacity: 0.8,
-  },
-  optionEmoji: {
-    fontSize: 20,
-  },
-  optionInfo: {
-    flex: 1,
-    gap: 3,
-  },
-  optionTitle: {
-    fontSize: 15,
-    fontWeight: '600',
-  },
-  optionSubtitle: {
-    fontSize: 12,
-  },
-  radioCircle: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    borderWidth: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  radioInnerCircle: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    backgroundColor: '#F47521',
-  },
-  infoCard: {
-    borderRadius: 16,
-    borderWidth: 1,
-    padding: Spacing.four,
-    alignItems: 'center',
-    gap: 4,
-  },
-  appName: {
-    fontSize: 15,
-    fontWeight: '700',
-  },
-  appVersion: {
-    fontSize: 12,
-  },
-});

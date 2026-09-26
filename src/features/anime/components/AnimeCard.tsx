@@ -1,9 +1,6 @@
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-
-import { Spacing } from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
+import { Pressable, Text, View } from 'react-native';
 
 import { AnimeMedia } from '../types/anime.types';
 import { AnimeScoreBadge } from './AnimeScoreBadge';
@@ -13,7 +10,6 @@ interface AnimeCardProps {
 }
 
 export function AnimeCard({ anime }: AnimeCardProps) {
-  const theme = useTheme();
   const title = anime.title.english || anime.title.userPreferred || anime.title.romaji || 'Sin título';
   const coverUrl = anime.coverImage.large || anime.coverImage.medium;
 
@@ -24,36 +20,37 @@ export function AnimeCard({ anime }: AnimeCardProps) {
   return (
     <Pressable
       onPress={handlePress}
-      style={({ pressed }) => [
-        styles.container,
-        { backgroundColor: theme.backgroundElement },
-        pressed && styles.pressed,
-      ]}>
-      <View style={styles.imageContainer}>
+      className="w-[48%] mb-4 rounded-2xl overflow-hidden border border-crunchyroll-light-border dark:border-crunchyroll-dark-border bg-crunchyroll-light-surface dark:bg-crunchyroll-dark-surface active:opacity-80 active:scale-[0.98]">
+      <View className="w-full aspect-[3/4] relative bg-neutral-900">
         {coverUrl ? (
           <Image
             source={{ uri: coverUrl }}
-            style={styles.image}
+            className="w-full h-full"
             contentFit="cover"
-            transition={300}
+            transition={250}
           />
         ) : (
-          <View style={[styles.imagePlaceholder, { backgroundColor: anime.coverImage.color || '#333' }]} />
+          <View
+            className="w-full h-full"
+            style={{ backgroundColor: anime.coverImage.color || '#222' }}
+          />
         )}
-        <View style={styles.badgeWrapper}>
+        <View className="absolute top-2 right-2">
           <AnimeScoreBadge score={anime.averageScore} />
         </View>
       </View>
 
-      <View style={styles.info}>
-        <Text style={[styles.title, { color: theme.text }]} numberOfLines={2}>
+      <View className="p-2.5 gap-1">
+        <Text
+          className="text-sm font-bold text-slate-900 dark:text-white leading-4"
+          numberOfLines={2}>
           {title}
         </Text>
-        <Text style={[styles.subtitle, { color: theme.textSecondary }]} numberOfLines={1}>
+        <Text className="text-xs text-slate-500 dark:text-zinc-400" numberOfLines={1}>
           {anime.format || 'ANIME'} {anime.seasonYear ? `• ${anime.seasonYear}` : ''}
         </Text>
         {anime.genres && anime.genres.length > 0 && (
-          <Text style={[styles.genres, { color: '#F47521' }]} numberOfLines={1}>
+          <Text className="text-[11px] font-bold text-crunchyroll-primary" numberOfLines={1}>
             {anime.genres.slice(0, 2).join(' • ')}
           </Text>
         )}
@@ -61,52 +58,3 @@ export function AnimeCard({ anime }: AnimeCardProps) {
     </Pressable>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    borderRadius: 14,
-    overflow: 'hidden',
-    width: '48%',
-    marginBottom: Spacing.three,
-  },
-  pressed: {
-    opacity: 0.8,
-    transform: [{ scale: 0.98 }],
-  },
-  imageContainer: {
-    width: '100%',
-    aspectRatio: 3 / 4,
-    position: 'relative',
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-  },
-  imagePlaceholder: {
-    width: '100%',
-    height: '100%',
-  },
-  badgeWrapper: {
-    position: 'absolute',
-    top: 8,
-    right: 8,
-  },
-  info: {
-    padding: Spacing.two,
-    gap: 3,
-  },
-  title: {
-    fontSize: 14,
-    fontWeight: '700',
-    lineHeight: 18,
-  },
-  subtitle: {
-    fontSize: 12,
-    fontWeight: '500',
-  },
-  genres: {
-    fontSize: 11,
-    fontWeight: '600',
-    marginTop: 2,
-  },
-});

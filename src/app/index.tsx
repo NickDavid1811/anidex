@@ -1,90 +1,65 @@
-import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
+import { FlatList, RefreshControl, Text, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
 import { ErrorState } from '@/components/ui/error-state';
 import { LoadingState } from '@/components/ui/loading-state';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import { AnimeCard } from '@/features/anime/components/AnimeCard';
 import { useTrendingAnime } from '@/features/anime/hooks/useTrendingAnime';
-import { useTheme } from '@/hooks/use-theme';
 
 export default function HomeScreen() {
   const { animes, isLoading, isRefreshing, error, refetch } = useTrendingAnime();
-  const theme = useTheme();
   const insets = useSafeAreaInsets();
 
   if (isLoading && !isRefreshing) {
     return (
-      <ThemedView style={styles.container}>
+      <View className="flex-1 bg-crunchyroll-light-bg dark:bg-crunchyroll-dark-bg justify-center items-center">
         <LoadingState message="Cargando animes en tendencia..." />
-      </ThemedView>
+      </View>
     );
   }
 
   if (error && animes.length === 0) {
     return (
-      <ThemedView style={styles.container}>
+      <View className="flex-1 bg-crunchyroll-light-bg dark:bg-crunchyroll-dark-bg justify-center items-center">
         <ErrorState message={error} onRetry={refetch} />
-      </ThemedView>
+      </View>
     );
   }
 
   return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
-        <View style={styles.header}>
-          <ThemedText type="subtitle">Anidex</ThemedText>
-          <ThemedText style={{ color: theme.textSecondary }}>
-            Tendencias de Anime (AniList)
-          </ThemedText>
+    <View className="flex-1 bg-crunchyroll-light-bg dark:bg-crunchyroll-dark-bg">
+      <SafeAreaView className="flex-1 w-full max-w-[800px] self-center" edges={['top', 'left', 'right']}>
+        {/* Header estilo Material Design 3 */}
+        <View className="px-4 pt-2 pb-3 gap-0.5">
+          <Text className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+            Anidex
+          </Text>
+          <Text className="text-xs font-semibold text-crunchyroll-primary">
+            Tendencias de Anime • AniList
+          </Text>
         </View>
 
         <FlatList
           data={animes}
           keyExtractor={(item) => item.id.toString()}
           numColumns={2}
-          columnWrapperStyle={styles.columnWrapper}
-          contentContainerStyle={[
-            styles.listContent,
-            { paddingBottom: insets.bottom + Spacing.six + 50 },
-          ]}
+          columnWrapperStyle={{ justifyContent: 'space-between' }}
+          contentContainerStyle={{
+            paddingHorizontal: 16,
+            paddingBottom: insets.bottom + 90,
+          }}
           showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl
               refreshing={isRefreshing}
               onRefresh={refetch}
-              tintColor="#3c87f7"
-              colors={['#3c87f7']}
+              tintColor="#F47521"
+              colors={['#F47521']}
             />
           }
           renderItem={({ item }) => <AnimeCard anime={item} />}
         />
       </SafeAreaView>
-    </ThemedView>
+    </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  safeArea: {
-    flex: 1,
-    maxWidth: MaxContentWidth,
-    alignSelf: 'center',
-    width: '100%',
-  },
-  header: {
-    paddingHorizontal: Spacing.four,
-    paddingTop: Spacing.two,
-    paddingBottom: Spacing.three,
-  },
-  listContent: {
-    paddingHorizontal: Spacing.four,
-  },
-  columnWrapper: {
-    justifyContent: 'space-between',
-  },
-});

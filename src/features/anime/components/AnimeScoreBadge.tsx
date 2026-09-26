@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 interface AnimeScoreBadgeProps {
   score?: number;
@@ -10,25 +10,15 @@ export function AnimeScoreBadge({ score }: AnimeScoreBadgeProps) {
   const isHigh = score >= 75;
   const isMedium = score >= 60 && score < 75;
 
-  const backgroundColor = isHigh ? '#10B981' : isMedium ? '#F59E0B' : '#EF4444';
+  const bgClass = isHigh
+    ? 'bg-emerald-600'
+    : isMedium
+      ? 'bg-amber-500'
+      : 'bg-rose-600';
 
   return (
-    <View style={[styles.badge, { backgroundColor }]}>
-      <Text style={styles.text}>★ {score}%</Text>
+    <View className={`px-2 py-0.5 rounded-lg self-start ${bgClass}`}>
+      <Text className="text-white text-xs font-bold">★ {score}%</Text>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  badge: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 8,
-    alignSelf: 'flex-start',
-  },
-  text: {
-    color: '#ffffff',
-    fontSize: 12,
-    fontWeight: '700',
-  },
-});

@@ -1,14 +1,10 @@
-import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { FlatList, Pressable, Text, TextInput, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
 import { ErrorState } from '@/components/ui/error-state';
 import { LoadingState } from '@/components/ui/loading-state';
-import { MaxContentWidth, Spacing } from '@/constants/theme';
 import { AnimeCard } from '@/features/anime/components/AnimeCard';
 import { useSearchAnime } from '@/features/anime/hooks/useSearchAnime';
-import { useTheme } from '@/hooks/use-theme';
 
 const GENRES = [
   'Action',
@@ -37,7 +33,6 @@ export default function SearchScreen() {
     refresh,
   } = useSearchAnime(400);
 
-  const theme = useTheme();
   const insets = useSafeAreaInsets();
 
   const handleGenrePress = (genre: string) => {
@@ -45,54 +40,55 @@ export default function SearchScreen() {
   };
 
   return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
-        <View style={styles.header}>
-          <ThemedText type="subtitle">Buscar</ThemedText>
-          <ThemedText style={{ color: theme.textSecondary }}>
+    <View className="flex-1 bg-crunchyroll-light-bg dark:bg-crunchyroll-dark-bg">
+      <SafeAreaView className="flex-1 w-full max-w-[800px] self-center" edges={['top', 'left', 'right']}>
+        <View className="px-4 pt-2 pb-2 gap-2">
+          <Text className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+            Buscar
+          </Text>
+          <Text className="text-xs font-semibold text-crunchyroll-primary">
             Explora por nombre o género en AniList
-          </ThemedText>
+          </Text>
 
-          <View style={[styles.searchBar, { backgroundColor: theme.backgroundElement }]}>
+          {/* Barra de búsqueda MD3 */}
+          <View className="flex-row items-center rounded-2xl px-4 h-12 border border-crunchyroll-light-border dark:border-crunchyroll-dark-border bg-crunchyroll-light-surface dark:bg-crunchyroll-dark-surface mt-1">
             <TextInput
-              style={[styles.input, { color: theme.text }]}
-              placeholder="Buscar anime (ej. Naruto, Attack on Titan)..."
-              placeholderTextColor={theme.textSecondary}
+              className="flex-1 text-sm text-slate-900 dark:text-white"
+              placeholder="Buscar anime (ej. Naruto, Jujutsu, Solo Leveling)..."
+              placeholderTextColor="#938F99"
               value={searchTerm}
               onChangeText={setSearchTerm}
               autoCapitalize="none"
               returnKeyType="search"
             />
             {searchTerm.length > 0 && (
-              <Pressable onPress={() => setSearchTerm('')} style={styles.clearButton}>
-                <Text style={[styles.clearText, { color: theme.textSecondary }]}>✕</Text>
+              <Pressable onPress={() => setSearchTerm('')} className="p-1.5">
+                <Text className="text-sm font-bold text-slate-400 dark:text-zinc-400">✕</Text>
               </Pressable>
             )}
           </View>
 
+          {/* Chips horizontales de Géneros */}
           <FlatList
             data={GENRES}
             horizontal
             showsHorizontalScrollIndicator={false}
             keyExtractor={(item) => item}
-            contentContainerStyle={styles.genresList}
+            contentContainerStyle={{ gap: 8, paddingVertical: 6 }}
             renderItem={({ item }) => {
               const isSelected = selectedGenre === item;
               return (
                 <Pressable
                   onPress={() => handleGenrePress(item)}
-                  style={[
-                    styles.genreChip,
-                    {
-                      backgroundColor: isSelected ? '#F47521' : theme.backgroundElement,
-                      borderColor: isSelected ? '#F47521' : theme.border,
-                    },
-                  ]}>
+                  className={`px-3.5 py-1.5 rounded-full border ${
+                    isSelected
+                      ? 'bg-crunchyroll-primary border-crunchyroll-primary'
+                      : 'bg-crunchyroll-light-surface dark:bg-crunchyroll-dark-surface border-crunchyroll-light-border dark:border-crunchyroll-dark-border'
+                  }`}>
                   <Text
-                    style={[
-                      styles.genreText,
-                      { color: isSelected ? '#ffffff' : theme.text },
-                    ]}>
+                    className={`text-xs font-bold ${
+                      isSelected ? 'text-white' : 'text-slate-700 dark:text-zinc-200'
+                    }`}>
                     {item}
                   </Text>
                 </Pressable>
@@ -106,16 +102,16 @@ export default function SearchScreen() {
         ) : error ? (
           <ErrorState message={error} onRetry={refresh} />
         ) : results.length === 0 ? (
-          <View style={styles.emptyState}>
-            <Text style={[styles.emptyTitle, { color: theme.text }]}>
+          <View className="flex-1 justify-center items-center p-6 gap-2">
+            <Text className="text-base font-bold text-slate-900 dark:text-white text-center">
               {searchTerm || selectedGenre
                 ? 'No se encontraron resultados'
                 : 'Escribe algo o elige un género para comenzar'}
             </Text>
-            <Text style={[styles.emptySubtitle, { color: theme.textSecondary }]}>
+            <Text className="text-xs text-slate-500 dark:text-zinc-400 text-center">
               {searchTerm || selectedGenre
                 ? 'Prueba buscando con otro término o género.'
-                : 'Busca entre miles de animes de la base de datos de AniList.'}
+                : 'Explora entre miles de títulos de la base de datos de AniList.'}
             </Text>
           </View>
         ) : (
@@ -123,90 +119,17 @@ export default function SearchScreen() {
             data={results}
             keyExtractor={(item) => item.id.toString()}
             numColumns={2}
-            columnWrapperStyle={styles.columnWrapper}
-            contentContainerStyle={[
-              styles.listContent,
-              { paddingBottom: insets.bottom + Spacing.six + 50 },
-            ]}
+            columnWrapperStyle={{ justifyContent: 'space-between' }}
+            contentContainerStyle={{
+              paddingHorizontal: 16,
+              paddingTop: 8,
+              paddingBottom: insets.bottom + 90,
+            }}
             showsVerticalScrollIndicator={false}
             renderItem={({ item }) => <AnimeCard anime={item} />}
           />
         )}
       </SafeAreaView>
-    </ThemedView>
+    </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  safeArea: {
-    flex: 1,
-    maxWidth: MaxContentWidth,
-    alignSelf: 'center',
-    width: '100%',
-  },
-  header: {
-    paddingHorizontal: Spacing.four,
-    paddingTop: Spacing.two,
-    paddingBottom: Spacing.two,
-    gap: Spacing.two,
-  },
-  searchBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: 12,
-    paddingHorizontal: Spacing.three,
-    height: 46,
-    marginTop: 4,
-  },
-  input: {
-    flex: 1,
-    fontSize: 15,
-  },
-  clearButton: {
-    padding: 6,
-  },
-  clearText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  genresList: {
-    gap: 8,
-    paddingVertical: 6,
-  },
-  genreChip: {
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: 20,
-    borderWidth: 1,
-  },
-  genreText: {
-    fontSize: 13,
-    fontWeight: '600',
-  },
-  listContent: {
-    paddingHorizontal: Spacing.four,
-    paddingTop: Spacing.two,
-  },
-  columnWrapper: {
-    justifyContent: 'space-between',
-  },
-  emptyState: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: Spacing.four,
-    gap: 8,
-  },
-  emptyTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    textAlign: 'center',
-  },
-  emptySubtitle: {
-    fontSize: 13,
-    textAlign: 'center',
-  },
-});
