@@ -95,7 +95,14 @@ export default function AnimeDetailScreen() {
 
           <AnimeGenres genres={anime.genres} />
 
-          <View style={[styles.metaGrid, { backgroundColor: theme.backgroundElement }]}>
+          <View
+            style={[
+              styles.metaGrid,
+              {
+                backgroundColor: theme.backgroundElement,
+                borderColor: theme.border,
+              },
+            ]}>
             <View style={styles.metaItem}>
               <Text style={[styles.metaLabel, { color: theme.textSecondary }]}>Episodios</Text>
               <Text style={[styles.metaValue, { color: theme.text }]}>
@@ -189,7 +196,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     padding: Spacing.three,
-    borderRadius: 12,
+    borderRadius: 16,
+    borderWidth: 1,
   },
   metaItem: {
     alignItems: 'center',

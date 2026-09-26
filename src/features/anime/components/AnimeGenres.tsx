@@ -26,16 +26,16 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   chip: {
-    backgroundColor: 'rgba(60, 135, 247, 0.15)',
-    paddingHorizontal: 12,
-    paddingVertical: 5,
+    backgroundColor: 'rgba(244, 117, 33, 0.15)',
+    paddingHorizontal: 14,
+    paddingVertical: 6,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: 'rgba(60, 135, 247, 0.3)',
+    borderColor: 'rgba(244, 117, 33, 0.35)',
   },
   text: {
-    color: '#3c87f7',
+    color: '#F47521',
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '700',
   },
 });

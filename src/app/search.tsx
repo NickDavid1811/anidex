@@ -84,8 +84,8 @@ export default function SearchScreen() {
                   style={[
                     styles.genreChip,
                     {
-                      backgroundColor: isSelected ? '#3c87f7' : theme.backgroundElement,
-                      borderColor: isSelected ? '#3c87f7' : theme.backgroundSelected,
+                      backgroundColor: isSelected ? '#F47521' : theme.backgroundElement,
+                      borderColor: isSelected ? '#F47521' : theme.border,
                     },
                   ]}>
                   <Text

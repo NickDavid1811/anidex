@@ -53,8 +53,8 @@ export function AnimeCard({ anime }: AnimeCardProps) {
           {anime.format || 'ANIME'} {anime.seasonYear ? `• ${anime.seasonYear}` : ''}
         </Text>
         {anime.genres && anime.genres.length > 0 && (
-          <Text style={[styles.genres, { color: '#3c87f7' }]} numberOfLines={1}>
-            {anime.genres.slice(0, 2).join(', ')}
+          <Text style={[styles.genres, { color: '#F47521' }]} numberOfLines={1}>
+            {anime.genres.slice(0, 2).join(' • ')}
           </Text>
         )}
       </View>
