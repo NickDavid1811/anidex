@@ -180,36 +180,36 @@ export function FavoritesSortButton({
         />
 
         {/* Indicador de 3 puntos correspondiente a los 3 estados */}
-        <View className="flex-row gap-0.5 mt-0.5">
+        <View className="flex-row items-center gap-1 mt-1">
           <View
-            className={`w-1 h-1 rounded-full ${
+            className={`h-1 rounded-full ${
               currentSort === 'alphabetical'
                 ? isDark
-                  ? 'bg-[#E09F7D]'
-                  : 'bg-[#8B4F26]'
+                  ? 'w-2.5 bg-[#E09F7D]'
+                  : 'w-2.5 bg-[#8B4F26]'
                 : isDark
-                ? 'bg-[#3E3028]'
-                : 'bg-[#D8CDC5]'
+                ? 'w-1 bg-[#3E3028]'
+                : 'w-1 bg-[#D8CDC5]'
             }`}
           />
           <View
-            className={`w-1 h-1 rounded-full ${
+            className={`h-1 rounded-full ${
               currentSort === 'ranking'
-                ? '#F59E0B'
+                ? 'w-2.5 bg-[#F59E0B]'
                 : isDark
-                ? 'bg-[#3E3028]'
-                : 'bg-[#D8CDC5]'
+                ? 'w-1 bg-[#3E3028]'
+                : 'w-1 bg-[#D8CDC5]'
             }`}
           />
           <View
-            className={`w-1 h-1 rounded-full ${
+            className={`h-1 rounded-full ${
               currentSort === 'recent'
                 ? isDark
-                  ? 'bg-[#E09F7D]'
-                  : 'bg-[#8B4F26]'
+                  ? 'w-2.5 bg-[#E09F7D]'
+                  : 'w-2.5 bg-[#8B4F26]'
                 : isDark
-                ? 'bg-[#3E3028]'
-                : 'bg-[#D8CDC5]'
+                ? 'w-1 bg-[#3E3028]'
+                : 'w-1 bg-[#D8CDC5]'
             }`}
           />
         </View>
