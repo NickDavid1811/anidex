@@ -1,5 +1,5 @@
 import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -13,6 +13,7 @@ import { useTheme } from '@/hooks/use-theme';
 export default function HomeScreen() {
   const { animes, isLoading, isRefreshing, error, refetch } = useTrendingAnime();
   const theme = useTheme();
+  const insets = useSafeAreaInsets();
 
   if (isLoading && !isRefreshing) {
     return (
@@ -45,7 +46,10 @@ export default function HomeScreen() {
           keyExtractor={(item) => item.id.toString()}
           numColumns={2}
           columnWrapperStyle={styles.columnWrapper}
-          contentContainerStyle={styles.listContent}
+          contentContainerStyle={[
+            styles.listContent,
+            { paddingBottom: insets.bottom + Spacing.six + 50 },
+          ]}
           showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl
@@ -79,7 +83,6 @@ const styles = StyleSheet.create({
   },
   listContent: {
     paddingHorizontal: Spacing.four,
-    paddingBottom: BottomTabInset + Spacing.four,
   },
   columnWrapper: {
     justifyContent: 'space-between',
