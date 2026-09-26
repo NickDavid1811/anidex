@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Animated,
   Modal,
@@ -57,6 +57,18 @@ export function FavoritesSortButton({
   const toastOpacity = useRef(new Animated.Value(0)).current;
   const toastTimeoutRef = useRef<any>(null);
 
+  // REFS PARA EVITAR STALE CLOSURES EN PANRESPONDER
+  const currentSortRef = useRef<SortType>(currentSort);
+  const onSortChangeRef = useRef(onSortChange);
+
+  useEffect(() => {
+    currentSortRef.current = currentSort;
+  }, [currentSort]);
+
+  useEffect(() => {
+    onSortChangeRef.current = onSortChange;
+  }, [onSortChange]);
+
   const currentConfig =
     SORT_CONFIGS.find((c) => c.id === currentSort) || SORT_CONFIGS[0];
 
@@ -68,13 +80,13 @@ export function FavoritesSortButton({
     Animated.sequence([
       Animated.timing(toastOpacity, {
         toValue: 1,
-        duration: 150,
+        duration: 120,
         useNativeDriver: true,
       }),
-      Animated.delay(1200),
+      Animated.delay(1100),
       Animated.timing(toastOpacity, {
         toValue: 0,
-        duration: 200,
+        duration: 180,
         useNativeDriver: true,
       }),
     ]).start(() => {
@@ -83,20 +95,25 @@ export function FavoritesSortButton({
   };
 
   const cycleSort = (direction: 'next' | 'prev') => {
-    const currentIndex = SORT_CONFIGS.findIndex((c) => c.id === currentSort);
+    // Leemos el valor en vivo desde currentSortRef para no tener valores obsoletos
+    const liveSort = currentSortRef.current;
+    const currentIndex = SORT_CONFIGS.findIndex((c) => c.id === liveSort);
     let nextIndex: number;
+
     if (direction === 'next') {
       nextIndex = (currentIndex + 1) % SORT_CONFIGS.length;
     } else {
       nextIndex = (currentIndex - 1 + SORT_CONFIGS.length) % SORT_CONFIGS.length;
     }
+
     const nextSort = SORT_CONFIGS[nextIndex];
+    currentSortRef.current = nextSort.id;
 
     // Animación pequeña al deslizar
     Animated.sequence([
       Animated.timing(scaleAnim, {
         toValue: 0.88,
-        duration: 80,
+        duration: 70,
         useNativeDriver: true,
       }),
       Animated.spring(scaleAnim, {
@@ -106,30 +123,33 @@ export function FavoritesSortButton({
       }),
     ]).start();
 
-    onSortChange(nextSort.id);
+    onSortChangeRef.current(nextSort.id);
     showToast(`Orden: ${nextSort.label}`);
   };
 
-  // PanResponder para capturar tanto toque (tap) como deslizamiento con el dedo (swipe)
+  const cycleSortRef = useRef(cycleSort);
+  cycleSortRef.current = cycleSort;
+
+  // PanResponder usando las referencias vivas para ciclar siempre entre los 3 valores
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onMoveShouldSetPanResponder: (_, gestureState) => {
-        return Math.abs(gestureState.dx) > 6 || Math.abs(gestureState.dy) > 6;
+        return Math.abs(gestureState.dx) > 5 || Math.abs(gestureState.dy) > 5;
       },
       onPanResponderRelease: (_, gestureState) => {
-        const isHorizontalSwipe = Math.abs(gestureState.dx) > 16;
-        const isVerticalSwipe = Math.abs(gestureState.dy) > 16;
+        const isHorizontalSwipe = Math.abs(gestureState.dx) > 12;
+        const isVerticalSwipe = Math.abs(gestureState.dy) > 12;
 
         if (isHorizontalSwipe || isVerticalSwipe) {
-          // Deslizó con el dedo: alternar ordenamiento
-          if (gestureState.dy > 16 || gestureState.dx > 16) {
-            cycleSort('next');
+          // Deslizó con el dedo: ciclar ordenamiento (hacia adelante o atrás)
+          if (gestureState.dy > 12 || gestureState.dx > 12) {
+            cycleSortRef.current('next');
           } else {
-            cycleSort('prev');
+            cycleSortRef.current('prev');
           }
         } else {
-          // Toque normal: abrir menú de opciones
+          // Toque normal (Tap): abrir modal con las 3 opciones
           setModalVisible(true);
         }
       },
@@ -159,7 +179,7 @@ export function FavoritesSortButton({
           }
         />
 
-        {/* Indicador de gesto sutil abajo */}
+        {/* Indicador de 3 puntos correspondiente a los 3 estados */}
         <View className="flex-row gap-0.5 mt-0.5">
           <View
             className={`w-1 h-1 rounded-full ${
@@ -265,7 +285,7 @@ export function FavoritesSortButton({
               </Pressable>
             </View>
 
-            {/* Lista de opciones con sus iconos */}
+            {/* Lista de las 3 opciones con sus iconos */}
             <View className="gap-2.5">
               {SORT_CONFIGS.map((opt) => {
                 const isSelected = currentSort === opt.id;
@@ -273,7 +293,8 @@ export function FavoritesSortButton({
                   <Pressable
                     key={opt.id}
                     onPress={() => {
-                      onSortChange(opt.id);
+                      currentSortRef.current = opt.id;
+                      onSortChangeRef.current(opt.id);
                       setModalVisible(false);
                       showToast(`Orden: ${opt.label}`);
                     }}
