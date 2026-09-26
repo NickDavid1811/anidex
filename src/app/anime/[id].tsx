@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Pressable, ScrollView, Text, View } from 'react-native';
@@ -5,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ErrorState } from '@/components/ui/error-state';
 import { LoadingState } from '@/components/ui/loading-state';
+import { useAppTheme } from '@/context/theme-context';
 import { AnimeGenres } from '@/features/anime/components/AnimeGenres';
 import { AnimeScoreBadge } from '@/features/anime/components/AnimeScoreBadge';
 import { useAnimeDetail } from '@/features/anime/hooks/useAnimeDetail';
@@ -13,6 +15,9 @@ export default function AnimeDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { anime, isLoading, error, refetch } = useAnimeDetail(id);
   const insets = useSafeAreaInsets();
+
+  const { activeScheme } = useAppTheme();
+  const isDark = activeScheme === 'dark';
 
   if (isLoading) {
     return (
@@ -43,8 +48,12 @@ export default function AnimeDetailScreen() {
         className="px-4 pb-2 flex-row items-center gap-3 border-b border-crunchyroll-light-border dark:border-crunchyroll-dark-border bg-crunchyroll-light-surface dark:bg-crunchyroll-dark-surface z-10">
         <Pressable
           onPress={() => router.back()}
-          className="w-9 h-9 rounded-full items-center justify-center bg-crunchyroll-light-surface-high dark:bg-crunchyroll-dark-surface-high active:opacity-70">
-          <Text className="text-base font-black text-slate-900 dark:text-white">←</Text>
+          className="w-10 h-10 rounded-full items-center justify-center bg-crunchyroll-light-surface-high dark:bg-crunchyroll-dark-surface-high active:opacity-70">
+          <Ionicons
+            name="arrow-back"
+            size={22}
+            color={isDark ? '#FFFFFF' : '#0F172A'}
+          />
         </Pressable>
         <Text
           className="flex-1 text-base font-bold text-slate-900 dark:text-white"

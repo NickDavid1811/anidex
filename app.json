@@ -18,10 +18,7 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.anidex",
-      "androidStatusBar": {
-        "hidden": true
-      }
+      "package": "com.anonymous.anidex"
     },
     "web": {
       "output": "static",
