@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
-import { Stack, useLocalSearchParams } from 'expo-router';
-import { ScrollView, Text, View } from 'react-native';
+import { router, useLocalSearchParams } from 'expo-router';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ErrorState } from '@/components/ui/error-state';
@@ -17,7 +17,6 @@ export default function AnimeDetailScreen() {
   if (isLoading) {
     return (
       <View className="flex-1 bg-crunchyroll-light-bg dark:bg-crunchyroll-dark-bg justify-center items-center">
-        <Stack.Screen options={{ title: 'Cargando...', headerBackTitle: 'Volver' }} />
         <LoadingState message="Cargando detalles del anime..." />
       </View>
     );
@@ -26,7 +25,6 @@ export default function AnimeDetailScreen() {
   if (error || !anime) {
     return (
       <View className="flex-1 bg-crunchyroll-light-bg dark:bg-crunchyroll-dark-bg justify-center items-center">
-        <Stack.Screen options={{ title: 'Detalle', headerBackTitle: 'Volver' }} />
         <ErrorState message={error || 'No se encontró el anime'} onRetry={refetch} />
       </View>
     );
@@ -39,12 +37,21 @@ export default function AnimeDetailScreen() {
 
   return (
     <View className="flex-1 bg-crunchyroll-light-bg dark:bg-crunchyroll-dark-bg">
-      <Stack.Screen
-        options={{
-          title,
-          headerBackTitle: 'Atrás',
-        }}
-      />
+      {/* Barra superior con botón volver */}
+      <View
+        style={{ paddingTop: insets.top + 8 }}
+        className="px-4 pb-2 flex-row items-center gap-3 border-b border-crunchyroll-light-border dark:border-crunchyroll-dark-border bg-crunchyroll-light-surface dark:bg-crunchyroll-dark-surface z-10">
+        <Pressable
+          onPress={() => router.back()}
+          className="w-9 h-9 rounded-full items-center justify-center bg-crunchyroll-light-surface-high dark:bg-crunchyroll-dark-surface-high active:opacity-70">
+          <Text className="text-base font-black text-slate-900 dark:text-white">←</Text>
+        </Pressable>
+        <Text
+          className="flex-1 text-base font-bold text-slate-900 dark:text-white"
+          numberOfLines={1}>
+          {title}
+        </Text>
+      </View>
 
       <ScrollView
         contentContainerStyle={{ paddingBottom: insets.bottom + 64 }}
@@ -54,7 +61,7 @@ export default function AnimeDetailScreen() {
         {anime.bannerImage ? (
           <Image
             source={{ uri: anime.bannerImage }}
-            className="w-full h-48"
+            style={{ width: '100%', height: 192 }}
             contentFit="cover"
           />
         ) : null}
@@ -64,7 +71,8 @@ export default function AnimeDetailScreen() {
           <View className="flex-row gap-3">
             <Image
               source={{ uri: anime.coverImage.large || anime.coverImage.medium }}
-              className="w-28 h-40 rounded-2xl shadow-sm"
+              style={{ width: 112, height: 160 }}
+              className="rounded-2xl"
               contentFit="cover"
               transition={200}
             />

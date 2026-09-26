@@ -21,18 +21,18 @@ export function AnimeCard({ anime }: AnimeCardProps) {
     <Pressable
       onPress={handlePress}
       className="w-[48%] mb-4 rounded-2xl overflow-hidden border border-crunchyroll-light-border dark:border-crunchyroll-dark-border bg-crunchyroll-light-surface dark:bg-crunchyroll-dark-surface active:opacity-80 active:scale-[0.98]">
-      <View className="w-full aspect-[3/4] relative bg-neutral-900">
+      <View className="w-full aspect-[3/4] relative bg-neutral-900 overflow-hidden">
         {coverUrl ? (
           <Image
             source={{ uri: coverUrl }}
-            className="w-full h-full"
+            style={{ width: '100%', height: '100%' }}
             contentFit="cover"
             transition={250}
           />
         ) : (
           <View
             className="w-full h-full"
-            style={{ backgroundColor: anime.coverImage.color || '#222' }}
+            style={{ width: '100%', height: '100%', backgroundColor: anime.coverImage.color || '#222' }}
           />
         )}
         <View className="absolute top-2 right-2">

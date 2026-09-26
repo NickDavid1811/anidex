@@ -35,6 +35,10 @@ export default function AppTabs() {
           renderingMode="template"
         />
       </NativeTabs.Trigger>
+
+      <NativeTabs.Trigger name="anime/[id]" hidden={true}>
+        <NativeTabs.Trigger.Label>Detalle</NativeTabs.Trigger.Label>
+      </NativeTabs.Trigger>
     </NativeTabs>
   );
 }
