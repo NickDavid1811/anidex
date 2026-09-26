@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { Platform, Text, View } from 'react-native';
+import { Platform, Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useFavorites } from '@/context/favorites-context';
@@ -16,17 +16,25 @@ interface TabIconProps {
 }
 
 function TabPillIcon({ name, focusedName, focused, isDark, badge }: TabIconProps) {
+  const iconColor = focused
+    ? isDark
+      ? '#FFDCC2'
+      : '#351A08'
+    : isDark
+    ? '#A89C94'
+    : '#776962';
+
   return (
     <View
       style={{
+        width: 60,
+        height: 32,
+        borderRadius: 16,
         backgroundColor: focused
           ? isDark
             ? '#58392B'
             : '#FFDCC2'
           : 'transparent',
-        borderRadius: 16,
-        paddingHorizontal: 16,
-        paddingVertical: 3,
         alignItems: 'center',
         justifyContent: 'center',
         position: 'relative',
@@ -34,22 +42,14 @@ function TabPillIcon({ name, focusedName, focused, isDark, badge }: TabIconProps
       <Ionicons
         name={focused ? focusedName : name}
         size={22}
-        color={
-          focused
-            ? isDark
-              ? '#FFDCC2'
-              : '#351A08'
-            : isDark
-            ? '#A89C94'
-            : '#776962'
-        }
+        color={iconColor}
       />
       {badge !== undefined && badge > 0 && (
         <View
           style={{
             position: 'absolute',
             top: -2,
-            right: 8,
+            right: 4,
             backgroundColor: '#D32F2F',
             borderRadius: 9,
             minWidth: 16,
@@ -79,6 +79,18 @@ export default function TabLayout() {
         headerShown: false,
         tabBarActiveTintColor: isDark ? '#FFDCC2' : '#351A08',
         tabBarInactiveTintColor: isDark ? '#A89C94' : '#776962',
+        // Desactiva el ripple gris gigante nativo de Android
+        tabBarButton: ({ ref, ...rest }) => (
+          <Pressable
+            {...rest}
+            android_ripple={null}
+            style={[rest.style, { overflow: 'hidden' }]}
+          />
+        ),
+        tabBarIconStyle: {
+          width: 64,
+          height: 32,
+        },
         tabBarStyle: {
           backgroundColor: isDark ? '#221A16' : '#FFFFFF',
           borderTopColor: isDark ? '#3E3028' : '#D8CDC5',

@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
-import React, { useMemo, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   FlatList,
   Pressable,
@@ -33,7 +33,7 @@ const FILTER_GENRES = [
 ];
 
 export default function FavoritesScreen() {
-  const { favorites, count, removeFavorite } = useFavorites();
+  const { favorites, count, removeFavorite, refreshFavorites } = useFavorites();
   const { activeScheme } = useAppTheme();
   const isDark = activeScheme === 'dark';
   const insets = useSafeAreaInsets();
@@ -41,6 +41,12 @@ export default function FavoritesScreen() {
   const [filterText, setFilterText] = useState('');
   const [selectedGenre, setSelectedGenre] = useState('Todos');
   const [sortType, setSortType] = useState<SortType>('recent');
+
+  useFocusEffect(
+    useCallback(() => {
+      refreshFavorites();
+    }, [refreshFavorites])
+  );
 
   const filteredAndSortedFavorites = useMemo(() => {
     const list = favorites.filter((anime) => {
@@ -202,34 +208,13 @@ export default function FavoritesScreen() {
 
         {/* Lista de Favoritos */}
         {favorites.length === 0 ? (
-          <View className="flex-1 justify-center items-center p-6 gap-3">
-            <View
-              className={`w-16 h-16 rounded-full items-center justify-center ${
-                isDark ? 'bg-[#221A16]' : 'bg-[#EDE5DF]'
-              }`}>
-              <Ionicons name="heart-outline" size={32} color="#D32F2F" />
-            </View>
+          <View className="flex-1 justify-center items-center p-6">
             <Text
-              className={`text-base font-bold text-center ${
-                isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
-              }`}>
-              Aún no tienes favoritos guardados
-            </Text>
-            <Text
-              className={`text-xs text-center max-w-[280px] leading-5 ${
+              className={`text-sm font-semibold text-center ${
                 isDark ? 'text-[#A89C94]' : 'text-[#776962]'
               }`}>
-              Toca el botón de corazón en cualquier anime desde Inicio o Explorar para guardarlo en tu base de datos local.
+              No tienes animes en favoritos todavía
             </Text>
-            <Pressable
-              onPress={() => router.push('/(tabs)/explore' as any)}
-              className={`mt-2 px-5 py-2.5 rounded-2xl ${
-                isDark ? 'bg-[#3A2D25]' : 'bg-[#8B4F26]'
-              }`}>
-              <Text className="text-xs font-bold text-white">
-                Explorar animes
-              </Text>
-            </Pressable>
           </View>
         ) : filteredAndSortedFavorites.length === 0 ? (
           <View className="flex-1 justify-center items-center p-6 gap-2">
