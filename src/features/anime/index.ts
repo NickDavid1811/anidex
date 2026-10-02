@@ -9,6 +9,8 @@ export * from './components/HomeFeaturedCarousel';
 export * from './components/HomeCategories';
 export * from './components/HomeRecentFavorites';
 export * from './components/HomeRandomBanner';
+export * from './components/RandomRouletteModal';
+export * from './components/HomeSkeleton';
 export * from './components/HomeRankingSection';
 export * from './components/ExploreSearchBar';
 export * from './components/ExploreGenreChips';

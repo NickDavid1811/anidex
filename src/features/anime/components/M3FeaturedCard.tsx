@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import React from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { useAppTheme } from '@/features/theme';
 import { AnimeMedia } from '../types/anime.types';
@@ -24,22 +24,51 @@ export function M3FeaturedCard({ anime }: M3FeaturedCardProps) {
     anime.coverImage.extraLarge ||
     anime.coverImage.large ||
     anime.coverImage.medium;
-  const score = anime.averageScore ? (anime.averageScore / 10).toFixed(2) : '9.0';
+  const bannerUrl = anime.bannerImage || coverUrl;
+
+  const score = anime.averageScore ? (anime.averageScore / 10).toFixed(2) : '8.5';
   const year = anime.seasonYear || anime.startDate?.year || '2024';
-  const eps = anime.episodes ? `${anime.episodes} Episodios` : 'En emisión';
+  const eps = anime.episodes ? `${anime.episodes} eps` : 'En emisión';
   const genre = anime.genres && anime.genres.length > 0 ? anime.genres[0] : 'Anime';
 
   return (
     <Pressable
       onPress={() => router.push(`/anime/${anime.id}` as any)}
-      className={`p-4 rounded-3xl border active:opacity-95 ${
+      className={`rounded-[28px] overflow-hidden border active:opacity-95 shadow-lg relative ${
         isDark
-          ? 'bg-[#221A16] border-[#3E3028]'
+          ? 'bg-[#1E1713] border-[#3E3028]/80'
           : 'bg-[#FFFFFF] border-[#D8CDC5] shadow-md'
-      }`}>
-      <View className="flex-row">
-        {/* Cover Poster */}
-        <View className="w-28 h-38 rounded-2xl overflow-hidden bg-neutral-900 shadow-md">
+      }`}
+      style={{ height: 195 }}>
+      {/* Background Cinematic Banner with Ambient Blur */}
+      {bannerUrl ? (
+        <Image
+          source={{ uri: bannerUrl }}
+          style={[StyleSheet.absoluteFill, { opacity: isDark ? 0.32 : 0.22 }]}
+          contentFit="cover"
+          blurRadius={14}
+          transition={250}
+        />
+      ) : null}
+
+      {/* Ambient Tint Overlay */}
+      <View
+        style={[
+          StyleSheet.absoluteFill,
+          {
+            backgroundColor: isDark
+              ? 'rgba(20, 18, 17, 0.45)'
+              : 'rgba(255, 255, 255, 0.4)',
+          },
+        ]}
+      />
+
+      {/* Card Content Foreground */}
+      <View className="flex-1 flex-row p-3.5 items-center">
+        {/* Crisp Poster Thumbnail */}
+        <View
+          className="w-24 h-36 rounded-2xl overflow-hidden bg-neutral-900 border border-white/10 shadow-lg"
+          style={{ elevation: 6 }}>
           {coverUrl ? (
             <Image
               source={{ uri: coverUrl }}
@@ -55,60 +84,61 @@ export function M3FeaturedCard({ anime }: M3FeaturedCardProps) {
           )}
         </View>
 
-        {/* Details Column */}
-        <View className="flex-1 ml-4 justify-between py-1">
-          <View className="gap-2">
-            {/* Rating Pill */}
-            <View className="self-start flex-row items-center px-2.5 py-1 rounded-full bg-[#F59E0B]/20">
-              <Ionicons name="star" size={12} color="#F59E0B" />
-              <Text className="text-xs font-bold text-[#F59E0B] ml-1">
-                {score} • Recomendado
-              </Text>
+        {/* Info Column */}
+        <View className="flex-1 ml-3.5 justify-between py-1 h-36">
+          <View className="gap-1.5">
+            {/* Rating Pill + Status */}
+            <View className="flex-row items-center gap-1.5">
+              <View className="flex-row items-center px-2 py-0.5 rounded-full bg-[#F59E0B]/25 border border-[#F59E0B]/40">
+                <Ionicons name="star" size={11} color="#F59E0B" />
+                <Text className="text-[11px] font-black text-[#F59E0B] ml-1">
+                  {score}
+                </Text>
+              </View>
+
+              <View
+                className={`px-2 py-0.5 rounded-full border ${
+                  isDark
+                    ? 'bg-[#2F241E]/80 border-[#3E3028]'
+                    : 'bg-[#EDE5DF]/80 border-[#D8CDC5]'
+                }`}>
+                <Text
+                  className={`text-[10px] font-bold ${
+                    isDark ? 'text-[#D0C3BC]' : 'text-[#53433C]'
+                  }`}>
+                  {genre}
+                </Text>
+              </View>
             </View>
 
-            {/* Title */}
+            {/* Anime Title */}
             <Text
-              className={`text-lg font-black leading-6 ${
+              className={`text-base font-black leading-5 ${
                 isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
               }`}
               numberOfLines={2}>
               {title}
             </Text>
 
-            {/* Year & Episodes */}
+            {/* Metadata (Year & Episodes) */}
             <Text
               className={`text-xs font-medium ${
                 isDark ? 'text-[#A89C94]' : 'text-[#776962]'
               }`}>
               {year} • {eps}
             </Text>
-
-            {/* Genre Badge */}
-            <View
-              className={`self-start px-2.5 py-0.5 rounded-lg ${
-                isDark ? 'bg-[#2F241E]' : 'bg-[#EDE5DF]'
-              }`}>
-              <Text
-                className={`text-[11px] font-semibold ${
-                  isDark ? 'text-[#D0C3BC]' : 'text-[#53433C]'
-                }`}>
-                {genre}
-              </Text>
-            </View>
           </View>
 
-          {/* Action Link: Detalles ↗ */}
-          <View className="flex-row items-center gap-1 mt-2">
+          {/* Action Button: "Ver detalles" */}
+          <View className="flex-row items-center self-start px-3 py-1.5 rounded-xl bg-[#8B4F26] dark:bg-[#E09F7D]/20 border dark:border-[#E09F7D]/40 gap-1.5">
             <Text
-              className={`text-sm font-bold ${
-                isDark ? 'text-[#E09F7D]' : 'text-[#8B4F26]'
-              }`}>
-              Detalles
+              className="text-xs font-bold text-white dark:text-[#E09F7D]">
+              Ver detalles
             </Text>
             <Ionicons
               name="arrow-forward"
-              size={14}
-              color={isDark ? '#E09F7D' : '#8B4F26'}
+              size={12}
+              color={isDark ? '#E09F7D' : '#FFFFFF'}
             />
           </View>
         </View>

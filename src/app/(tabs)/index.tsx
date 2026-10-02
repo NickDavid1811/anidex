@@ -1,5 +1,4 @@
-import { router } from 'expo-router';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Dimensions,
   RefreshControl,
@@ -17,6 +16,8 @@ import {
   HomeRandomBanner,
   HomeRankingSection,
   HomeRecentFavorites,
+  HomeSkeleton,
+  RandomRouletteModal,
   useTrendingAnime,
 } from '@/features/anime';
 import { useFavorites } from '@/features/favorites';
@@ -28,25 +29,13 @@ export default function HomeScreen() {
   const { activeScheme } = useAppTheme();
   const isDark = activeScheme === 'dark';
 
+  const [rouletteVisible, setRouletteVisible] = useState(false);
+
   const screenWidth = Dimensions.get('window').width;
   const contentWidth = Math.min(screenWidth, 800);
 
-  const handleRandomSpin = () => {
-    if (animes.length === 0) return;
-    const randomIndex = Math.floor(Math.random() * animes.length);
-    const chosen = animes[randomIndex];
-    router.push(`/anime/${chosen.id}` as any);
-  };
-
   if (isLoading && !isRefreshing) {
-    return (
-      <View
-        className={`flex-1 justify-center items-center ${
-          isDark ? 'bg-[#141211]' : 'bg-[#FCF8F6]'
-        }`}>
-        <LoadingState message="Cargando las series del momento..." />
-      </View>
-    );
+    return <HomeSkeleton isDark={isDark} />;
   }
 
   if (error && animes.length === 0) {
@@ -95,7 +84,10 @@ export default function HomeScreen() {
             isDark={isDark}
           />
 
-          <HomeRandomBanner onSpin={handleRandomSpin} isDark={isDark} />
+          <HomeRandomBanner
+            onSpin={() => setRouletteVisible(true)}
+            isDark={isDark}
+          />
 
           <HomeRankingSection
             animes={animes.slice(0, 8)}
@@ -105,6 +97,14 @@ export default function HomeScreen() {
           />
         </ScrollView>
       </SafeAreaView>
+
+      {/* Modal Interactivo de Ruleta Aleatoria */}
+      <RandomRouletteModal
+        visible={rouletteVisible}
+        onClose={() => setRouletteVisible(false)}
+        animes={animes}
+        isDark={isDark}
+      />
     </View>
   );
 }

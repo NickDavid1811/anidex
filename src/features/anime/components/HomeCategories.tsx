@@ -4,14 +4,14 @@ import React from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 
 export const POPULAR_CATEGORIES = [
-  { id: 'Action', label: 'Acción', icon: '⚔️' },
-  { id: 'Fantasy', label: 'Fantasía', icon: '🪄' },
-  { id: 'Comedy', label: 'Comedia', icon: '😄' },
-  { id: 'Romance', label: 'Romance', icon: '💖' },
-  { id: 'Supernatural', label: 'Sobrenatural', icon: '🔮' },
-  { id: 'Sci-Fi', label: 'Sci-Fi', icon: '🚀' },
-  { id: 'Sports', label: 'Deportes', icon: '🏀' },
-  { id: 'Drama', label: 'Drama', icon: '🎭' },
+  { id: 'Action', label: 'Acción', icon: '⚔️', color: '#EF4444' },
+  { id: 'Fantasy', label: 'Fantasía', icon: '🪄', color: '#8B5CF6' },
+  { id: 'Comedy', label: 'Comedia', icon: '😄', color: '#F59E0B' },
+  { id: 'Romance', label: 'Romance', icon: '💖', color: '#EC4899' },
+  { id: 'Supernatural', label: 'Sobrenatural', icon: '🔮', color: '#A855F7' },
+  { id: 'Sci-Fi', label: 'Sci-Fi', icon: '🚀', color: '#06B6D4' },
+  { id: 'Sports', label: 'Deportes', icon: '🏀', color: '#F97316' },
+  { id: 'Drama', label: 'Drama', icon: '🎭', color: '#6366F1' },
 ];
 
 interface HomeCategoriesProps {
@@ -64,14 +64,18 @@ export function HomeCategories({ isDark }: HomeCategoriesProps) {
           <Pressable
             key={cat.id}
             onPress={() => handleCategoryPress(cat.id)}
-            className={`flex-row items-center px-3.5 py-2 rounded-2xl border active:opacity-80 ${
-              isDark
-                ? 'bg-[#221A16] border-[#3E3028]'
-                : 'bg-[#FFFFFF] border-[#D8CDC5] shadow-sm'
-            }`}>
+            style={{
+              backgroundColor: isDark
+                ? `${cat.color}15`
+                : `${cat.color}12`,
+              borderColor: isDark
+                ? `${cat.color}35`
+                : `${cat.color}30`,
+            }}
+            className="flex-row items-center px-3.5 py-2 rounded-2xl border active:scale-95 shadow-sm">
             <Text className="text-sm mr-1.5">{cat.icon}</Text>
             <Text
-              className={`text-xs font-semibold ${
+              className={`text-xs font-bold ${
                 isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
               }`}>
               {cat.label}

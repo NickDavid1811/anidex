@@ -1,8 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
-import React from 'react';
-import { Pressable, Text, View } from 'react-native';
+import React, { useRef } from 'react';
+import { Animated, Pressable, Text, View } from 'react-native';
 
 import { useAppTheme } from '@/features/theme';
 import { AnimeMedia } from '../types/anime.types';
@@ -22,6 +23,7 @@ export function M3RankCard({
 }: M3RankCardProps) {
   const { activeScheme } = useAppTheme();
   const isDark = activeScheme === 'dark';
+  const scaleAnim = useRef(new Animated.Value(1)).current;
 
   const title =
     anime.title.english ||
@@ -37,46 +39,91 @@ export function M3RankCard({
   const eps = anime.episodes ? `${anime.episodes} eps` : '';
   const genres = anime.genres ? anime.genres.slice(0, 2).join(' • ') : '';
 
-  const getRankBadgeStyle = (r: number) => {
+  // Configuración de estilo del Podio Top 3
+  const getPodiumConfig = (r: number) => {
     switch (r) {
       case 1:
-        return { bg: 'bg-[#F59E0B]', text: 'text-black' };
+        return {
+          cardBg: isDark ? 'bg-[#2A2016]' : 'bg-[#FFFDF5]',
+          cardBorder: isDark ? 'border-[#F59E0B]/60' : 'border-[#F59E0B]/70',
+          badgeBg: 'bg-[#F59E0B]',
+          badgeText: 'text-black',
+          crown: '👑',
+          shadow: 'shadow-md',
+        };
       case 2:
-        return { bg: 'bg-[#A8A29E]', text: 'text-black' };
+        return {
+          cardBg: isDark ? 'bg-[#23201D]' : 'bg-[#F8FAFC]',
+          cardBorder: isDark ? 'border-[#94A3B8]/50' : 'border-[#CBD5E1]/70',
+          badgeBg: 'bg-[#94A3B8]',
+          badgeText: 'text-black',
+          crown: '🥈',
+          shadow: 'shadow-sm',
+        };
       case 3:
-        return { bg: 'bg-[#C27838]', text: 'text-white' };
+        return {
+          cardBg: isDark ? 'bg-[#251C17]' : 'bg-[#FFF7ED]',
+          cardBorder: isDark ? 'border-[#D97706]/45' : 'border-[#D97706]/55',
+          badgeBg: 'bg-[#D97706]',
+          badgeText: 'text-white',
+          crown: '🥉',
+          shadow: 'shadow-sm',
+        };
       default:
         return {
-          bg: isDark ? 'bg-[#362922]' : 'bg-[#E5DCD4]',
-          text: isDark ? 'text-[#D0C3BC]' : 'text-[#53433C]',
+          cardBg: isDark ? 'bg-[#221A16]' : 'bg-[#FFFFFF]',
+          cardBorder: isDark ? 'border-[#3E3028]' : 'border-[#D8CDC5]',
+          badgeBg: isDark ? 'bg-[#362922]' : 'bg-[#E5DCD4]',
+          badgeText: isDark ? 'text-[#D0C3BC]' : 'text-[#53433C]',
+          crown: null,
+          shadow: 'shadow-sm',
         };
     }
   };
 
-  const badgeStyle = getRankBadgeStyle(rank);
+  const podium = getPodiumConfig(rank);
+
+  const handleFavoritePress = (e: any) => {
+    e.stopPropagation();
+    try {
+      Haptics?.impactAsync?.(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+    } catch {}
+
+    Animated.sequence([
+      Animated.timing(scaleAnim, {
+        toValue: 1.4,
+        duration: 110,
+        useNativeDriver: true,
+      }),
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        friction: 4,
+        tension: 120,
+        useNativeDriver: true,
+      }),
+    ]).start();
+
+    onToggleFavorite();
+  };
 
   return (
     <Pressable
       onPress={() => router.push(`/anime/${anime.id}` as any)}
-      className={`flex-row items-center p-3 rounded-2xl mb-2.5 border active:opacity-90 ${
-        isDark
-          ? rank === 1
-            ? 'bg-[#261E1A] border-[#F59E0B]/50'
-            : 'bg-[#221A16] border-[#3E3028]'
-          : rank === 1
-          ? 'bg-[#FFFDF7] border-[#F59E0B]/60 shadow-sm'
-          : 'bg-[#FFFFFF] border-[#D8CDC5] shadow-sm'
-      }`}>
-      {/* Rank Badge */}
+      className={`flex-row items-center p-3 rounded-2xl mb-2.5 border active:opacity-90 ${podium.cardBg} ${podium.cardBorder} ${podium.shadow}`}>
+      {/* Rank Badge with Trophy/Medal icon for top 3 */}
       <View
-        className={`w-9 h-9 rounded-xl items-center justify-center mr-3 ${badgeStyle.bg}`}>
-        <Text className={`text-xs font-black ${badgeStyle.text}`}>
-          #{rank}
-        </Text>
+        className={`w-9 h-9 rounded-xl items-center justify-center mr-3 ${podium.badgeBg}`}>
+        {rank === 1 ? (
+          <Ionicons name="trophy" size={16} color="#000000" />
+        ) : (
+          <Text className={`text-xs font-black ${podium.badgeText}`}>
+            #{rank}
+          </Text>
+        )}
       </View>
 
       {/* Thumbnail */}
-      <View className="w-12 h-16 rounded-lg overflow-hidden bg-neutral-900 mr-3">
+      <View className="w-12 h-16 rounded-xl overflow-hidden bg-neutral-900 mr-3 border border-black/10 shadow-sm">
         {coverUrl ? (
           <Image
             source={{ uri: coverUrl }}
@@ -147,7 +194,7 @@ export function M3RankCard({
 
         {genres ? (
           <Text
-            className={`text-[11px] ${
+            className={`text-[11px] font-medium ${
               isDark ? 'text-[#A89C94]' : 'text-[#776962]'
             }`}
             numberOfLines={1}>
@@ -156,19 +203,18 @@ export function M3RankCard({
         ) : null}
       </View>
 
-      {/* Heart Action Button */}
+      {/* Bouncy Heart Action Button */}
       <Pressable
-        onPress={(e) => {
-          e.stopPropagation();
-          onToggleFavorite();
-        }}
-        hitSlop={8}
-        className="p-2 active:scale-110">
-        <Ionicons
-          name={isFavorite ? 'heart' : 'heart-outline'}
-          size={22}
-          color={isFavorite ? '#E53935' : isDark ? '#A89C94' : '#776962'}
-        />
+        onPress={handleFavoritePress}
+        hitSlop={10}
+        className="p-2">
+        <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+          <Ionicons
+            name={isFavorite ? 'heart' : 'heart-outline'}
+            size={22}
+            color={isFavorite ? '#E53935' : isDark ? '#A89C94' : '#776962'}
+          />
+        </Animated.View>
       </Pressable>
     </Pressable>
   );
