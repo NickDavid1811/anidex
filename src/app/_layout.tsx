@@ -6,8 +6,8 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
-import { FavoritesProvider } from '@/context/favorites-context';
-import { ThemeProviderWrapper, useAppTheme } from '@/context/theme-context';
+import { FavoritesProvider } from '@/features/favorites';
+import { ThemeProviderWrapper, useAppTheme } from '@/features/theme';
 
 SplashScreen.preventAutoHideAsync();
 

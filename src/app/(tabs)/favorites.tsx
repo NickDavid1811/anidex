@@ -1,36 +1,16 @@
-import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
-import {
-  FlatList,
-  Pressable,
-  ScrollView,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { FlatList, Text, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { useFavorites } from '@/context/favorites-context';
-import { useAppTheme } from '@/context/theme-context';
+import { M3AnimeCard } from '@/features/anime';
 import {
-  FavoritesSortButton,
+  FavoritesEmptyState,
+  FavoritesFilterBar,
   SortType,
-} from '@/features/anime/components/FavoritesSortButton';
-import { M3AnimeCard } from '@/features/anime/components/M3AnimeCard';
-
-const FILTER_GENRES = [
-  'Todos',
-  'Action',
-  'Adventure',
-  'Comedy',
-  'Drama',
-  'Fantasy',
-  'Mystery',
-  'Romance',
-  'Sci-Fi',
-  'Supernatural',
-];
+  useFavorites,
+} from '@/features/favorites';
+import { useAppTheme } from '@/features/theme';
 
 export default function FavoritesScreen() {
   const { favorites, count, removeFavorite, refreshFavorites } = useFavorites();
@@ -124,119 +104,27 @@ export default function FavoritesScreen() {
             )}
           </View>
 
-          {/* Fila con Barra de filtrado + Botón de Ordenamiento M3 interactivo */}
-          <View className="flex-row items-center gap-2">
-            <View
-              className={`flex-1 flex-row items-center rounded-2xl px-3.5 h-12 border ${
-                isDark
-                  ? 'bg-[#221A16] border-[#3E3028]'
-                  : 'bg-[#FFFFFF] border-[#D8CDC5] shadow-sm'
-              }`}>
-              <Ionicons
-                name="search"
-                size={18}
-                color={isDark ? '#A89C94' : '#776962'}
-                style={{ marginRight: 8 }}
-              />
-              <TextInput
-                className={`flex-1 text-sm font-medium ${
-                  isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
-                }`}
-                placeholder="Filtrar por nombre..."
-                placeholderTextColor={isDark ? '#7E736C' : '#9E928B'}
-                value={filterText}
-                onChangeText={setFilterText}
-                autoCapitalize="none"
-                returnKeyType="done"
-              />
-              {filterText.length > 0 && (
-                <Pressable onPress={() => setFilterText('')} className="p-1">
-                  <Ionicons
-                    name="close-circle"
-                    size={18}
-                    color={isDark ? '#A89C94' : '#776962'}
-                  />
-                </Pressable>
-              )}
-            </View>
-
-            {/* Botón de Ordenamiento: Tap abre opciones con icono / Swipe para cambiar rápido */}
-            <FavoritesSortButton
-              currentSort={sortType}
-              onSortChange={setSortType}
-              isDark={isDark}
-            />
-          </View>
-
-          {/* Chips de filtro por categoría */}
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ gap: 8, paddingVertical: 2 }}>
-            {FILTER_GENRES.map((g) => {
-              const isSelected = selectedGenre === g;
-              return (
-                <Pressable
-                  key={g}
-                  onPress={() => setSelectedGenre(g)}
-                  className={`px-3.5 py-1.5 rounded-full border active:opacity-80 ${
-                    isSelected
-                      ? isDark
-                        ? 'bg-[#58392B] border-[#E09F7D]'
-                        : 'bg-[#FFDCC2] border-[#8B4F26]'
-                      : isDark
-                      ? 'bg-[#221A16] border-[#3E3028]'
-                      : 'bg-[#FFFFFF] border-[#D8CDC5]'
-                  }`}>
-                  <Text
-                    className={`text-xs font-semibold ${
-                      isSelected
-                        ? isDark
-                          ? 'text-[#FFDCC2]'
-                          : 'text-[#351A08]'
-                        : isDark
-                        ? 'text-[#A89C94]'
-                        : 'text-[#53433C]'
-                    }`}>
-                    {g}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </ScrollView>
+          <FavoritesFilterBar
+            filterText={filterText}
+            onFilterTextChange={setFilterText}
+            sortType={sortType}
+            onSortTypeChange={setSortType}
+            selectedGenre={selectedGenre}
+            onGenreSelect={setSelectedGenre}
+            isDark={isDark}
+          />
         </View>
 
         {/* Lista de Favoritos */}
-        {favorites.length === 0 ? (
-          <View className="flex-1 justify-center items-center p-6">
-            <Text
-              className={`text-sm font-semibold text-center ${
-                isDark ? 'text-[#A89C94]' : 'text-[#776962]'
-              }`}>
-              No tienes animes en favoritos todavía
-            </Text>
-          </View>
-        ) : filteredAndSortedFavorites.length === 0 ? (
-          <View className="flex-1 justify-center items-center p-6 gap-2">
-            <Text
-              className={`text-sm font-semibold text-center ${
-                isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
-              }`}>
-              No se encontraron favoritos con ese filtro
-            </Text>
-            <Pressable
-              onPress={() => {
-                setFilterText('');
-                setSelectedGenre('Todos');
-              }}>
-              <Text
-                className={`text-xs font-bold ${
-                  isDark ? 'text-[#E09F7D]' : 'text-[#8B4F26]'
-                }`}>
-                Limpiar filtros
-              </Text>
-            </Pressable>
-          </View>
+        {favorites.length === 0 || filteredAndSortedFavorites.length === 0 ? (
+          <FavoritesEmptyState
+            hasTotalFavorites={favorites.length > 0}
+            onClearFilters={() => {
+              setFilterText('');
+              setSelectedGenre('Todos');
+            }}
+            isDark={isDark}
+          />
         ) : (
           <FlatList
             data={filteredAndSortedFavorites}

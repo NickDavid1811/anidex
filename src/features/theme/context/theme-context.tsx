@@ -1,5 +1,5 @@
-import React, { createContext, useCallback, useContext, useRef, useState } from 'react';
-import { Appearance, Dimensions, useColorScheme as useDeviceColorScheme } from 'react-native';
+import React, { createContext, useCallback, useContext, useState } from 'react';
+import { Appearance, useColorScheme as useDeviceColorScheme } from 'react-native';
 
 import { ThemeTransitionOverlay } from '@/components/ui/theme-transition-overlay';
 

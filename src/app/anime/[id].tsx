@@ -7,11 +7,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ErrorState } from '@/components/ui/error-state';
 import { LoadingState } from '@/components/ui/loading-state';
-import { useFavorites } from '@/context/favorites-context';
-import { useAppTheme } from '@/context/theme-context';
-import { AnimeGenres } from '@/features/anime/components/AnimeGenres';
-import { AnimeScoreBadge } from '@/features/anime/components/AnimeScoreBadge';
-import { useAnimeDetail } from '@/features/anime/hooks/useAnimeDetail';
+import { AnimeGenres, AnimeScoreBadge, useAnimeDetail } from '@/features/anime';
+import { useFavorites } from '@/features/favorites';
+import { useAppTheme } from '@/features/theme';
 
 export default function AnimeDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();

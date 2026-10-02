@@ -6,7 +6,7 @@ import {
   getAllFavoritesFromDb,
   getFavoriteIdsFromDb,
   removeFavoriteFromDb,
-} from '@/services/database/favoritesDb';
+} from '../services/favoritesDb';
 
 interface FavoritesContextType {
   favorites: AnimeMedia[];

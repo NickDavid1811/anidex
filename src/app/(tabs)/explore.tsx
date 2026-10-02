@@ -1,37 +1,19 @@
-import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams } from 'expo-router';
 import React, { useEffect } from 'react';
-import {
-  FlatList,
-  Pressable,
-  ScrollView,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { FlatList, Text, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ErrorState } from '@/components/ui/error-state';
 import { LoadingState } from '@/components/ui/loading-state';
-import { useFavorites } from '@/context/favorites-context';
-import { useAppTheme } from '@/context/theme-context';
-import { M3AnimeCard } from '@/features/anime/components/M3AnimeCard';
-import { useSearchAnime } from '@/features/anime/hooks/useSearchAnime';
-
-const GENRES = [
-  'Action',
-  'Adventure',
-  'Comedy',
-  'Drama',
-  'Fantasy',
-  'Horror',
-  'Mystery',
-  'Romance',
-  'Sci-Fi',
-  'Slice of Life',
-  'Sports',
-  'Supernatural',
-];
+import {
+  ExploreEmptyState,
+  ExploreGenreChips,
+  ExploreSearchBar,
+  M3AnimeCard,
+  useSearchAnime,
+} from '@/features/anime';
+import { useFavorites } from '@/features/favorites';
+import { useAppTheme } from '@/features/theme';
 
 export default function ExploreScreen() {
   const params = useLocalSearchParams<{ genre?: string }>();
@@ -78,77 +60,17 @@ export default function ExploreScreen() {
             Explorar
           </Text>
 
-          {/* Barra de búsqueda M3 */}
-          <View
-            className={`flex-row items-center rounded-2xl px-3.5 h-12 border ${
-              isDark
-                ? 'bg-[#221A16] border-[#3E3028]'
-                : 'bg-[#FFFFFF] border-[#D8CDC5] shadow-sm'
-            }`}>
-            <Ionicons
-              name="search"
-              size={18}
-              color={isDark ? '#A89C94' : '#776962'}
-              style={{ marginRight: 8 }}
-            />
-            <TextInput
-              className={`flex-1 text-sm font-medium ${
-                isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
-              }`}
-              placeholder="Buscar animes..."
-              placeholderTextColor={isDark ? '#7E736C' : '#9E928B'}
-              value={searchTerm}
-              onChangeText={setSearchTerm}
-              autoCapitalize="none"
-              returnKeyType="search"
-            />
-            {searchTerm.length > 0 && (
-              <Pressable onPress={() => setSearchTerm('')} className="p-1">
-                <Ionicons
-                  name="close-circle"
-                  size={18}
-                  color={isDark ? '#A89C94' : '#776962'}
-                />
-              </Pressable>
-            )}
-          </View>
+          <ExploreSearchBar
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+            isDark={isDark}
+          />
 
-          {/* Chips de Categorías */}
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ gap: 8, paddingVertical: 2 }}>
-            {GENRES.map((g) => {
-              const isSelected = selectedGenre === g;
-              return (
-                <Pressable
-                  key={g}
-                  onPress={() => handleGenrePress(g)}
-                  className={`px-3.5 py-1.5 rounded-full border active:opacity-80 ${
-                    isSelected
-                      ? isDark
-                        ? 'bg-[#58392B] border-[#E09F7D]'
-                        : 'bg-[#FFDCC2] border-[#8B4F26]'
-                      : isDark
-                      ? 'bg-[#221A16] border-[#3E3028]'
-                      : 'bg-[#FFFFFF] border-[#D8CDC5]'
-                  }`}>
-                  <Text
-                    className={`text-xs font-semibold ${
-                      isSelected
-                        ? isDark
-                          ? 'text-[#FFDCC2]'
-                          : 'text-[#351A08]'
-                        : isDark
-                        ? 'text-[#A89C94]'
-                        : 'text-[#53433C]'
-                    }`}>
-                    {g}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </ScrollView>
+          <ExploreGenreChips
+            selectedGenre={selectedGenre}
+            onGenreSelect={handleGenrePress}
+            isDark={isDark}
+          />
         </View>
 
         {/* Lista de Resultados */}
@@ -161,29 +83,10 @@ export default function ExploreScreen() {
             <ErrorState message={error} onRetry={refresh} />
           </View>
         ) : results.length === 0 ? (
-          <View className="flex-1 justify-center items-center p-6 gap-2">
-            <Ionicons
-              name="search-outline"
-              size={48}
-              color={isDark ? '#3E3028' : '#D8CDC5'}
-            />
-            <Text
-              className={`text-base font-bold text-center ${
-                isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
-              }`}>
-              {searchTerm || selectedGenre
-                ? 'No se encontraron resultados'
-                : 'Escribe algo o elige un género para comenzar'}
-            </Text>
-            <Text
-              className={`text-xs text-center ${
-                isDark ? 'text-[#A89C94]' : 'text-[#776962]'
-              }`}>
-              {searchTerm || selectedGenre
-                ? 'Prueba buscando con otro término o género diferente.'
-                : 'Explora entre miles de series de anime en tiempo real.'}
-            </Text>
-          </View>
+          <ExploreEmptyState
+            hasFilters={Boolean(searchTerm || selectedGenre)}
+            isDark={isDark}
+          />
         ) : (
           <FlatList
             data={results}

@@ -4,7 +4,7 @@ import { router } from 'expo-router';
 import React from 'react';
 import { Pressable, Text, View } from 'react-native';
 
-import { useAppTheme } from '@/context/theme-context';
+import { useAppTheme } from '@/features/theme';
 import { AnimeMedia } from '../types/anime.types';
 
 interface M3FeaturedCardProps {

@@ -4,8 +4,8 @@ import React from 'react';
 import { Platform, Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { useFavorites } from '@/context/favorites-context';
-import { useAppTheme } from '@/context/theme-context';
+import { useFavorites } from '@/features/favorites';
+import { useAppTheme } from '@/features/theme';
 
 interface TabIconProps {
   name: keyof typeof Ionicons.glyphMap;

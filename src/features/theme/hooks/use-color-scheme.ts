@@ -1,5 +1,5 @@
 import { useColorScheme as useDeviceColorScheme } from 'react-native';
-import { useAppTheme } from '@/context/theme-context';
+import { useAppTheme } from '../context/theme-context';
 
 export function useColorScheme() {
   try {
