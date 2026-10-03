@@ -4,12 +4,13 @@
     "slug": "anidex",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/icon.png",
     "scheme": "anidex",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon",
+      "icon": "./assets/icon.png",
       "bundleIdentifier": "com.nickydavis.anidex",
+      "appleTeamId": "2V2TZNVA25",
       "supportsTablet": true,
       "infoPlist": {
         "NSBonjourServices": ["_expo._tcp"],
@@ -18,13 +19,11 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "backgroundColor": "#000000",
+        "foregroundImage": "./assets/icon.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.anidex"
+      "package": "com.nickydavis.anidex"
     },
     "web": {
       "output": "static",
