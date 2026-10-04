@@ -13,7 +13,9 @@
       "appleTeamId": "2V2TZNVA25",
       "supportsTablet": true,
       "infoPlist": {
-        "NSBonjourServices": ["_expo._tcp"],
+        "NSBonjourServices": [
+          "_expo._tcp"
+        ],
         "NSLocalNetworkUsageDescription": "Permitir a la app conectarse al servidor de desarrollo de Expo en tu red local."
       }
     },
@@ -39,7 +41,8 @@
           "imageWidth": 76
         }
       ],
-      "expo-sqlite"
+      "expo-sqlite",
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true,

@@ -7,6 +7,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
+import { AuthProvider } from '@/features/auth';
 import { FavoritesProvider } from '@/features/favorites';
 import { ThemeProviderWrapper, useAppTheme } from '@/features/theme';
 
@@ -54,9 +55,11 @@ export default function RootLayout() {
 
   return (
     <ThemeProviderWrapper>
+      <AuthProvider>
       <FavoritesProvider>
         <ThemeContent />
       </FavoritesProvider>
+      </AuthProvider>
     </ThemeProviderWrapper>
   );
 }
