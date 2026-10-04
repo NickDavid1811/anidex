@@ -15,11 +15,12 @@ export function ExploreSearchBar({
 }: ExploreSearchBarProps) {
   return (
     <View
-      className={`flex-row items-center rounded-2xl px-3.5 h-12 border ${
+      className={`will-change-variable flex-row items-center rounded-2xl px-3.5 h-12 border ${
         isDark
           ? 'bg-[#221A16] border-[#3E3028]'
           : 'bg-[#FFFFFF] border-[#D8CDC5] shadow-sm'
-      }`}>
+      }`}
+    >
       <Ionicons
         name="search"
         size={18}
@@ -34,11 +35,18 @@ export function ExploreSearchBar({
         placeholderTextColor={isDark ? '#7E736C' : '#9E928B'}
         value={searchTerm}
         onChangeText={onSearchChange}
+        accessibilityLabel="Buscar anime por título"
+        autoCorrect={false}
         autoCapitalize="none"
         returnKeyType="search"
       />
       {searchTerm.length > 0 && (
-        <Pressable onPress={() => onSearchChange('')} className="p-1">
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Limpiar búsqueda"
+          onPress={() => onSearchChange('')}
+          className="w-12 h-12 items-center justify-center"
+        >
           <Ionicons
             name="close-circle"
             size={18}

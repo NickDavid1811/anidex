@@ -3,12 +3,12 @@ import {
   Dimensions,
   RefreshControl,
   ScrollView,
+  Text,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ErrorState } from '@/components/ui/error-state';
-import { LoadingState } from '@/components/ui/loading-state';
 import {
   HomeCategories,
   HomeFeaturedCarousel,
@@ -24,8 +24,15 @@ import { useFavorites } from '@/features/favorites';
 import { useAppTheme } from '@/features/theme';
 
 export default function HomeScreen() {
-  const { animes, isLoading, isRefreshing, error, refetch } = useTrendingAnime();
-  const { isFavorite, toggleFavorite, favorites, count: favoritesCount } = useFavorites();
+  const { animes, isLoading, isRefreshing, error, refetch } =
+    useTrendingAnime();
+  const {
+    isFavorite,
+    toggleFavorite,
+    favorites,
+    count: favoritesCount,
+    error: favoritesError,
+  } = useFavorites();
   const { activeScheme } = useAppTheme();
   const isDark = activeScheme === 'dark';
 
@@ -43,20 +50,19 @@ export default function HomeScreen() {
       <View
         className={`flex-1 justify-center items-center ${
           isDark ? 'bg-[#141211]' : 'bg-[#FCF8F6]'
-        }`}>
+        }`}
+      >
         <ErrorState message={error} onRetry={refetch} />
       </View>
     );
   }
 
   return (
-    <View
-      className={`flex-1 ${
-        isDark ? 'bg-[#141211]' : 'bg-[#FCF8F6]'
-      }`}>
+    <View className={`flex-1 ${isDark ? 'bg-[#141211]' : 'bg-[#FCF8F6]'}`}>
       <SafeAreaView
         className="flex-1 w-full max-w-[800px] self-center"
-        edges={['top', 'left', 'right']}>
+        edges={['top', 'left', 'right']}
+      >
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 110 }}
@@ -67,8 +73,17 @@ export default function HomeScreen() {
               tintColor={isDark ? '#E09F7D' : '#8B4F26'}
               colors={[isDark ? '#E09F7D' : '#8B4F26']}
             />
-          }>
+          }
+        >
           <HomeHeader isDark={isDark} />
+          {favoritesError && (
+            <Text
+              accessibilityRole="alert"
+              className="px-4 py-2 text-sm text-red-600"
+            >
+              {favoritesError}
+            </Text>
+          )}
 
           <HomeFeaturedCarousel
             animes={animes.slice(0, 5)}
@@ -90,9 +105,11 @@ export default function HomeScreen() {
           />
 
           <HomeRankingSection
-            animes={animes.slice(0, 8)}
+            animes={animes.slice(5, 13)}
             isFavorite={isFavorite}
-            onToggleFavorite={toggleFavorite}
+            onToggleFavorite={(anime) => {
+              void toggleFavorite(anime).catch(() => {});
+            }}
             isDark={isDark}
           />
         </ScrollView>

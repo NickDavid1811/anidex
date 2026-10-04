@@ -1,23 +1,39 @@
 import { Pressable, Text, View } from 'react-native';
-
+import { useAppTheme } from '@/features/theme';
 interface ErrorStateProps {
   message?: string;
   onRetry?: () => void;
 }
-
 export function ErrorState({
-  message = 'Hubo un error al cargar la información.',
+  message = 'No pudimos cargar la información.',
   onRetry,
 }: ErrorStateProps) {
+  const { activeScheme } = useAppTheme();
+  const isDark = activeScheme === 'dark';
   return (
-    <View className="flex-1 justify-center items-center p-6 gap-2">
-      <Text className="text-lg font-bold text-slate-900 dark:text-white">Algo salió mal</Text>
-      <Text className="text-sm text-center text-slate-500 dark:text-zinc-400 mb-3">{message}</Text>
+    <View className="justify-center items-center p-6 gap-2">
+      <Text
+        className={`text-lg font-bold ${isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'}`}
+      >
+        No pudimos cargarlo
+      </Text>
+      <Text
+        accessibilityRole="alert"
+        className={`text-sm text-center mb-3 ${isDark ? 'text-[#A89C94]' : 'text-[#776962]'}`}
+      >
+        {message}
+      </Text>
       {onRetry && (
         <Pressable
+          accessibilityRole="button"
           onPress={onRetry}
-          className="px-5 py-2.5 rounded-xl bg-crunchyroll-primary active:opacity-80">
-          <Text className="text-white font-bold text-sm">Reintentar</Text>
+          className={`min-h-12 px-5 justify-center rounded-2xl ${isDark ? 'bg-[#E09F7D]' : 'bg-[#8B4F26]'}`}
+        >
+          <Text
+            className={`font-bold text-sm ${isDark ? 'text-[#351A08]' : 'text-white'}`}
+          >
+            Reintentar
+          </Text>
         </Pressable>
       )}
     </View>

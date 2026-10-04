@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Animated,
   Dimensions,
@@ -29,16 +29,16 @@ export function RandomRouletteModal({
 }: RandomRouletteModalProps) {
   const [selectedAnime, setSelectedAnime] = useState<AnimeMedia | null>(null);
   const [isSpinning, setIsSpinning] = useState(false);
-  const scaleAnim = useRef(new Animated.Value(0.85)).current;
-  const spinCountRef = useRef(0);
+  const [scaleAnim] = useState(() => new Animated.Value(0.85));
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const screenWidth = Dimensions.get('window').width;
   const modalWidth = Math.min(screenWidth - 48, 380);
 
-  const startSpin = () => {
+  const startSpin = useCallback(() => {
     if (animes.length === 0) return;
     setIsSpinning(true);
-    spinCountRef.current = 0;
+    if (intervalRef.current) clearInterval(intervalRef.current);
 
     // Reset scale animation
     scaleAnim.setValue(0.9);
@@ -46,24 +46,29 @@ export function RandomRouletteModal({
     const totalSteps = 14;
     let step = 0;
 
-    const interval = setInterval(() => {
+    intervalRef.current = setInterval(() => {
       step++;
       const randomIndex = Math.floor(Math.random() * animes.length);
       setSelectedAnime(animes[randomIndex]);
 
       try {
-        Haptics?.impactAsync?.(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+        Haptics?.impactAsync?.(Haptics.ImpactFeedbackStyle.Light).catch(
+          () => {}
+        );
       } catch {}
 
       if (step >= totalSteps) {
-        clearInterval(interval);
+        if (intervalRef.current) clearInterval(intervalRef.current);
+        intervalRef.current = null;
         // Elige el anime final
         const finalAnime = animes[Math.floor(Math.random() * animes.length)];
         setSelectedAnime(finalAnime);
         setIsSpinning(false);
 
         try {
-          Haptics?.notificationAsync?.(Haptics.NotificationFeedbackType.Success).catch(() => {});
+          Haptics?.notificationAsync?.(
+            Haptics.NotificationFeedbackType.Success
+          ).catch(() => {});
         } catch {}
 
         Animated.spring(scaleAnim, {
@@ -74,13 +79,17 @@ export function RandomRouletteModal({
         }).start();
       }
     }, 85);
-  };
+  }, [animes, scaleAnim]);
 
   useEffect(() => {
-    if (visible && animes.length > 0) {
-      startSpin();
-    }
-  }, [visible]);
+    const timer = visible ? setTimeout(startSpin, 0) : null;
+    return () => {
+      if (timer) clearTimeout(timer);
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      intervalRef.current = null;
+      scaleAnim.stopAnimation();
+    };
+  }, [visible, startSpin, scaleAnim]);
 
   if (!visible) return null;
 
@@ -94,13 +103,14 @@ export function RandomRouletteModal({
     selectedAnime?.coverImage.extraLarge ||
     selectedAnime?.coverImage.medium;
   const score = selectedAnime?.averageScore
-    ? (selectedAnime.averageScore / 10).toFixed(2)
-    : '8.5';
+    ? `${(selectedAnime.averageScore / 10).toFixed(1)}/10`
+    : 'Sin puntuación';
   const genre =
     selectedAnime?.genres && selectedAnime.genres.length > 0
       ? selectedAnime.genres.slice(0, 2).join(' • ')
       : 'Anime';
-  const year = selectedAnime?.seasonYear || selectedAnime?.startDate?.year || '';
+  const year =
+    selectedAnime?.seasonYear || selectedAnime?.startDate?.year || '';
 
   const cleanDescription = selectedAnime?.description
     ? selectedAnime.description.replace(/<[^>]*>?/gm, '').trim()
@@ -111,18 +121,20 @@ export function RandomRouletteModal({
       visible={visible}
       transparent
       animationType="fade"
-      onRequestClose={onClose}>
+      onRequestClose={onClose}
+    >
       <View className="flex-1 bg-black/75 justify-center items-center p-4">
         <Animated.View
           style={{
             width: modalWidth,
             transform: [{ scale: scaleAnim }],
           }}
-          className={`rounded-3xl p-5 border shadow-2xl ${
+          className={`will-change-variable rounded-3xl p-5 border shadow-2xl ${
             isDark
               ? 'bg-[#221A16] border-[#F59E0B]/50'
               : 'bg-[#FFFFFF] border-[#8B4F26]/30'
-          }`}>
+          }`}
+        >
           {/* Header Modal */}
           <View className="flex-row items-center justify-between mb-4">
             <View className="flex-row items-center gap-2">
@@ -130,16 +142,19 @@ export function RandomRouletteModal({
               <Text
                 className={`text-base font-black ${
                   isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
-                }`}>
+                }`}
+              >
                 {isSpinning ? '¡Girando la ruleta...!' : '¡Anime Elegido! 🎉'}
               </Text>
             </View>
 
             <Pressable
               onPress={onClose}
-              disabled={isSpinning}
+              accessibilityRole="button"
+              accessibilityLabel="Cerrar recomendación"
               hitSlop={8}
-              className="w-8 h-8 rounded-full items-center justify-center bg-black/10 dark:bg-white/10">
+              className="w-8 h-8 rounded-full items-center justify-center bg-black/10 dark:bg-white/10"
+            >
               <Ionicons
                 name="close"
                 size={18}
@@ -154,7 +169,8 @@ export function RandomRouletteModal({
               {/* Cover Image */}
               <View
                 className="w-32 h-44 rounded-2xl overflow-hidden shadow-xl mb-3 border border-white/10"
-                style={{ elevation: 8 }}>
+                style={{ elevation: 8 }}
+              >
                 {coverUrl ? (
                   <Image
                     source={{ uri: coverUrl }}
@@ -184,11 +200,13 @@ export function RandomRouletteModal({
                   <View
                     className={`px-2.5 py-0.5 rounded-full ${
                       isDark ? 'bg-[#2F241E]' : 'bg-[#EDE5DF]'
-                    }`}>
+                    }`}
+                  >
                     <Text
                       className={`text-xs font-semibold ${
                         isDark ? 'text-[#A89C94]' : 'text-[#776962]'
-                      }`}>
+                      }`}
+                    >
                       {year}
                     </Text>
                   </View>
@@ -200,7 +218,8 @@ export function RandomRouletteModal({
                 numberOfLines={2}
                 className={`text-base font-black text-center mb-1 ${
                   isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
-                }`}>
+                }`}
+              >
                 {title}
               </Text>
 
@@ -208,7 +227,8 @@ export function RandomRouletteModal({
               <Text
                 className={`text-xs font-semibold mb-2.5 ${
                   isDark ? 'text-[#E09F7D]' : 'text-[#8B4F26]'
-                }`}>
+                }`}
+              >
                 {genre}
               </Text>
 
@@ -217,7 +237,8 @@ export function RandomRouletteModal({
                 numberOfLines={2}
                 className={`text-xs text-center leading-4 mb-4 ${
                   isDark ? 'text-[#A89C94]' : 'text-[#776962]'
-                }`}>
+                }`}
+              >
                 {cleanDescription}
               </Text>
 
@@ -229,13 +250,15 @@ export function RandomRouletteModal({
                     onClose();
                     router.push(`/anime/${selectedAnime.id}` as any);
                   }}
-                  className={`w-full py-3 rounded-2xl flex-row items-center justify-center gap-2 active:scale-98 shadow-md ${
+                  className={`will-change-variable w-full py-3 rounded-2xl flex-row items-center justify-center gap-2 active:scale-98 shadow-md ${
                     isDark ? 'bg-[#E09F7D]' : 'bg-[#8B4F26]'
-                  }`}>
+                  }`}
+                >
                   <Text
                     className={`text-sm font-black ${
                       isDark ? 'text-[#351A08]' : 'text-white'
-                    }`}>
+                    }`}
+                  >
                     Ver detalles del anime
                   </Text>
                   <Ionicons
@@ -252,11 +275,13 @@ export function RandomRouletteModal({
                     isDark
                       ? 'border-[#3E3028] bg-[#2F241E]/50'
                       : 'border-[#D8CDC5] bg-[#EDE5DF]/50'
-                  }`}>
+                  }`}
+                >
                   <Text
                     className={`text-xs font-bold ${
                       isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
-                    }`}>
+                    }`}
+                  >
                     Girar de nuevo 🎲
                   </Text>
                 </Pressable>

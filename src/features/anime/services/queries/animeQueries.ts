@@ -70,7 +70,7 @@ query GetAnimeDetail($id: Int) {
 `;
 
 export const SEARCH_ANIME_QUERY = `
-query SearchAnime($search: String, $page: Int, $perPage: Int, $genre: String) {
+query SearchAnime($search: String, $page: Int, $perPage: Int, $genre: String, $sort: [MediaSort]) {
   Page(page: $page, perPage: $perPage) {
     pageInfo {
       total
@@ -79,7 +79,7 @@ query SearchAnime($search: String, $page: Int, $perPage: Int, $genre: String) {
       lastPage
       hasNextPage
     }
-    media(search: $search, genre: $genre, type: ANIME, sort: POPULARITY_DESC, isAdult: false) {
+    media(search: $search, genre: $genre, type: ANIME, sort: $sort, isAdult: false) {
       id
       title {
         romaji

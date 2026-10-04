@@ -26,20 +26,31 @@ export function M3FeaturedCard({ anime }: M3FeaturedCardProps) {
     anime.coverImage.medium;
   const bannerUrl = anime.bannerImage || coverUrl;
 
-  const score = anime.averageScore ? (anime.averageScore / 10).toFixed(2) : '8.5';
-  const year = anime.seasonYear || anime.startDate?.year || '2024';
-  const eps = anime.episodes ? `${anime.episodes} eps` : 'En emisión';
-  const genre = anime.genres && anime.genres.length > 0 ? anime.genres[0] : 'Anime';
+  const score =
+    anime.averageScore != null
+      ? `${(anime.averageScore / 10).toFixed(1)}/10`
+      : 'Sin puntuación';
+  const year = anime.seasonYear || anime.startDate?.year || '';
+  const eps = anime.episodes
+    ? `${anime.episodes} episodios`
+    : anime.status === 'RELEASING'
+      ? 'En emisión'
+      : '';
+  const genre =
+    anime.genres && anime.genres.length > 0 ? anime.genres[0] : 'Anime';
 
   return (
     <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={`Ver detalles de ${title}`}
       onPress={() => router.push(`/anime/${anime.id}` as any)}
-      className={`rounded-[28px] overflow-hidden border active:opacity-95 shadow-lg relative ${
+      className={`will-change-variable rounded-[28px] overflow-hidden border active:opacity-95 shadow-lg relative ${
         isDark
           ? 'bg-[#1E1713] border-[#3E3028]/80'
           : 'bg-[#FFFFFF] border-[#D8CDC5] shadow-md'
       }`}
-      style={{ height: 195 }}>
+      style={{ height: 195 }}
+    >
       {/* Background Cinematic Banner with Ambient Blur */}
       {bannerUrl ? (
         <Image
@@ -68,7 +79,8 @@ export function M3FeaturedCard({ anime }: M3FeaturedCardProps) {
         {/* Crisp Poster Thumbnail */}
         <View
           className="w-24 h-36 rounded-2xl overflow-hidden bg-neutral-900 border border-white/10 shadow-lg"
-          style={{ elevation: 6 }}>
+          style={{ elevation: 6 }}
+        >
           {coverUrl ? (
             <Image
               source={{ uri: coverUrl }}
@@ -91,7 +103,7 @@ export function M3FeaturedCard({ anime }: M3FeaturedCardProps) {
             <View className="flex-row items-center gap-1.5">
               <View className="flex-row items-center px-2 py-0.5 rounded-full bg-[#F59E0B]/25 border border-[#F59E0B]/40">
                 <Ionicons name="star" size={11} color="#F59E0B" />
-                <Text className="text-[11px] font-black text-[#F59E0B] ml-1">
+                <Text className="text-xs font-black text-[#F59E0B] ml-1">
                   {score}
                 </Text>
               </View>
@@ -101,11 +113,13 @@ export function M3FeaturedCard({ anime }: M3FeaturedCardProps) {
                   isDark
                     ? 'bg-[#2F241E]/80 border-[#3E3028]'
                     : 'bg-[#EDE5DF]/80 border-[#D8CDC5]'
-                }`}>
+                }`}
+              >
                 <Text
-                  className={`text-[10px] font-bold ${
+                  className={`text-xs font-bold ${
                     isDark ? 'text-[#D0C3BC]' : 'text-[#53433C]'
-                  }`}>
+                  }`}
+                >
                   {genre}
                 </Text>
               </View>
@@ -116,7 +130,8 @@ export function M3FeaturedCard({ anime }: M3FeaturedCardProps) {
               className={`text-base font-black leading-5 ${
                 isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
               }`}
-              numberOfLines={2}>
+              numberOfLines={2}
+            >
               {title}
             </Text>
 
@@ -124,15 +139,15 @@ export function M3FeaturedCard({ anime }: M3FeaturedCardProps) {
             <Text
               className={`text-xs font-medium ${
                 isDark ? 'text-[#A89C94]' : 'text-[#776962]'
-              }`}>
-              {year} • {eps}
+              }`}
+            >
+              {[year, eps].filter(Boolean).join(' · ')}
             </Text>
           </View>
 
           {/* Action Button: "Ver detalles" */}
           <View className="flex-row items-center self-start px-3 py-1.5 rounded-xl bg-[#8B4F26] dark:bg-[#E09F7D]/20 border dark:border-[#E09F7D]/40 gap-1.5">
-            <Text
-              className="text-xs font-bold text-white dark:text-[#E09F7D]">
+            <Text className="text-xs font-bold text-white dark:text-[#E09F7D]">
               Ver detalles
             </Text>
             <Ionicons

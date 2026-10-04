@@ -32,25 +32,34 @@ export function HomeRankingSection({
             <Text
               className={`text-base font-bold ${
                 isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
-              }`}>
-              Top Ranking de la Comunidad
+              }`}
+            >
+              Más tendencias
             </Text>
             <Text
               className={`text-xs ${
                 isDark ? 'text-[#A89C94]' : 'text-[#776962]'
-              }`}>
-              Las series mejor valoradas
+              }`}
+            >
+              Lo que está llamando la atención
             </Text>
           </View>
         </View>
 
         <Pressable
-          onPress={() => router.push('/(tabs)/explore' as any)}
-          className="flex-row items-center gap-1">
+          onPress={() =>
+            router.push({
+              pathname: '/(tabs)/explore',
+              params: { sort: 'trending', genre: '' },
+            })
+          }
+          className="flex-row items-center gap-1"
+        >
           <Text
             className={`text-xs font-semibold ${
               isDark ? 'text-[#E09F7D]' : 'text-[#8B4F26]'
-            }`}>
+            }`}
+          >
             Ver más
           </Text>
           <Ionicons
@@ -65,7 +74,7 @@ export function HomeRankingSection({
         {animes.map((anime, index) => (
           <M3RankCard
             key={`rank-${anime.id}`}
-            rank={index + 1}
+            rank={index + 6}
             anime={anime}
             isFavorite={isFavorite(anime.id)}
             onToggleFavorite={() => onToggleFavorite(anime)}

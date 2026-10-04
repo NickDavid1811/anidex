@@ -19,7 +19,10 @@ async function initFileStoreIfNeeded(): Promise<void> {
       const fileInfo = await FileSystem.getInfoAsync(FILE_PATH);
       if (fileInfo.exists) {
         const content = await FileSystem.readAsStringAsync(FILE_PATH);
-        const data = JSON.parse(content) as Array<{ anime: AnimeMedia; createdAt: number }>;
+        const data = JSON.parse(content) as {
+          anime: AnimeMedia;
+          createdAt: number;
+        }[];
         if (Array.isArray(data)) {
           memoryStore.clear();
           data.forEach((item) => {
@@ -35,15 +38,17 @@ async function initFileStoreIfNeeded(): Promise<void> {
   }
 }
 
-async function persistFileStore(): Promise<void> {
+async function persistFileStore(): Promise<boolean> {
   try {
     if (FileSystem.documentDirectory) {
       const items = Array.from(memoryStore.values());
       await FileSystem.writeAsStringAsync(FILE_PATH, JSON.stringify(items));
+      return true;
     }
   } catch (e) {
     console.warn('Error persisting favorites to file store:', e);
   }
+  return false;
 }
 
 async function getDatabase(): Promise<SQLite.SQLiteDatabase | null> {
@@ -61,7 +66,10 @@ async function getDatabase(): Promise<SQLite.SQLiteDatabase | null> {
         );
       `);
     } catch (e) {
-      console.warn('SQLite unavailable or failed, switching to resilient file storage:', e);
+      console.warn(
+        'SQLite unavailable or failed, switching to resilient file storage:',
+        e
+      );
       sqliteDisabled = true;
       dbInstance = null;
       return null;
@@ -72,9 +80,10 @@ async function getDatabase(): Promise<SQLite.SQLiteDatabase | null> {
 
 export async function addFavoriteToDb(anime: AnimeMedia): Promise<void> {
   await initFileStoreIfNeeded();
+  const previous = memoryStore.get(anime.id);
   const now = Date.now();
   memoryStore.set(anime.id, { anime, createdAt: now });
-  persistFileStore();
+  const fileSaved = await persistFileStore();
 
   const db = await getDatabase();
   if (db) {
@@ -84,26 +93,38 @@ export async function addFavoriteToDb(anime: AnimeMedia): Promise<void> {
         `INSERT OR REPLACE INTO favorites (id, anime_json, created_at) VALUES (?, ?, ?);`,
         [anime.id, jsonStr, now]
       );
+      return;
     } catch (e) {
       console.warn('SQLite runAsync failed, falling back to file store:', e);
       sqliteDisabled = true;
     }
   }
+  if (!fileSaved) {
+    if (previous) memoryStore.set(anime.id, previous);
+    else memoryStore.delete(anime.id);
+    throw new Error('No pudimos guardar el favorito en este dispositivo.');
+  }
 }
 
 export async function removeFavoriteFromDb(id: number): Promise<void> {
   await initFileStoreIfNeeded();
+  const previous = memoryStore.get(id);
   memoryStore.delete(id);
-  persistFileStore();
+  const fileSaved = await persistFileStore();
 
   const db = await getDatabase();
   if (db) {
     try {
       await db.runAsync(`DELETE FROM favorites WHERE id = ?;`, [id]);
+      return;
     } catch (e) {
       console.warn('SQLite delete failed:', e);
       sqliteDisabled = true;
     }
+  }
+  if (!fileSaved) {
+    if (previous) memoryStore.set(id, previous);
+    throw new Error('No pudimos quitar el favorito de este dispositivo.');
   }
 }
 
@@ -137,7 +158,9 @@ export async function getAllFavoritesFromDb(): Promise<AnimeMedia[]> {
         `SELECT anime_json FROM favorites ORDER BY created_at DESC;`
       );
       if (rows && rows.length > 0) {
-        const parsed = rows.map((row) => JSON.parse(row.anime_json) as AnimeMedia);
+        const parsed = rows.map(
+          (row) => JSON.parse(row.anime_json) as AnimeMedia
+        );
         // Sync into memory store
         parsed.forEach((a) => {
           if (!memoryStore.has(a.id)) {

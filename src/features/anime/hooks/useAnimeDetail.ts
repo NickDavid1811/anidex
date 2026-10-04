@@ -1,5 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
-
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { getAnimeDetail } from '../services/animeApi';
 import { AnimeMedia } from '../types/anime.types';
 
@@ -7,36 +6,39 @@ export function useAnimeDetail(id?: number | string) {
   const [anime, setAnime] = useState<AnimeMedia | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  const numericId = typeof id === 'string' ? parseInt(id, 10) : id;
-
+  const controller = useRef<AbortController | null>(null);
+  const numericId = typeof id === 'string' ? Number(id) : id;
   const fetchDetail = useCallback(async () => {
-    if (!numericId || isNaN(numericId)) {
+    controller.current?.abort();
+    const request = new AbortController();
+    controller.current = request;
+    if (!numericId || !Number.isInteger(numericId) || numericId < 1) {
       setError('ID de anime no válido');
       setIsLoading(false);
       return;
     }
-
+    setIsLoading(true);
+    setError(null);
     try {
-      setIsLoading(true);
-      setError(null);
-      const data = await getAnimeDetail(numericId);
-      setAnime(data);
+      const data = await getAnimeDetail(numericId, request.signal);
+      if (!request.signal.aborted) setAnime(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al cargar el detalle del anime');
+      if (!request.signal.aborted)
+        setError(
+          err instanceof Error ? err.message : 'No pudimos cargar el detalle.'
+        );
     } finally {
-      setIsLoading(false);
+      if (!request.signal.aborted) setIsLoading(false);
     }
   }, [numericId]);
-
   useEffect(() => {
-    fetchDetail();
+    const timer = setTimeout(() => {
+      void fetchDetail();
+    }, 0);
+    return () => {
+      clearTimeout(timer);
+      controller.current?.abort();
+    };
   }, [fetchDetail]);
-
-  return {
-    anime,
-    isLoading,
-    error,
-    refetch: fetchDetail,
-  };
+  return { anime, isLoading, error, refetch: fetchDetail };
 }

@@ -27,16 +27,24 @@ export function HomeFeaturedCarousel({
         <Text
           className={`text-base font-bold ${
             isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
-          }`}>
-          Destacados de la Temporada
+          }`}
+        >
+          Tendencias del momento
         </Text>
         <Pressable
-          onPress={() => router.push('/(tabs)/explore' as any)}
-          className="flex-row items-center gap-1">
+          onPress={() =>
+            router.push({
+              pathname: '/(tabs)/explore',
+              params: { sort: 'trending', genre: '' },
+            })
+          }
+          className="flex-row items-center gap-1"
+        >
           <Text
             className={`text-xs font-semibold ${
               isDark ? 'text-[#E09F7D]' : 'text-[#8B4F26]'
-            }`}>
+            }`}
+          >
             Ver todo
           </Text>
           <Ionicons
@@ -51,14 +59,15 @@ export function HomeFeaturedCarousel({
       <FlatList
         data={animes}
         horizontal
-        pagingEnabled
+        snapToInterval={contentWidth - 20}
+        decelerationRate="fast"
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => `featured-${item.id}`}
         onMomentumScrollEnd={(e) => {
           const newIndex = Math.round(
-            e.nativeEvent.contentOffset.x / (contentWidth - 32)
+            e.nativeEvent.contentOffset.x / (contentWidth - 20)
           );
-          setActiveSlide(newIndex);
+          setActiveSlide(Math.min(animes.length - 1, Math.max(0, newIndex)));
         }}
         contentContainerStyle={{ paddingHorizontal: 16 }}
         renderItem={({ item }) => (
@@ -79,8 +88,8 @@ export function HomeFeaturedCarousel({
                   ? 'w-5 bg-[#E09F7D]'
                   : 'w-5 bg-[#8B4F26]'
                 : isDark
-                ? 'w-1.5 bg-[#3E3028]'
-                : 'w-1.5 bg-[#D8CDC5]'
+                  ? 'w-1.5 bg-[#3E3028]'
+                  : 'w-1.5 bg-[#D8CDC5]'
             }`}
           />
         ))}

@@ -2,11 +2,11 @@ const ANILIST_GRAPHQL_ENDPOINT = 'https://graphql.anilist.co';
 
 interface GraphQLResponse<T> {
   data?: T;
-  errors?: Array<{
+  errors?: {
     message: string;
     status?: number;
-    locations?: Array<{ line: number; column: number }>;
-  }>;
+    locations?: { line: number; column: number }[];
+  }[];
 }
 
 /**
@@ -14,10 +14,12 @@ interface GraphQLResponse<T> {
  */
 export async function fetchAniList<T>(
   query: string,
-  variables: Record<string, unknown> = {}
+  variables: Record<string, unknown> = {},
+  signal?: AbortSignal
 ): Promise<T> {
   const response = await fetch(ANILIST_GRAPHQL_ENDPOINT, {
     method: 'POST',
+    signal,
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
@@ -31,7 +33,8 @@ export async function fetchAniList<T>(
   const json: GraphQLResponse<T> = await response.json();
 
   if (!response.ok || json.errors) {
-    const errorMessage = json.errors?.[0]?.message || `Error HTTP ${response.status} en AniList`;
+    const errorMessage =
+      json.errors?.[0]?.message || `Error HTTP ${response.status} en AniList`;
     throw new Error(errorMessage);
   }
 

@@ -32,10 +32,13 @@ export function M3AnimeCard({
     anime.coverImage.large ||
     anime.coverImage.medium ||
     anime.coverImage.extraLarge;
-  const score = anime.averageScore ? (anime.averageScore / 10).toFixed(2) : null;
+  const score = anime.averageScore
+    ? `${(anime.averageScore / 10).toFixed(1)}/10`
+    : null;
   const year = anime.seasonYear || anime.startDate?.year || '';
   const eps = anime.episodes ? `${anime.episodes} eps` : '';
-  const genre = anime.genres && anime.genres.length > 0 ? anime.genres[0] : null;
+  const genre =
+    anime.genres && anime.genres.length > 0 ? anime.genres[0] : null;
 
   const formatPopularity = (pop?: number) => {
     if (!pop) return null;
@@ -53,11 +56,14 @@ export function M3AnimeCard({
   return (
     <Pressable
       onPress={handleCardPress}
-      className={`flex-row p-3 rounded-2xl mb-3 border active:opacity-90 ${
+      accessibilityRole="button"
+      accessibilityLabel={`Ver detalles de ${title}`}
+      className={`will-change-variable flex-row p-3 rounded-2xl mb-3 border active:opacity-90 ${
         isDark
           ? 'bg-[#221A16] border-[#3E3028]'
           : 'bg-[#FFFFFF] border-[#D8CDC5] shadow-sm'
-      }`}>
+      }`}
+    >
       {/* Thumbnail poster */}
       <View className="w-24 h-32 rounded-xl overflow-hidden bg-neutral-900 self-center">
         {coverUrl ? (
@@ -82,7 +88,8 @@ export function M3AnimeCard({
             className={`text-base font-bold leading-5 ${
               isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
             }`}
-            numberOfLines={2}>
+            numberOfLines={2}
+          >
             {title}
           </Text>
 
@@ -91,7 +98,7 @@ export function M3AnimeCard({
             {score && (
               <View className="flex-row items-center px-2 py-0.5 rounded-md bg-[#F59E0B]/15">
                 <Ionicons name="star" size={11} color="#F59E0B" />
-                <Text className="text-[11px] font-bold text-[#F59E0B] ml-1">
+                <Text className="text-xs font-bold text-[#F59E0B] ml-1">
                   {score}
                 </Text>
               </View>
@@ -101,11 +108,13 @@ export function M3AnimeCard({
               <View
                 className={`px-2 py-0.5 rounded-md ${
                   isDark ? 'bg-[#2F241E]' : 'bg-[#EDE5DF]'
-                }`}>
+                }`}
+              >
                 <Text
-                  className={`text-[11px] font-medium ${
+                  className={`text-xs font-medium ${
                     isDark ? 'text-[#D0C3BC]' : 'text-[#53433C]'
-                  }`}>
+                  }`}
+                >
                   {year}
                 </Text>
               </View>
@@ -115,16 +124,18 @@ export function M3AnimeCard({
               <View
                 className={`flex-row items-center px-2 py-0.5 rounded-md ${
                   isDark ? 'bg-[#2F241E]' : 'bg-[#EDE5DF]'
-                }`}>
+                }`}
+              >
                 <Ionicons
                   name="tv-outline"
                   size={11}
                   color={isDark ? '#A89C94' : '#776962'}
                 />
                 <Text
-                  className={`text-[11px] font-medium ml-1 ${
+                  className={`text-xs font-medium ml-1 ${
                     isDark ? 'text-[#D0C3BC]' : 'text-[#53433C]'
-                  }`}>
+                  }`}
+                >
                   {eps}
                 </Text>
               </View>
@@ -134,11 +145,13 @@ export function M3AnimeCard({
               <View
                 className={`px-2 py-0.5 rounded-md ${
                   isDark ? 'bg-[#2F241E]' : 'bg-[#EDE5DF]'
-                }`}>
+                }`}
+              >
                 <Text
-                  className={`text-[11px] font-medium ${
+                  className={`text-xs font-medium ${
                     isDark ? 'text-[#A89C94]' : 'text-[#53433C]'
-                  }`}>
+                  }`}
+                >
                   {genre}
                 </Text>
               </View>
@@ -157,8 +170,9 @@ export function M3AnimeCard({
               />
               <Text
                 className={`text-xs ${
-                  isDark ? 'text-[#A89C94]' : '#776962'
-                }`}>
+                  isDark ? 'text-[#A89C94]' : 'text-[#776962]'
+                }`}
+              >
                 {popularityStr}
               </Text>
             </View>
@@ -169,34 +183,44 @@ export function M3AnimeCard({
           {/* Action Button: Favorite or Delete */}
           {onActionPress && (
             <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={`${actionType === 'delete' || isFavorite ? 'Quitar' : 'Guardar'} ${title} ${actionType === 'delete' || isFavorite ? 'de' : 'en'} favoritos`}
+              accessibilityState={{ selected: isFavorite }}
               onPress={(e) => {
                 e.stopPropagation();
                 onActionPress();
               }}
-              className={`w-10 h-10 rounded-full items-center justify-center shadow-md active:scale-95 ${
+              className={`will-change-variable w-12 h-12 rounded-full items-center justify-center shadow-md active:scale-95 ${
                 actionType === 'delete'
-                  ? 'bg-[#B3261E]'
+                  ? isDark
+                    ? 'bg-[#58392B]'
+                    : 'bg-[#FFDCC2]'
                   : isFavorite
-                  ? 'bg-[#D32F2F]'
-                  : isDark
-                  ? 'bg-[#2F241E] border border-[#44352C]'
-                  : 'bg-[#EDE5DF] border border-[#D8CDC5]'
-              }`}>
+                    ? isDark
+                      ? 'bg-[#58392B]'
+                      : 'bg-[#FFDCC2]'
+                    : isDark
+                      ? 'bg-[#2F241E] border border-[#44352C]'
+                      : 'bg-[#EDE5DF] border border-[#D8CDC5]'
+              }`}
+            >
               <Ionicons
                 name={
                   actionType === 'delete'
-                    ? 'trash-outline'
-                    : isFavorite
                     ? 'heart'
-                    : 'heart-outline'
+                    : isFavorite
+                      ? 'heart'
+                      : 'heart-outline'
                 }
                 size={18}
                 color={
                   actionType === 'delete' || isFavorite
-                    ? '#FFFFFF'
+                    ? isDark
+                      ? '#FFDCC2'
+                      : '#8B4F26'
                     : isDark
-                    ? '#EDE0DB'
-                    : '#53433C'
+                      ? '#EDE0DB'
+                      : '#53433C'
                 }
               />
             </Pressable>

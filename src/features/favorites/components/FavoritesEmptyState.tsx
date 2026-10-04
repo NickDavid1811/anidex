@@ -1,4 +1,5 @@
 import React from 'react';
+import { router } from 'expo-router';
 import { Pressable, Text, View } from 'react-native';
 
 interface FavoritesEmptyStateProps {
@@ -18,9 +19,22 @@ export function FavoritesEmptyState({
         <Text
           className={`text-sm font-semibold text-center ${
             isDark ? 'text-[#A89C94]' : 'text-[#776962]'
-          }`}>
-          No tienes animes en favoritos todavía
+          }`}
+        >
+          Tu próxima serie favorita te espera
         </Text>
+        <Text
+          className={`text-sm text-center mt-2 ${isDark ? 'text-[#A89C94]' : 'text-[#776962]'}`}
+        >
+          Guarda los animes que te interesan tocando el corazón.
+        </Text>
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => router.push('/(tabs)/explore')}
+          className="mt-5 px-5 py-3 rounded-2xl bg-[#8B4F26]"
+        >
+          <Text className="text-white text-sm font-bold">Descubrir anime</Text>
+        </Pressable>
       </View>
     );
   }
@@ -30,14 +44,16 @@ export function FavoritesEmptyState({
       <Text
         className={`text-sm font-semibold text-center ${
           isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
-        }`}>
+        }`}
+      >
         No se encontraron favoritos con ese filtro
       </Text>
       <Pressable onPress={onClearFilters}>
         <Text
           className={`text-xs font-bold ${
             isDark ? 'text-[#E09F7D]' : 'text-[#8B4F26]'
-          }`}>
+          }`}
+        >
           Limpiar filtros
         </Text>
       </Pressable>

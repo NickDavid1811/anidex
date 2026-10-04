@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
-import React, { useRef } from 'react';
+import React, { useState } from 'react';
 import { Animated, Pressable, Text, View } from 'react-native';
 
 import { useAppTheme } from '@/features/theme';
@@ -23,7 +23,7 @@ export function M3RankCard({
 }: M3RankCardProps) {
   const { activeScheme } = useAppTheme();
   const isDark = activeScheme === 'dark';
-  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const [scaleAnim] = useState(() => new Animated.Value(1));
 
   const title =
     anime.title.english ||
@@ -34,7 +34,9 @@ export function M3RankCard({
     anime.coverImage.medium ||
     anime.coverImage.large ||
     anime.coverImage.extraLarge;
-  const score = anime.averageScore ? (anime.averageScore / 10).toFixed(2) : null;
+  const score = anime.averageScore
+    ? `${(anime.averageScore / 10).toFixed(1)}/10`
+    : null;
   const year = anime.seasonYear || anime.startDate?.year || '';
   const eps = anime.episodes ? `${anime.episodes} eps` : '';
   const genres = anime.genres ? anime.genres.slice(0, 2).join(' • ') : '';
@@ -109,10 +111,12 @@ export function M3RankCard({
   return (
     <Pressable
       onPress={() => router.push(`/anime/${anime.id}` as any)}
-      className={`flex-row items-center p-3 rounded-2xl mb-2.5 border active:opacity-90 ${podium.cardBg} ${podium.cardBorder} ${podium.shadow}`}>
+      className={`will-change-variable flex-row items-center p-3 rounded-2xl mb-2.5 border active:opacity-90 ${podium.cardBg} ${podium.cardBorder} ${podium.shadow}`}
+    >
       {/* Rank Badge with Trophy/Medal icon for top 3 */}
       <View
-        className={`w-9 h-9 rounded-xl items-center justify-center mr-3 ${podium.badgeBg}`}>
+        className={`w-9 h-9 rounded-xl items-center justify-center mr-3 ${podium.badgeBg}`}
+      >
         {rank === 1 ? (
           <Ionicons name="trophy" size={16} color="#000000" />
         ) : (
@@ -145,7 +149,8 @@ export function M3RankCard({
           className={`text-sm font-bold leading-4 ${
             isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
           }`}
-          numberOfLines={1}>
+          numberOfLines={1}
+        >
           {title}
         </Text>
 
@@ -153,40 +158,44 @@ export function M3RankCard({
           {score && (
             <View className="flex-row items-center">
               <Ionicons name="star" size={10} color="#F59E0B" />
-              <Text className="text-[11px] font-bold text-[#F59E0B] ml-1">
+              <Text className="text-xs font-bold text-[#F59E0B] ml-1">
                 {score}
               </Text>
             </View>
           )}
           {score && (year || eps) && (
             <Text
-              className={`text-[11px] ${
+              className={`text-xs ${
                 isDark ? 'text-[#A89C94]' : 'text-[#776962]'
-              }`}>
+              }`}
+            >
               •
             </Text>
           )}
           {year ? (
             <Text
-              className={`text-[11px] ${
+              className={`text-xs ${
                 isDark ? 'text-[#A89C94]' : 'text-[#776962]'
-              }`}>
+              }`}
+            >
               {year}
             </Text>
           ) : null}
           {year && eps && (
             <Text
-              className={`text-[11px] ${
+              className={`text-xs ${
                 isDark ? 'text-[#A89C94]' : 'text-[#776962]'
-              }`}>
+              }`}
+            >
               •
             </Text>
           )}
           {eps ? (
             <Text
-              className={`text-[11px] ${
+              className={`text-xs ${
                 isDark ? 'text-[#A89C94]' : 'text-[#776962]'
-              }`}>
+              }`}
+            >
               {eps}
             </Text>
           ) : null}
@@ -194,10 +203,11 @@ export function M3RankCard({
 
         {genres ? (
           <Text
-            className={`text-[11px] font-medium ${
+            className={`text-xs font-medium ${
               isDark ? 'text-[#A89C94]' : 'text-[#776962]'
             }`}
-            numberOfLines={1}>
+            numberOfLines={1}
+          >
             {genres}
           </Text>
         ) : null}
@@ -205,9 +215,13 @@ export function M3RankCard({
 
       {/* Bouncy Heart Action Button */}
       <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={`${isFavorite ? 'Quitar' : 'Guardar'} ${title} ${isFavorite ? 'de' : 'en'} favoritos`}
+        accessibilityState={{ selected: isFavorite }}
         onPress={handleFavoritePress}
         hitSlop={10}
-        className="p-2">
+        className="p-2"
+      >
         <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
           <Ionicons
             name={isFavorite ? 'heart' : 'heart-outline'}

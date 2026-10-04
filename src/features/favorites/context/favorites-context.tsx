@@ -1,10 +1,16 @@
-import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
-
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { AnimeMedia } from '@/features/anime/types/anime.types';
 import {
   addFavoriteToDb,
   getAllFavoritesFromDb,
-  getFavoriteIdsFromDb,
   removeFavoriteFromDb,
 } from '../services/favoritesDb';
 
@@ -14,91 +20,117 @@ interface FavoritesContextType {
   isFavorite: (id: number) => boolean;
   toggleFavorite: (anime: AnimeMedia) => Promise<boolean>;
   removeFavorite: (id: number) => Promise<void>;
+  restoreFavorite: (anime: AnimeMedia) => Promise<void>;
   count: number;
   isLoading: boolean;
+  error: string | null;
   refreshFavorites: () => Promise<void>;
 }
-
-const FavoritesContext = createContext<FavoritesContextType>({
-  favorites: [],
-  favoriteIds: new Set(),
-  isFavorite: () => false,
-  toggleFavorite: async () => false,
-  removeFavorite: async () => {},
-  count: 0,
-  isLoading: true,
-  refreshFavorites: async () => {},
-});
+const FavoritesContext = createContext<FavoritesContextType | null>(null);
 
 export function FavoritesProvider({ children }: { children: React.ReactNode }) {
   const [favorites, setFavorites] = useState<AnimeMedia[]>([]);
-  const [favoriteIds, setFavoriteIds] = useState<Set<number>>(new Set());
   const [isLoading, setIsLoading] = useState(true);
-
-  const refreshFavorites = useCallback(async () => {
-    try {
-      const [list, ids] = await Promise.all([
-        getAllFavoritesFromDb(),
-        getFavoriteIdsFromDb(),
-      ]);
-      setFavorites(list);
-      setFavoriteIds(new Set(ids));
-    } catch (e) {
-      console.error('Error loading favorites from local DB:', e);
-    } finally {
-      setIsLoading(false);
-    }
+  const [error, setError] = useState<string | null>(null);
+  const currentFavorites = useRef<AnimeMedia[]>([]);
+  const queue = useRef<Promise<unknown>>(Promise.resolve());
+  const publish = useCallback((list: AnimeMedia[]) => {
+    currentFavorites.current = list;
+    setFavorites(list);
   }, []);
-
+  const enqueue = useCallback(<T,>(operation: () => Promise<T>): Promise<T> => {
+    const task = queue.current.then(operation);
+    queue.current = task.catch(() => {});
+    return task;
+  }, []);
+  const refreshFavorites = useCallback(
+    () =>
+      enqueue(async () => {
+        try {
+          publish(await getAllFavoritesFromDb());
+          setError(null);
+        } catch {
+          setError('No pudimos cargar tus favoritos. Inténtalo otra vez.');
+        } finally {
+          setIsLoading(false);
+        }
+      }),
+    [enqueue, publish]
+  );
   useEffect(() => {
-    refreshFavorites();
+    void refreshFavorites();
   }, [refreshFavorites]);
 
-  const isFavorite = useCallback(
-    (id: number) => {
-      return favoriteIds.has(id);
-    },
-    [favoriteIds]
+  const mutate = useCallback(
+    (
+      operation: () => Promise<void>,
+      update: (list: AnimeMedia[]) => AnimeMedia[]
+    ) =>
+      enqueue(async () => {
+        try {
+          await operation();
+          publish(update(currentFavorites.current));
+          setError(null);
+        } catch (err) {
+          setError(
+            'No pudimos guardar el cambio en favoritos. Inténtalo otra vez.'
+          );
+          throw err;
+        }
+      }),
+    [enqueue, publish]
   );
 
+  const removeFavorite = useCallback(
+    (id: number) =>
+      mutate(
+        () => removeFavoriteFromDb(id),
+        (list) => list.filter((item) => item.id !== id)
+      ),
+    [mutate]
+  );
+  const restoreFavorite = useCallback(
+    (anime: AnimeMedia) =>
+      mutate(
+        () => addFavoriteToDb(anime),
+        (list) =>
+          list.some((item) => item.id === anime.id) ? list : [anime, ...list]
+      ),
+    [mutate]
+  );
   const toggleFavorite = useCallback(
-    async (anime: AnimeMedia): Promise<boolean> => {
-      const currentlyFavorite = favoriteIds.has(anime.id);
-      if (currentlyFavorite) {
-        // Optimistic update
-        setFavoriteIds((prev) => {
-          const next = new Set(prev);
-          next.delete(anime.id);
-          return next;
-        });
-        setFavorites((prev) => prev.filter((item) => item.id !== anime.id));
-        await removeFavoriteFromDb(anime.id);
-        return false;
-      } else {
-        // Optimistic update
-        setFavoriteIds((prev) => {
-          const next = new Set(prev);
-          next.add(anime.id);
-          return next;
-        });
-        setFavorites((prev) => [anime, ...prev]);
-        await addFavoriteToDb(anime);
-        return true;
-      }
-    },
+    (anime: AnimeMedia) =>
+      enqueue(async () => {
+        const exists = currentFavorites.current.some(
+          (item) => item.id === anime.id
+        );
+        try {
+          if (exists) await removeFavoriteFromDb(anime.id);
+          else await addFavoriteToDb(anime);
+          publish(
+            exists
+              ? currentFavorites.current.filter((item) => item.id !== anime.id)
+              : [anime, ...currentFavorites.current]
+          );
+          setError(null);
+          return !exists;
+        } catch (err) {
+          setError(
+            'No pudimos guardar el cambio en favoritos. Inténtalo otra vez.'
+          );
+          throw err;
+        }
+      }),
+    [enqueue, publish]
+  );
+  const favoriteIds = useMemo(
+    () => new Set(favorites.map((anime) => anime.id)),
+    [favorites]
+  );
+  const isFavorite = useCallback(
+    (id: number) => favoriteIds.has(id),
     [favoriteIds]
   );
-
-  const removeFavorite = useCallback(async (id: number) => {
-    setFavoriteIds((prev) => {
-      const next = new Set(prev);
-      next.delete(id);
-      return next;
-    });
-    setFavorites((prev) => prev.filter((item) => item.id !== id));
-    await removeFavoriteFromDb(id);
-  }, []);
-
   return (
     <FavoritesContext.Provider
       value={{
@@ -107,15 +139,20 @@ export function FavoritesProvider({ children }: { children: React.ReactNode }) {
         isFavorite,
         toggleFavorite,
         removeFavorite,
+        restoreFavorite,
         count: favorites.length,
         isLoading,
+        error,
         refreshFavorites,
-      }}>
+      }}
+    >
       {children}
     </FavoritesContext.Provider>
   );
 }
-
 export function useFavorites() {
-  return useContext(FavoritesContext);
+  const context = useContext(FavoritesContext);
+  if (!context)
+    throw new Error('useFavorites debe usarse dentro de FavoritesProvider');
+  return context;
 }
