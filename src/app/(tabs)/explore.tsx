@@ -68,7 +68,9 @@ export default function ExploreScreen() {
         edges={['top', 'left', 'right']}
       >
         <View className="px-4 pt-3 pb-2 gap-3">
-          <Text className={`text-2xl font-black tracking-tight ${textClass}`}>
+          <Text
+            className={`text-2xl font-manrope-bold tracking-tight ${textClass}`}
+          >
             Explorar
           </Text>
           <ExploreSearchBar
@@ -85,7 +87,7 @@ export default function ExploreScreen() {
                 onPress={() => setSort(value)}
                 className={`min-h-12 px-4 justify-center rounded-full ${sort === value ? (isDark ? 'bg-[#58392B]' : 'bg-[#FFDCC2]') : isDark ? 'bg-[#221A16]' : 'bg-[#EDE5DF]'}`}
               >
-                <Text className={`text-sm font-semibold ${textClass}`}>
+                <Text className={`text-sm font-manrope-semibold ${textClass}`}>
                   {value === 'POPULARITY_DESC' ? 'Populares' : 'Tendencias'}
                 </Text>
               </Pressable>
@@ -103,7 +105,7 @@ export default function ExploreScreen() {
           <View className="flex-row items-center justify-between">
             <Text
               accessibilityLiveRegion="polite"
-              className={`text-sm ${textClass}`}
+              className={`font-manrope text-sm ${textClass}`}
             >
               {isLoading && results.length
                 ? 'Actualizando resultados…'
@@ -119,7 +121,10 @@ export default function ExploreScreen() {
                 onPress={clearFilters}
                 className="min-h-12 px-2 justify-center"
               >
-                <Text style={{ color: accent }} className="text-sm font-bold">
+                <Text
+                  style={{ color: accent }}
+                  className="text-sm font-manrope-bold"
+                >
                   Limpiar filtros
                 </Text>
               </Pressable>
@@ -129,7 +134,7 @@ export default function ExploreScreen() {
         {favoritesError && (
           <Text
             accessibilityRole="alert"
-            className="px-4 py-2 text-sm text-red-600"
+            className="font-manrope px-4 py-2 text-sm text-red-600"
           >
             {favoritesError}
           </Text>
@@ -185,7 +190,7 @@ export default function ExploreScreen() {
                     className="min-h-12 px-6 justify-center rounded-2xl"
                     style={{ backgroundColor: isDark ? '#58392B' : '#FFDCC2' }}
                   >
-                    <Text className={`text-sm font-bold ${textClass}`}>
+                    <Text className={`text-sm font-manrope-bold ${textClass}`}>
                       Cargar más animes
                     </Text>
                   </Pressable>

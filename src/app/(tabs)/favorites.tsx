@@ -98,7 +98,7 @@ export default function FavoritesScreen() {
         <View className="px-4 pt-3 pb-2 gap-3">
           <View className="flex-row items-center gap-2.5">
             <Text
-              className={`text-2xl font-black tracking-tight ${
+              className={`text-2xl font-manrope-bold tracking-tight ${
                 isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
               }`}
             >
@@ -111,7 +111,7 @@ export default function FavoritesScreen() {
                 }`}
               >
                 <Text
-                  className={`text-xs font-black ${
+                  className={`text-xs font-manrope-bold ${
                     isDark ? 'text-[#FFDCC2]' : 'text-[#351A08]'
                   }`}
                 >
@@ -135,7 +135,7 @@ export default function FavoritesScreen() {
         {error && (
           <Text
             accessibilityRole="alert"
-            className="px-4 py-2 text-sm text-red-600"
+            className="font-manrope px-4 py-2 text-sm text-red-600"
           >
             {error}
           </Text>
@@ -187,7 +187,7 @@ export default function FavoritesScreen() {
           className={`absolute left-4 right-4 rounded-2xl p-3 flex-row items-center gap-2 ${isDark ? 'bg-[#EDE0DB]' : 'bg-[#30241E]'}`}
         >
           <Text
-            className={`flex-1 text-sm ${isDark ? 'text-[#201A17]' : 'text-white'}`}
+            className={`font-manrope flex-1 text-sm ${isDark ? 'text-[#201A17]' : 'text-white'}`}
           >
             Quitado de favoritos
           </Text>
@@ -211,7 +211,7 @@ export default function FavoritesScreen() {
             }}
           >
             <Text
-              className={`text-sm font-bold ${isDark ? 'text-[#8B4F26]' : 'text-[#FFDCC2]'}`}
+              className={`text-sm font-manrope-bold ${isDark ? 'text-[#8B4F26]' : 'text-[#FFDCC2]'}`}
             >
               {isUndoing ? 'Restaurando…' : 'Deshacer'}
             </Text>
@@ -222,7 +222,11 @@ export default function FavoritesScreen() {
             onPress={() => setRemovedAnime(null)}
             className="min-h-12 px-3 justify-center"
           >
-            <Text className={isDark ? 'text-[#201A17]' : 'text-white'}>✕</Text>
+            <Text
+              className={`font-manrope ${isDark ? 'text-[#201A17]' : 'text-white'}`}
+            >
+              ✕
+            </Text>
           </Pressable>
         </View>
       )}

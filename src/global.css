@@ -4,6 +4,11 @@
 @import "nativewind/theme";
 
 @theme {
+  --font-manrope: "Manrope_400Regular";
+  --font-manrope-medium: "Manrope_500Medium";
+  --font-manrope-semibold: "Manrope_600SemiBold";
+  --font-manrope-bold: "Manrope_700Bold";
+
   --color-crunchyroll-primary: #E09F7D;
   --color-crunchyroll-primary-hover: #F2AF8E;
   --color-crunchyroll-secondary: #F59E0B;

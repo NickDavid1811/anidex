@@ -24,14 +24,14 @@ export default function SettingsScreen() {
         {/* Header Ajustes */}
         <View className="px-4 pt-3 pb-3 gap-0.5">
           <Text
-            className={`text-2xl font-black tracking-tight ${
+            className={`text-2xl font-manrope-bold tracking-tight ${
               isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
             }`}
           >
             Ajustes
           </Text>
           <Text
-            className={`text-xs font-semibold ${
+            className={`text-xs font-manrope-semibold ${
               isDark ? 'text-[#E09F7D]' : 'text-[#8B4F26]'
             }`}
           >
@@ -68,14 +68,14 @@ export default function SettingsScreen() {
               </View>
               <View className="flex-1">
                 <Text
-                  className={`text-sm font-bold ${
+                  className={`text-sm font-manrope-bold ${
                     isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
                   }`}
                 >
                   Tus favoritos
                 </Text>
                 <Text
-                  className={`text-xs ${
+                  className={`font-manrope text-xs ${
                     isDark ? 'text-[#A89C94]' : 'text-[#776962]'
                   }`}
                 >
@@ -94,14 +94,14 @@ export default function SettingsScreen() {
             }`}
           >
             <Text
-              className={`text-sm font-bold ${
+              className={`text-sm font-manrope-bold ${
                 isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
               }`}
             >
               Anidex Mobile
             </Text>
             <Text
-              className={`text-xs ${
+              className={`font-manrope text-xs ${
                 isDark ? 'text-[#A89C94]' : 'text-[#776962]'
               }`}
             >

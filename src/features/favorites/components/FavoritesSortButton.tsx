@@ -103,7 +103,8 @@ export function FavoritesSortButton({
     if (direction === 'next') {
       nextIndex = (currentIndex + 1) % SORT_CONFIGS.length;
     } else {
-      nextIndex = (currentIndex - 1 + SORT_CONFIGS.length) % SORT_CONFIGS.length;
+      nextIndex =
+        (currentIndex - 1 + SORT_CONFIGS.length) % SORT_CONFIGS.length;
     }
 
     const nextSort = SORT_CONFIGS[nextIndex];
@@ -166,7 +167,8 @@ export function FavoritesSortButton({
           isDark
             ? 'bg-[#221A16] border-[#3E3028]'
             : 'bg-[#FFFFFF] border-[#D8CDC5] shadow-sm'
-        }`}>
+        }`}
+      >
         <Ionicons
           name={currentConfig.icon}
           size={20}
@@ -174,8 +176,8 @@ export function FavoritesSortButton({
             currentSort === 'ranking'
               ? '#F59E0B'
               : isDark
-              ? '#EDE0DB'
-              : '#351A08'
+                ? '#EDE0DB'
+                : '#351A08'
           }
         />
 
@@ -188,8 +190,8 @@ export function FavoritesSortButton({
                   ? 'w-2.5 bg-[#E09F7D]'
                   : 'w-2.5 bg-[#8B4F26]'
                 : isDark
-                ? 'w-1 bg-[#3E3028]'
-                : 'w-1 bg-[#D8CDC5]'
+                  ? 'w-1 bg-[#3E3028]'
+                  : 'w-1 bg-[#D8CDC5]'
             }`}
           />
           <View
@@ -197,8 +199,8 @@ export function FavoritesSortButton({
               currentSort === 'ranking'
                 ? 'w-2.5 bg-[#F59E0B]'
                 : isDark
-                ? 'w-1 bg-[#3E3028]'
-                : 'w-1 bg-[#D8CDC5]'
+                  ? 'w-1 bg-[#3E3028]'
+                  : 'w-1 bg-[#D8CDC5]'
             }`}
           />
           <View
@@ -208,8 +210,8 @@ export function FavoritesSortButton({
                   ? 'w-2.5 bg-[#E09F7D]'
                   : 'w-2.5 bg-[#8B4F26]'
                 : isDark
-                ? 'w-1 bg-[#3E3028]'
-                : 'w-1 bg-[#D8CDC5]'
+                  ? 'w-1 bg-[#3E3028]'
+                  : 'w-1 bg-[#D8CDC5]'
             }`}
           />
         </View>
@@ -230,11 +232,13 @@ export function FavoritesSortButton({
             isDark
               ? 'bg-[#2F241E] border-[#58392B]'
               : 'bg-[#FFFFFF] border-[#D8CDC5]'
-          }`}>
+          }`}
+        >
           <Text
-            className={`text-xs font-bold ${
+            className={`text-xs font-manrope-bold ${
               isDark ? 'text-[#FFDCC2]' : 'text-[#8B4F26]'
-            }`}>
+            }`}
+          >
             {toastMessage}
           </Text>
         </Animated.View>
@@ -245,30 +249,35 @@ export function FavoritesSortButton({
         visible={modalVisible}
         transparent={true}
         animationType="fade"
-        onRequestClose={() => setModalVisible(false)}>
+        onRequestClose={() => setModalVisible(false)}
+      >
         <Pressable
           onPress={() => setModalVisible(false)}
-          className="flex-1 bg-black/60 justify-center items-center p-4">
+          className="flex-1 bg-black/60 justify-center items-center p-4"
+        >
           <Pressable
             onPress={(e) => e.stopPropagation()}
             className={`w-full max-w-sm rounded-3xl p-5 border shadow-2xl ${
               isDark
                 ? 'bg-[#221A16] border-[#3E3028]'
                 : 'bg-[#FFFFFF] border-[#D8CDC5]'
-            }`}>
+            }`}
+          >
             {/* Header del modal */}
             <View className="flex-row items-center justify-between mb-4">
               <View className="gap-0.5">
                 <Text
-                  className={`text-lg font-black ${
+                  className={`text-lg font-manrope-bold ${
                     isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
-                  }`}>
+                  }`}
+                >
                   Ordenar Favoritos
                 </Text>
                 <Text
-                  className={`text-xs ${
+                  className={`font-manrope text-xs ${
                     isDark ? 'text-[#A89C94]' : 'text-[#776962]'
-                  }`}>
+                  }`}
+                >
                   O desliza tu dedo sobre el botón para cambiarlo rápido
                 </Text>
               </View>
@@ -276,7 +285,8 @@ export function FavoritesSortButton({
                 onPress={() => setModalVisible(false)}
                 className={`w-8 h-8 rounded-full items-center justify-center ${
                   isDark ? 'bg-[#2F241E]' : 'bg-[#EDE5DF]'
-                }`}>
+                }`}
+              >
                 <Ionicons
                   name="close"
                   size={18}
@@ -304,9 +314,10 @@ export function FavoritesSortButton({
                           ? 'bg-[#58392B]/40 border-[#E09F7D]'
                           : 'bg-[#FFDCC2]/50 border-[#8B4F26]'
                         : isDark
-                        ? 'bg-[#2F241E] border-transparent'
-                        : 'bg-[#F5EFEA] border-transparent'
-                    }`}>
+                          ? 'bg-[#2F241E] border-transparent'
+                          : 'bg-[#F5EFEA] border-transparent'
+                    }`}
+                  >
                     {/* Icono de la opción */}
                     <View
                       className={`w-10 h-10 rounded-xl items-center justify-center mr-3 ${
@@ -315,9 +326,10 @@ export function FavoritesSortButton({
                             ? 'bg-[#E09F7D]/20'
                             : 'bg-[#8B4F26]/15'
                           : isDark
-                          ? 'bg-[#221A16]'
-                          : 'bg-[#FFFFFF]'
-                      }`}>
+                            ? 'bg-[#221A16]'
+                            : 'bg-[#FFFFFF]'
+                      }`}
+                    >
                       <Ionicons
                         name={opt.icon}
                         size={20}
@@ -327,8 +339,8 @@ export function FavoritesSortButton({
                               ? '#E09F7D'
                               : '#8B4F26'
                             : isDark
-                            ? '#A89C94'
-                            : '#776962'
+                              ? '#A89C94'
+                              : '#776962'
                         }
                       />
                     </View>
@@ -336,21 +348,23 @@ export function FavoritesSortButton({
                     {/* Texto y descripción */}
                     <View className="flex-1 gap-0.5">
                       <Text
-                        className={`text-sm font-bold ${
+                        className={`text-sm font-manrope-bold ${
                           isSelected
                             ? isDark
                               ? 'text-[#FFDCC2]'
                               : 'text-[#8B4F26]'
                             : isDark
-                            ? 'text-[#EDE0DB]'
-                            : 'text-[#201A17]'
-                        }`}>
+                              ? 'text-[#EDE0DB]'
+                              : 'text-[#201A17]'
+                        }`}
+                      >
                         {opt.label}
                       </Text>
                       <Text
-                        className={`text-xs ${
+                        className={`font-manrope text-xs ${
                           isDark ? 'text-[#A89C94]' : 'text-[#776962]'
-                        }`}>
+                        }`}
+                      >
                         {opt.subtitle}
                       </Text>
                     </View>

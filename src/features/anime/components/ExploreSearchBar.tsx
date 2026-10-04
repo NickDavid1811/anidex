@@ -28,7 +28,7 @@ export function ExploreSearchBar({
         style={{ marginRight: 8 }}
       />
       <TextInput
-        className={`flex-1 text-sm font-medium ${
+        className={`flex-1 text-sm font-manrope-medium ${
           isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
         }`}
         placeholder="Buscar animes..."

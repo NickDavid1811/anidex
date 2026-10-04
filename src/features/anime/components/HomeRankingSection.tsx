@@ -30,14 +30,14 @@ export function HomeRankingSection({
           </View>
           <View>
             <Text
-              className={`text-base font-bold ${
+              className={`text-base font-manrope-bold ${
                 isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
               }`}
             >
               Más tendencias
             </Text>
             <Text
-              className={`text-xs ${
+              className={`font-manrope text-xs ${
                 isDark ? 'text-[#A89C94]' : 'text-[#776962]'
               }`}
             >
@@ -56,7 +56,7 @@ export function HomeRankingSection({
           className="flex-row items-center gap-1"
         >
           <Text
-            className={`text-xs font-semibold ${
+            className={`text-xs font-manrope-semibold ${
               isDark ? 'text-[#E09F7D]' : 'text-[#8B4F26]'
             }`}
           >

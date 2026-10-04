@@ -22,11 +22,13 @@ export function AnimeGenres({ genres }: AnimeGenresProps) {
             isDark
               ? 'bg-[#2F241E] border-[#3E3028]'
               : 'bg-[#EDE5DF] border-[#D8CDC5]'
-          }`}>
+          }`}
+        >
           <Text
-            className={`font-semibold text-xs ${
+            className={`font-manrope-semibold text-xs ${
               isDark ? 'text-[#E09F7D]' : 'text-[#8B4F26]'
-            }`}>
+            }`}
+          >
             {genre}
           </Text>
         </View>

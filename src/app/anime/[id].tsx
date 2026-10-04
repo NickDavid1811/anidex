@@ -143,7 +143,7 @@ export default function AnimeDetailScreen() {
             />
           </Pressable>
           <Text
-            className={`flex-1 text-base font-bold ${
+            className={`flex-1 text-base font-manrope-bold ${
               isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
             }`}
             numberOfLines={1}
@@ -206,7 +206,7 @@ export default function AnimeDetailScreen() {
 
             <View className="flex-1 justify-center gap-1.5">
               <Text
-                className={`text-xl font-bold leading-6 ${
+                className={`text-xl font-manrope-bold leading-6 ${
                   isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
                 }`}
               >
@@ -214,7 +214,7 @@ export default function AnimeDetailScreen() {
               </Text>
               {anime.title.native && (
                 <Text
-                  className={`text-xs ${
+                  className={`font-manrope text-xs ${
                     isDark ? 'text-[#A89C94]' : 'text-[#776962]'
                   }`}
                 >
@@ -229,7 +229,7 @@ export default function AnimeDetailScreen() {
                   }`}
                 >
                   <Text
-                    className={`text-[11px] font-bold ${
+                    className={`text-[11px] font-manrope-bold ${
                       isDark ? 'text-[#D0C3BC]' : 'text-[#53433C]'
                     }`}
                   >
@@ -255,7 +255,7 @@ export default function AnimeDetailScreen() {
               color={isDark ? '#FFDCC2' : '#8B4F26'}
             />
             <Text
-              className={`text-base font-bold ${isDark ? 'text-[#FFDCC2]' : 'text-[#351A08]'}`}
+              className={`text-base font-manrope-bold ${isDark ? 'text-[#FFDCC2]' : 'text-[#351A08]'}`}
             >
               {isSaving
                 ? 'Guardando…'
@@ -265,7 +265,10 @@ export default function AnimeDetailScreen() {
             </Text>
           </Pressable>
           {saveError && (
-            <Text accessibilityRole="alert" className="text-sm text-red-600">
+            <Text
+              accessibilityRole="alert"
+              className="font-manrope text-sm text-red-600"
+            >
               {saveError}
             </Text>
           )}
@@ -282,14 +285,14 @@ export default function AnimeDetailScreen() {
           >
             <View className="items-center gap-1">
               <Text
-                className={`text-xs ${
+                className={`font-manrope text-xs ${
                   isDark ? 'text-[#A89C94]' : 'text-[#776962]'
                 }`}
               >
                 Episodios
               </Text>
               <Text
-                className={`text-sm font-bold ${
+                className={`text-sm font-manrope-bold ${
                   isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
                 }`}
               >
@@ -299,14 +302,14 @@ export default function AnimeDetailScreen() {
 
             <View className="items-center gap-1">
               <Text
-                className={`text-xs ${
+                className={`font-manrope text-xs ${
                   isDark ? 'text-[#A89C94]' : 'text-[#776962]'
                 }`}
               >
                 Formato
               </Text>
               <Text
-                className={`text-sm font-bold ${
+                className={`text-sm font-manrope-bold ${
                   isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
                 }`}
               >
@@ -316,14 +319,14 @@ export default function AnimeDetailScreen() {
 
             <View className="items-center gap-1">
               <Text
-                className={`text-xs ${
+                className={`font-manrope text-xs ${
                   isDark ? 'text-[#A89C94]' : 'text-[#776962]'
                 }`}
               >
                 Temporada
               </Text>
               <Text
-                className={`text-sm font-bold ${
+                className={`text-sm font-manrope-bold ${
                   isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
                 }`}
               >
@@ -343,14 +346,14 @@ export default function AnimeDetailScreen() {
             }`}
           >
             <Text
-              className={`text-base font-bold ${
+              className={`text-base font-manrope-bold ${
                 isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
               }`}
             >
               Sinopsis
             </Text>
             <Text
-              className={`text-sm leading-6 ${
+              className={`font-manrope text-base leading-6 ${
                 isDark ? 'text-[#D0C3BC]' : 'text-[#53433C]'
               }`}
             >
@@ -366,7 +369,7 @@ export default function AnimeDetailScreen() {
                 className="min-h-12 justify-center"
               >
                 <Text
-                  className={`text-sm font-bold ${isDark ? 'text-[#E09F7D]' : 'text-[#8B4F26]'}`}
+                  className={`text-sm font-manrope-bold ${isDark ? 'text-[#E09F7D]' : 'text-[#8B4F26]'}`}
                 >
                   {expandedDescription ? 'Leer menos' : 'Leer más'}
                 </Text>

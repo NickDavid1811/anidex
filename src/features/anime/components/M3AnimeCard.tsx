@@ -85,7 +85,7 @@ export function M3AnimeCard({
       <View className="flex-1 ml-3.5 justify-between py-0.5">
         <View className="gap-1.5">
           <Text
-            className={`text-base font-bold leading-5 ${
+            className={`text-base font-manrope-bold leading-5 ${
               isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
             }`}
             numberOfLines={2}
@@ -98,7 +98,7 @@ export function M3AnimeCard({
             {score && (
               <View className="flex-row items-center px-2 py-0.5 rounded-md bg-[#F59E0B]/15">
                 <Ionicons name="star" size={11} color="#F59E0B" />
-                <Text className="text-xs font-bold text-[#F59E0B] ml-1">
+                <Text className="text-xs font-manrope-bold text-[#F59E0B] ml-1">
                   {score}
                 </Text>
               </View>
@@ -111,7 +111,7 @@ export function M3AnimeCard({
                 }`}
               >
                 <Text
-                  className={`text-xs font-medium ${
+                  className={`text-xs font-manrope-medium ${
                     isDark ? 'text-[#D0C3BC]' : 'text-[#53433C]'
                   }`}
                 >
@@ -132,7 +132,7 @@ export function M3AnimeCard({
                   color={isDark ? '#A89C94' : '#776962'}
                 />
                 <Text
-                  className={`text-xs font-medium ml-1 ${
+                  className={`text-xs font-manrope-medium ml-1 ${
                     isDark ? 'text-[#D0C3BC]' : 'text-[#53433C]'
                   }`}
                 >
@@ -148,7 +148,7 @@ export function M3AnimeCard({
                 }`}
               >
                 <Text
-                  className={`text-xs font-medium ${
+                  className={`text-xs font-manrope-medium ${
                     isDark ? 'text-[#A89C94]' : 'text-[#53433C]'
                   }`}
                 >
@@ -169,7 +169,7 @@ export function M3AnimeCard({
                 color={isDark ? '#A89C94' : '#776962'}
               />
               <Text
-                className={`text-xs ${
+                className={`font-manrope text-xs ${
                   isDark ? 'text-[#A89C94]' : 'text-[#776962]'
                 }`}
               >

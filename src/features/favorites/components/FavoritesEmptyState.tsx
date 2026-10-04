@@ -17,14 +17,14 @@ export function FavoritesEmptyState({
     return (
       <View className="flex-1 justify-center items-center p-6">
         <Text
-          className={`text-sm font-semibold text-center ${
+          className={`text-sm font-manrope-semibold text-center ${
             isDark ? 'text-[#A89C94]' : 'text-[#776962]'
           }`}
         >
           Tu próxima serie favorita te espera
         </Text>
         <Text
-          className={`text-sm text-center mt-2 ${isDark ? 'text-[#A89C94]' : 'text-[#776962]'}`}
+          className={`font-manrope text-sm text-center mt-2 ${isDark ? 'text-[#A89C94]' : 'text-[#776962]'}`}
         >
           Guarda los animes que te interesan tocando el corazón.
         </Text>
@@ -33,7 +33,9 @@ export function FavoritesEmptyState({
           onPress={() => router.push('/(tabs)/explore')}
           className="mt-5 px-5 py-3 rounded-2xl bg-[#8B4F26]"
         >
-          <Text className="text-white text-sm font-bold">Descubrir anime</Text>
+          <Text className="text-white text-sm font-manrope-bold">
+            Descubrir anime
+          </Text>
         </Pressable>
       </View>
     );
@@ -42,7 +44,7 @@ export function FavoritesEmptyState({
   return (
     <View className="flex-1 justify-center items-center p-6 gap-2">
       <Text
-        className={`text-sm font-semibold text-center ${
+        className={`text-sm font-manrope-semibold text-center ${
           isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
         }`}
       >
@@ -50,7 +52,7 @@ export function FavoritesEmptyState({
       </Text>
       <Pressable onPress={onClearFilters}>
         <Text
-          className={`text-xs font-bold ${
+          className={`text-xs font-manrope-bold ${
             isDark ? 'text-[#E09F7D]' : 'text-[#8B4F26]'
           }`}
         >

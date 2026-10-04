@@ -5,7 +5,7 @@ import { Platform, Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useFavorites } from '@/features/favorites';
-import { useAppTheme } from '@/features/theme';
+import { Typography, useAppTheme } from '@/features/theme';
 
 interface TabIconProps {
   name: keyof typeof Ionicons.glyphMap;
@@ -15,14 +15,20 @@ interface TabIconProps {
   badge?: number;
 }
 
-function TabPillIcon({ name, focusedName, focused, isDark, badge }: TabIconProps) {
+function TabPillIcon({
+  name,
+  focusedName,
+  focused,
+  isDark,
+  badge,
+}: TabIconProps) {
   const iconColor = focused
     ? isDark
       ? '#FFDCC2'
       : '#351A08'
     : isDark
-    ? '#A89C94'
-    : '#776962';
+      ? '#A89C94'
+      : '#776962';
 
   return (
     <View
@@ -38,7 +44,8 @@ function TabPillIcon({ name, focusedName, focused, isDark, badge }: TabIconProps
         alignItems: 'center',
         justifyContent: 'center',
         position: 'relative',
-      }}>
+      }}
+    >
       <Ionicons
         name={focused ? focusedName : name}
         size={22}
@@ -57,8 +64,16 @@ function TabPillIcon({ name, focusedName, focused, isDark, badge }: TabIconProps
             alignItems: 'center',
             justifyContent: 'center',
             paddingHorizontal: 3,
-          }}>
-          <Text style={{ color: '#FFFFFF', fontSize: 9, fontWeight: 'bold' }}>
+          }}
+        >
+          <Text
+            className="font-manrope"
+            style={{
+              color: '#FFFFFF',
+              fontSize: 9,
+              fontFamily: Typography.bold,
+            }}
+          >
             {badge}
           </Text>
         </View>
@@ -95,7 +110,8 @@ export default function TabLayout() {
           backgroundColor: isDark ? '#221A16' : '#FFFFFF',
           borderTopColor: isDark ? '#3E3028' : '#D8CDC5',
           borderTopWidth: 1,
-          height: Platform.OS === 'ios' ? 60 + insets.bottom : 68 + insets.bottom,
+          height:
+            Platform.OS === 'ios' ? 60 + insets.bottom : 68 + insets.bottom,
           paddingBottom: insets.bottom > 0 ? insets.bottom : 8,
           paddingTop: 8,
           elevation: 8,
@@ -106,10 +122,11 @@ export default function TabLayout() {
         },
         tabBarLabelStyle: {
           fontSize: 11,
-          fontWeight: '700',
+          fontFamily: Typography.semibold,
           marginTop: 2,
         },
-      }}>
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{

@@ -1,7 +1,8 @@
 import '@/global.css';
 
-import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router';
-import { Stack } from 'expo-router';
+import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
+import { useFonts } from 'expo-font';
+import { useEffect } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 
@@ -24,7 +25,8 @@ function ThemeContent() {
           contentStyle: {
             backgroundColor: activeScheme === 'dark' ? '#141211' : '#FCF8F6',
           },
-        }}>
+        }}
+      >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
           name="anime/[id]"
@@ -39,6 +41,17 @@ function ThemeContent() {
 }
 
 export default function RootLayout() {
+  const [fontsLoaded, fontError] = useFonts({
+    Manrope_400Regular: require('@expo-google-fonts/manrope/400Regular/Manrope_400Regular.ttf'),
+    Manrope_500Medium: require('@expo-google-fonts/manrope/500Medium/Manrope_500Medium.ttf'),
+    Manrope_600SemiBold: require('@expo-google-fonts/manrope/600SemiBold/Manrope_600SemiBold.ttf'),
+    Manrope_700Bold: require('@expo-google-fonts/manrope/700Bold/Manrope_700Bold.ttf'),
+  });
+  useEffect(() => {
+    if (fontError) console.warn('No se pudo cargar Manrope:', fontError);
+  }, [fontError]);
+  if (!fontsLoaded && !fontError) return null;
+
   return (
     <ThemeProviderWrapper>
       <FavoritesProvider>

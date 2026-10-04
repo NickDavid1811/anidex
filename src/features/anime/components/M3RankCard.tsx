@@ -120,7 +120,7 @@ export function M3RankCard({
         {rank === 1 ? (
           <Ionicons name="trophy" size={16} color="#000000" />
         ) : (
-          <Text className={`text-xs font-black ${podium.badgeText}`}>
+          <Text className={`text-xs font-manrope-bold ${podium.badgeText}`}>
             #{rank}
           </Text>
         )}
@@ -146,7 +146,7 @@ export function M3RankCard({
       {/* Anime Info */}
       <View className="flex-1 mr-2 gap-1 justify-center">
         <Text
-          className={`text-sm font-bold leading-4 ${
+          className={`text-sm font-manrope-bold leading-4 ${
             isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
           }`}
           numberOfLines={1}
@@ -158,14 +158,14 @@ export function M3RankCard({
           {score && (
             <View className="flex-row items-center">
               <Ionicons name="star" size={10} color="#F59E0B" />
-              <Text className="text-xs font-bold text-[#F59E0B] ml-1">
+              <Text className="text-xs font-manrope-bold text-[#F59E0B] ml-1">
                 {score}
               </Text>
             </View>
           )}
           {score && (year || eps) && (
             <Text
-              className={`text-xs ${
+              className={`font-manrope text-xs ${
                 isDark ? 'text-[#A89C94]' : 'text-[#776962]'
               }`}
             >
@@ -174,7 +174,7 @@ export function M3RankCard({
           )}
           {year ? (
             <Text
-              className={`text-xs ${
+              className={`font-manrope text-xs ${
                 isDark ? 'text-[#A89C94]' : 'text-[#776962]'
               }`}
             >
@@ -183,7 +183,7 @@ export function M3RankCard({
           ) : null}
           {year && eps && (
             <Text
-              className={`text-xs ${
+              className={`font-manrope text-xs ${
                 isDark ? 'text-[#A89C94]' : 'text-[#776962]'
               }`}
             >
@@ -192,7 +192,7 @@ export function M3RankCard({
           )}
           {eps ? (
             <Text
-              className={`text-xs ${
+              className={`font-manrope text-xs ${
                 isDark ? 'text-[#A89C94]' : 'text-[#776962]'
               }`}
             >
@@ -203,7 +203,7 @@ export function M3RankCard({
 
         {genres ? (
           <Text
-            className={`text-xs font-medium ${
+            className={`text-xs font-manrope-medium ${
               isDark ? 'text-[#A89C94]' : 'text-[#776962]'
             }`}
             numberOfLines={1}

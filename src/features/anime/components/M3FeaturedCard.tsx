@@ -103,7 +103,7 @@ export function M3FeaturedCard({ anime }: M3FeaturedCardProps) {
             <View className="flex-row items-center gap-1.5">
               <View className="flex-row items-center px-2 py-0.5 rounded-full bg-[#F59E0B]/25 border border-[#F59E0B]/40">
                 <Ionicons name="star" size={11} color="#F59E0B" />
-                <Text className="text-xs font-black text-[#F59E0B] ml-1">
+                <Text className="text-xs font-manrope-bold text-[#F59E0B] ml-1">
                   {score}
                 </Text>
               </View>
@@ -116,7 +116,7 @@ export function M3FeaturedCard({ anime }: M3FeaturedCardProps) {
                 }`}
               >
                 <Text
-                  className={`text-xs font-bold ${
+                  className={`text-xs font-manrope-bold ${
                     isDark ? 'text-[#D0C3BC]' : 'text-[#53433C]'
                   }`}
                 >
@@ -127,7 +127,7 @@ export function M3FeaturedCard({ anime }: M3FeaturedCardProps) {
 
             {/* Anime Title */}
             <Text
-              className={`text-base font-black leading-5 ${
+              className={`text-base font-manrope-bold leading-5 ${
                 isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
               }`}
               numberOfLines={2}
@@ -137,7 +137,7 @@ export function M3FeaturedCard({ anime }: M3FeaturedCardProps) {
 
             {/* Metadata (Year & Episodes) */}
             <Text
-              className={`text-xs font-medium ${
+              className={`text-xs font-manrope-medium ${
                 isDark ? 'text-[#A89C94]' : 'text-[#776962]'
               }`}
             >
@@ -147,7 +147,7 @@ export function M3FeaturedCard({ anime }: M3FeaturedCardProps) {
 
           {/* Action Button: "Ver detalles" */}
           <View className="flex-row items-center self-start px-3 py-1.5 rounded-xl bg-[#8B4F26] dark:bg-[#E09F7D]/20 border dark:border-[#E09F7D]/40 gap-1.5">
-            <Text className="text-xs font-bold text-white dark:text-[#E09F7D]">
+            <Text className="text-xs font-manrope-bold text-white dark:text-[#E09F7D]">
               Ver detalles
             </Text>
             <Ionicons

@@ -37,7 +37,7 @@ export function HomeCategories({ isDark }: HomeCategoriesProps) {
     <View className="mt-5 px-4">
       <View className="flex-row items-center justify-between mb-2">
         <Text
-          className={`text-base font-bold ${
+          className={`text-base font-manrope-bold ${
             isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
           }`}
         >
@@ -48,7 +48,7 @@ export function HomeCategories({ isDark }: HomeCategoriesProps) {
           className="flex-row items-center gap-1 active:opacity-75"
         >
           <Text
-            className={`text-xs font-semibold ${
+            className={`text-xs font-manrope-semibold ${
               isDark ? 'text-[#E09F7D]' : 'text-[#8B4F26]'
             }`}
           >
@@ -77,9 +77,9 @@ export function HomeCategories({ isDark }: HomeCategoriesProps) {
             }}
             className="flex-row items-center px-3.5 py-2 rounded-2xl border active:scale-95 shadow-sm"
           >
-            <Text className="text-sm mr-1.5">{cat.icon}</Text>
+            <Text className="font-manrope text-sm mr-1.5">{cat.icon}</Text>
             <Text
-              className={`text-xs font-bold ${
+              className={`text-xs font-manrope-bold ${
                 isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
               }`}
             >

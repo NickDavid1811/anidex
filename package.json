@@ -3,6 +3,7 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "dependencies": {
+    "@expo-google-fonts/manrope": "^0.4.2",
     "@expo/ui": "~57.0.20",
     "@expo/vector-icons": "^15.0.2",
     "@tailwindcss/postcss": "4.1.12",

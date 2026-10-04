@@ -45,7 +45,8 @@ export function FavoritesFilterBar({
             isDark
               ? 'bg-[#221A16] border-[#3E3028]'
               : 'bg-[#FFFFFF] border-[#D8CDC5] shadow-sm'
-          }`}>
+          }`}
+        >
           <Ionicons
             name="search"
             size={18}
@@ -53,7 +54,7 @@ export function FavoritesFilterBar({
             style={{ marginRight: 8 }}
           />
           <TextInput
-            className={`flex-1 text-sm font-medium ${
+            className={`flex-1 text-sm font-manrope-medium ${
               isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
             }`}
             placeholder="Filtrar por nombre..."
@@ -85,7 +86,8 @@ export function FavoritesFilterBar({
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ gap: 8, paddingVertical: 2 }}>
+        contentContainerStyle={{ gap: 8, paddingVertical: 2 }}
+      >
         {FAVORITES_FILTER_GENRES.map((g) => {
           const isSelected = selectedGenre === g;
           return (
@@ -98,19 +100,21 @@ export function FavoritesFilterBar({
                     ? 'bg-[#58392B] border-[#E09F7D]'
                     : 'bg-[#FFDCC2] border-[#8B4F26]'
                   : isDark
-                  ? 'bg-[#221A16] border-[#3E3028]'
-                  : 'bg-[#FFFFFF] border-[#D8CDC5]'
-              }`}>
+                    ? 'bg-[#221A16] border-[#3E3028]'
+                    : 'bg-[#FFFFFF] border-[#D8CDC5]'
+              }`}
+            >
               <Text
-                className={`text-xs font-semibold ${
+                className={`text-xs font-manrope-semibold ${
                   isSelected
                     ? isDark
                       ? 'text-[#FFDCC2]'
                       : 'text-[#351A08]'
                     : isDark
-                    ? 'text-[#A89C94]'
-                    : 'text-[#53433C]'
-                }`}>
+                      ? 'text-[#A89C94]'
+                      : 'text-[#53433C]'
+                }`}
+              >
                 {g}
               </Text>
             </Pressable>

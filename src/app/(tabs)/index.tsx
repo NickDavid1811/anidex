@@ -79,7 +79,7 @@ export default function HomeScreen() {
           {favoritesError && (
             <Text
               accessibilityRole="alert"
-              className="px-4 py-2 text-sm text-red-600"
+              className="font-manrope px-4 py-2 text-sm text-red-600"
             >
               {favoritesError}
             </Text>

@@ -25,7 +25,7 @@ export function HomeFeaturedCarousel({
     <View className="mt-3">
       <View className="flex-row items-center justify-between px-4 mb-2.5">
         <Text
-          className={`text-base font-bold ${
+          className={`text-base font-manrope-bold ${
             isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
           }`}
         >
@@ -41,7 +41,7 @@ export function HomeFeaturedCarousel({
           className="flex-row items-center gap-1"
         >
           <Text
-            className={`text-xs font-semibold ${
+            className={`text-xs font-manrope-semibold ${
               isDark ? 'text-[#E09F7D]' : 'text-[#8B4F26]'
             }`}
           >

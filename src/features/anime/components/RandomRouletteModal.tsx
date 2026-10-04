@@ -138,9 +138,9 @@ export function RandomRouletteModal({
           {/* Header Modal */}
           <View className="flex-row items-center justify-between mb-4">
             <View className="flex-row items-center gap-2">
-              <Text className="text-xl">🎲</Text>
+              <Text className="font-manrope text-xl">🎲</Text>
               <Text
-                className={`text-base font-black ${
+                className={`text-base font-manrope-bold ${
                   isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
                 }`}
               >
@@ -192,7 +192,7 @@ export function RandomRouletteModal({
               <View className="flex-row items-center gap-2 mb-2">
                 <View className="flex-row items-center px-2.5 py-0.5 rounded-full bg-[#F59E0B]/20 border border-[#F59E0B]/40">
                   <Ionicons name="star" size={11} color="#F59E0B" />
-                  <Text className="text-xs font-black text-[#F59E0B] ml-1">
+                  <Text className="text-xs font-manrope-bold text-[#F59E0B] ml-1">
                     {score}
                   </Text>
                 </View>
@@ -203,7 +203,7 @@ export function RandomRouletteModal({
                     }`}
                   >
                     <Text
-                      className={`text-xs font-semibold ${
+                      className={`text-xs font-manrope-semibold ${
                         isDark ? 'text-[#A89C94]' : 'text-[#776962]'
                       }`}
                     >
@@ -216,7 +216,7 @@ export function RandomRouletteModal({
               {/* Title */}
               <Text
                 numberOfLines={2}
-                className={`text-base font-black text-center mb-1 ${
+                className={`text-base font-manrope-bold text-center mb-1 ${
                   isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
                 }`}
               >
@@ -225,7 +225,7 @@ export function RandomRouletteModal({
 
               {/* Genre line */}
               <Text
-                className={`text-xs font-semibold mb-2.5 ${
+                className={`text-xs font-manrope-semibold mb-2.5 ${
                   isDark ? 'text-[#E09F7D]' : 'text-[#8B4F26]'
                 }`}
               >
@@ -235,7 +235,7 @@ export function RandomRouletteModal({
               {/* Synopsis preview */}
               <Text
                 numberOfLines={2}
-                className={`text-xs text-center leading-4 mb-4 ${
+                className={`font-manrope text-xs text-center leading-4 mb-4 ${
                   isDark ? 'text-[#A89C94]' : 'text-[#776962]'
                 }`}
               >
@@ -255,7 +255,7 @@ export function RandomRouletteModal({
                   }`}
                 >
                   <Text
-                    className={`text-sm font-black ${
+                    className={`text-sm font-manrope-bold ${
                       isDark ? 'text-[#351A08]' : 'text-white'
                     }`}
                   >
@@ -278,7 +278,7 @@ export function RandomRouletteModal({
                   }`}
                 >
                   <Text
-                    className={`text-xs font-bold ${
+                    className={`text-xs font-manrope-bold ${
                       isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
                     }`}
                   >

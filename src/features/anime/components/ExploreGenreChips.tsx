@@ -52,7 +52,7 @@ export function ExploreGenreChips({
             }`}
           >
             <Text
-              className={`text-xs font-semibold ${
+              className={`text-xs font-manrope-semibold ${
                 isSelected
                   ? isDark
                     ? 'text-[#FFDCC2]'

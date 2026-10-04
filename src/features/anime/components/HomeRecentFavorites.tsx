@@ -25,18 +25,21 @@ export function HomeRecentFavorites({
     <View className="mt-5 px-4">
       <View className="flex-row items-center justify-between mb-2.5">
         <Text
-          className={`text-base font-bold ${
+          className={`text-base font-manrope-bold ${
             isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
-          }`}>
+          }`}
+        >
           Mis Favoritos Recientes
         </Text>
         <Pressable
           onPress={() => router.push('/(tabs)/favorites' as any)}
-          className="flex-row items-center gap-1">
+          className="flex-row items-center gap-1"
+        >
           <Text
-            className={`text-xs font-semibold ${
+            className={`text-xs font-manrope-semibold ${
               isDark ? 'text-[#E09F7D]' : 'text-[#8B4F26]'
-            }`}>
+            }`}
+          >
             Ver todos ({favoritesCount})
           </Text>
           <Ionicons
@@ -50,7 +53,8 @@ export function HomeRecentFavorites({
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ gap: 10 }}>
+        contentContainerStyle={{ gap: 10 }}
+      >
         {recentFavorites.map((fav) => {
           const title =
             fav.title.english ||
@@ -62,7 +66,8 @@ export function HomeRecentFavorites({
             <Pressable
               key={`recent-fav-${fav.id}`}
               onPress={() => router.push(`/anime/${fav.id}` as any)}
-              className="w-24 active:opacity-85">
+              className="w-24 active:opacity-85"
+            >
               <View className="w-24 h-32 rounded-xl overflow-hidden bg-neutral-900 mb-1 border border-[#3E3028]/40">
                 {cover ? (
                   <Image
@@ -76,9 +81,10 @@ export function HomeRecentFavorites({
               </View>
               <Text
                 numberOfLines={1}
-                className={`text-xs font-semibold ${
+                className={`text-xs font-manrope-semibold ${
                   isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
-                }`}>
+                }`}
+              >
                 {title}
               </Text>
             </Pressable>

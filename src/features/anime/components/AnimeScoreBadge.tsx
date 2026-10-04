@@ -18,7 +18,7 @@ export function AnimeScoreBadge({ score }: AnimeScoreBadgeProps) {
 
   return (
     <View className={`px-2 py-0.5 rounded-lg self-start ${bgClass}`}>
-      <Text className="text-white text-xs font-bold">
+      <Text className="text-white text-xs font-manrope-bold">
         ★ {(score / 10).toFixed(1)}/10
       </Text>
     </View>
