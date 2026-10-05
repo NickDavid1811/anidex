@@ -10,7 +10,7 @@
     "ios": {
       "icon": "./assets/icon.png",
       "bundleIdentifier": "com.nickydavis.anidex",
-      "appleTeamId": "2V2TZNVA25",
+      "appleTeamId": "V9HN6H2Q99",
       "supportsTablet": true,
       "infoPlist": {
         "NSBonjourServices": [
