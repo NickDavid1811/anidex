@@ -1,121 +1,92 @@
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
+import { Image } from 'expo-image';
+import React, { useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native';
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useAuth } from '@/features/auth';
-import { useFavorites } from '@/features/favorites';
 import { ThemeSettingCard, useAppTheme } from '@/features/theme';
+import { version } from '../../../package.json';
 
 export default function SettingsScreen() {
   const { activeScheme } = useAppTheme();
-  const { count: favoritesCount } = useFavorites();
   const auth = useAuth();
-  const insets = useSafeAreaInsets();
+  const [isDisconnecting, setDisconnecting] = useState(false);
   const isDark = activeScheme === 'dark';
+  const busy = auth.isRestoring || auth.isConnecting || isDisconnecting;
+  const foreground = isDark ? '#EDE0DB' : '#201A17';
+  const secondary = isDark ? '#D0C3BC' : '#53433C';
+  const accent = isDark ? '#E09F7D' : '#8B4F26';
+  const avatar = auth.user?.avatar?.large || auth.user?.avatar?.medium;
+
+  async function handleAccountPress() {
+    if (busy) return;
+    if (auth.user) {
+      setDisconnecting(true);
+      try { await auth.disconnect(); }
+      finally { setDisconnecting(false); }
+    } else {
+      await auth.connect();
+    }
+  }
 
   return (
     <View className={`flex-1 ${isDark ? 'bg-[#141211]' : 'bg-[#FCF8F6]'}`}>
-      <SafeAreaView
-        className="flex-1 w-full max-w-[800px] self-center"
-        edges={['top', 'left', 'right']}
-      >
-        {/* Header Ajustes */}
-        <View className="px-4 pt-3 pb-3 gap-0.5">
-          <Text
-            className={`text-2xl font-manrope-bold tracking-tight ${
-              isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
-            }`}
-          >
-            Ajustes
-          </Text>
-          <Text
-            className={`text-xs font-manrope-semibold ${
-              isDark ? 'text-[#E09F7D]' : 'text-[#8B4F26]'
-            }`}
-          >
-            Personaliza la apariencia y preferencias de Anidex
-          </Text>
+      <SafeAreaView className="flex-1 w-full max-w-[800px] self-center" edges={['top', 'left', 'right']}>
+        <View className="px-4 pt-3 pb-4">
+          <Text accessibilityRole="header" style={{ color: foreground }} className="text-2xl font-manrope-bold">Ajustes</Text>
         </View>
-
-        <ScrollView contentContainerStyle={{ paddingHorizontal: 16, gap: 16, paddingBottom: insets.bottom + 90 }}>
-          <View className={`rounded-3xl border p-4 gap-3 ${isDark ? 'bg-[#221A16] border-[#3E3028]' : 'bg-white border-[#D8CDC5]'}`}>
-            <Text className={`font-manrope-bold text-lg ${isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'}`}>Cuenta de AniList</Text>
-            <Text className={`font-manrope text-sm ${isDark ? 'text-[#A89C94]' : 'text-[#776962]'}`}>
-              {auth.user ? `Conectado como ${auth.user.name}` : 'Conecta tu cuenta para preparar tu biblioteca de AniList.'}
+        <ScrollView contentContainerStyle={{ paddingHorizontal: 16, gap: 20, paddingBottom: 32 }}>
+          <View className={`rounded-3xl border p-4 gap-4 ${isDark ? 'bg-[#221A16] border-[#3E3028]' : 'bg-white border-[#D8CDC5]'}`}>
+            <Text accessibilityRole="header" style={{ color: foreground }} className="font-manrope-bold text-lg">Cuenta de AniList</Text>
+            {auth.isRestoring ? (
+              <View className="flex-row items-center gap-3">
+                <ActivityIndicator color={accent} />
+                <Text style={{ color: secondary }} className="font-manrope text-base">Recuperando tu sesión…</Text>
+              </View>
+            ) : auth.user ? (
+              <View className="flex-row items-center gap-3">
+                <View style={{ width: 56, height: 56, borderRadius: 28, overflow: 'hidden', backgroundColor: isDark ? '#2F241E' : '#EDE5DF', alignItems: 'center', justifyContent: 'center' }}>
+                  {avatar ? <Image source={{ uri: avatar }} style={{ width: 56, height: 56 }} contentFit="cover" /> : <Ionicons name="person-outline" size={28} color={accent} />}
+                </View>
+                <View className="flex-1 gap-1">
+                  <Text style={{ color: foreground }} className="font-manrope-bold text-lg">{auth.user.name}</Text>
+                  <View className="flex-row items-center gap-1.5">
+                    <Ionicons name="checkmark-circle-outline" size={18} color={accent} />
+                    <Text style={{ color: secondary }} className="font-manrope text-sm">Cuenta conectada</Text>
+                  </View>
+                </View>
+              </View>
+            ) : (
+              <Text style={{ color: secondary, lineHeight: 24 }} className="font-manrope text-base">
+                Conecta AniList para identificar tu perfil en Anidex.
+              </Text>
+            )}
+            <Text style={{ color: secondary, lineHeight: 22 }} className="font-manrope text-sm">
+              Tus favoritos se guardan en este dispositivo. Todavía no se sincronizan con AniList.
             </Text>
-            {auth.error && <Text accessibilityRole="alert" className="font-manrope text-sm text-[#C95143]">{auth.error}</Text>}
-            <Pressable accessibilityRole="button" accessibilityState={{ disabled: auth.isRestoring || auth.isConnecting, busy: auth.isRestoring || auth.isConnecting }} disabled={auth.isRestoring || auth.isConnecting} onPress={() => { void (auth.user ? auth.disconnect() : auth.connect()); }} className={`min-h-12 rounded-2xl items-center justify-center px-4 ${isDark ? 'bg-[#E09F7D]' : 'bg-[#8B4F26]'}`}>
-              {auth.isRestoring || auth.isConnecting ? <ActivityIndicator color={isDark ? '#201A17' : '#FFFFFF'} /> : <Text className={`font-manrope-bold ${isDark ? 'text-[#201A17]' : 'text-white'}`}>{auth.user ? 'Desconectar cuenta' : 'Conectar con AniList'}</Text>}
+            {auth.error && <Text accessibilityRole="alert" style={{ color: isDark ? '#FFB4AB' : '#B3261E' }} className="font-manrope text-sm">{auth.error}</Text>}
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={auth.user ? 'Desconectar cuenta de AniList' : 'Conectar con AniList'}
+              accessibilityState={{ disabled: busy, busy }}
+              disabled={busy}
+              onPress={() => { void handleAccountPress(); }}
+              style={{ minHeight: 48, borderColor: auth.user ? (isDark ? '#776962' : '#A89C94') : accent, backgroundColor: auth.user ? 'transparent' : accent, opacity: busy ? 0.7 : 1 }}
+              className="rounded-2xl border flex-row gap-2 items-center justify-center px-4 py-3"
+            >
+              {busy && <ActivityIndicator color={auth.user ? accent : isDark ? '#201A17' : '#FFFFFF'} />}
+              <Text style={{ color: auth.user ? foreground : isDark ? '#201A17' : '#FFFFFF' }} className="font-manrope-semibold text-base shrink text-center">
+                {auth.isRestoring ? 'Recuperando sesión…' : auth.isConnecting ? 'Conectando…' : isDisconnecting ? 'Desconectando…' : auth.user ? 'Desconectar cuenta' : 'Conectar con AniList'}
+              </Text>
             </Pressable>
           </View>
-          {/* Card Material 3 de Tema */}
+
           <ThemeSettingCard />
 
-          {/* Estadísticas locales / Base de datos */}
-          <View
-            className={`will-change-variable rounded-3xl border p-4 gap-2 ${
-              isDark
-                ? 'bg-[#221A16] border-[#3E3028]'
-                : 'bg-[#FFFFFF] border-[#D8CDC5] shadow-sm'
-            }`}
-          >
-            <View className="flex-row items-center gap-3">
-              <View
-                className={`w-11 h-11 rounded-2xl items-center justify-center ${
-                  isDark ? 'bg-[#2F241E]' : 'bg-[#EDE5DF]'
-                }`}
-              >
-                <Ionicons
-                  name="server-outline"
-                  size={20}
-                  color={isDark ? '#E09F7D' : '#8B4F26'}
-                />
-              </View>
-              <View className="flex-1">
-                <Text
-                  className={`text-sm font-manrope-bold ${
-                    isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
-                  }`}
-                >
-                  Tus favoritos
-                </Text>
-                <Text
-                  className={`font-manrope text-xs ${
-                    isDark ? 'text-[#A89C94]' : 'text-[#776962]'
-                  }`}
-                >
-                  {favoritesCount} animes guardados en este dispositivo
-                </Text>
-              </View>
-            </View>
-          </View>
-
-          {/* Información de la App */}
-          <View
-            className={`will-change-variable rounded-2xl border p-4 items-center gap-1 ${
-              isDark
-                ? 'bg-[#221A16] border-[#3E3028]'
-                : 'bg-[#FFFFFF] border-[#D8CDC5] shadow-sm'
-            }`}
-          >
-            <Text
-              className={`text-sm font-manrope-bold ${
-                isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
-              }`}
-            >
-              Anidex Mobile
-            </Text>
-            <Text
-              className={`font-manrope text-xs ${
-                isDark ? 'text-[#A89C94]' : 'text-[#776962]'
-              }`}
-            >
-              Datos de AniList · Versión 1.0.0
-            </Text>
+          <View className="px-1 py-2 gap-2">
+            <Text accessibilityRole="header" style={{ color: foreground }} className="font-manrope-semibold text-base">Acerca de Anidex</Text>
+            <Text style={{ color: secondary }} className="font-manrope text-sm">Versión {version} · Datos de AniList</Text>
           </View>
         </ScrollView>
       </SafeAreaView>

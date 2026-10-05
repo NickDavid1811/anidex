@@ -1,10 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { Platform, Pressable, Text, View } from 'react-native';
+import { Platform, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { useFavorites } from '@/features/favorites';
 import { Typography, useAppTheme } from '@/features/theme';
 
 interface TabIconProps {
@@ -12,7 +11,6 @@ interface TabIconProps {
   focusedName: keyof typeof Ionicons.glyphMap;
   focused: boolean;
   isDark: boolean;
-  badge?: number;
 }
 
 function TabPillIcon({
@@ -20,7 +18,6 @@ function TabPillIcon({
   focusedName,
   focused,
   isDark,
-  badge,
 }: TabIconProps) {
   const iconColor = focused
     ? isDark
@@ -51,40 +48,13 @@ function TabPillIcon({
         size={22}
         color={iconColor}
       />
-      {badge !== undefined && badge > 0 && (
-        <View
-          style={{
-            position: 'absolute',
-            top: -2,
-            right: 4,
-            backgroundColor: '#D32F2F',
-            borderRadius: 9,
-            minWidth: 16,
-            height: 16,
-            alignItems: 'center',
-            justifyContent: 'center',
-            paddingHorizontal: 3,
-          }}
-        >
-          <Text
-            className="font-manrope"
-            style={{
-              color: '#FFFFFF',
-              fontSize: 9,
-              fontFamily: Typography.bold,
-            }}
-          >
-            {badge}
-          </Text>
-        </View>
-      )}
+
     </View>
   );
 }
 
 export default function TabLayout() {
   const { activeScheme } = useAppTheme();
-  const { count: favoritesCount } = useFavorites();
   const insets = useSafeAreaInsets();
   const isDark = activeScheme === 'dark';
 
@@ -165,7 +135,6 @@ export default function TabLayout() {
               focusedName="heart"
               focused={focused}
               isDark={isDark}
-              badge={favoritesCount}
             />
           ),
         }}

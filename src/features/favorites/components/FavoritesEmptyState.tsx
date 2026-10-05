@@ -1,6 +1,7 @@
-import React from 'react';
+import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text } from 'react-native';
+import { Typography } from '@/features/theme';
 
 interface FavoritesEmptyStateProps {
   hasTotalFavorites: boolean;
@@ -8,57 +9,26 @@ interface FavoritesEmptyStateProps {
   isDark: boolean;
 }
 
-export function FavoritesEmptyState({
-  hasTotalFavorites,
-  onClearFilters,
-  isDark,
-}: FavoritesEmptyStateProps) {
-  if (!hasTotalFavorites) {
-    return (
-      <View className="flex-1 justify-center items-center p-6">
-        <Text
-          className={`text-sm font-manrope-semibold text-center ${
-            isDark ? 'text-[#A89C94]' : 'text-[#776962]'
-          }`}
-        >
-          Tu próxima serie favorita te espera
-        </Text>
-        <Text
-          className={`font-manrope text-sm text-center mt-2 ${isDark ? 'text-[#A89C94]' : 'text-[#776962]'}`}
-        >
-          Guarda los animes que te interesan tocando el corazón.
-        </Text>
-        <Pressable
-          accessibilityRole="button"
-          onPress={() => router.push('/(tabs)/explore')}
-          className="mt-5 px-5 py-3 rounded-2xl bg-[#8B4F26]"
-        >
-          <Text className="text-white text-sm font-manrope-bold">
-            Descubrir anime
-          </Text>
-        </Pressable>
-      </View>
-    );
-  }
-
+export function FavoritesEmptyState({ hasTotalFavorites, onClearFilters, isDark }: FavoritesEmptyStateProps) {
+  const accent = isDark ? '#E09F7D' : '#8B4F26';
   return (
-    <View className="flex-1 justify-center items-center p-6 gap-2">
-      <Text
-        className={`text-sm font-manrope-semibold text-center ${
-          isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
-        }`}
-      >
-        No se encontraron favoritos con ese filtro
+    <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center', padding: 32, gap: 16 }}>
+      <Ionicons name={hasTotalFavorites ? 'search-outline' : 'heart-outline'} size={48} color={accent} />
+      <Text accessibilityRole="header" style={{ color: isDark ? '#EDE0DB' : '#201A17', fontFamily: Typography.bold, fontSize: 22, textAlign: 'center' }}>
+        {hasTotalFavorites ? 'No hay coincidencias' : 'Todavía no tienes favoritos'}
       </Text>
-      <Pressable onPress={onClearFilters}>
-        <Text
-          className={`text-xs font-manrope-bold ${
-            isDark ? 'text-[#E09F7D]' : 'text-[#8B4F26]'
-          }`}
-        >
-          Limpiar filtros
+      <Text style={{ color: isDark ? '#D0C3BC' : '#53433C', fontFamily: Typography.regular, fontSize: 16, lineHeight: 24, textAlign: 'center' }}>
+        {hasTotalFavorites ? 'Prueba con otro título o elimina los filtros.' : 'Guarda los animes que te interesan tocando el corazón. Los encontrarás aquí.'}
+      </Text>
+      <Pressable
+        accessibilityRole="button"
+        onPress={hasTotalFavorites ? onClearFilters : () => router.navigate('/(tabs)/explore')}
+        style={{ minHeight: 48, paddingHorizontal: 24, paddingVertical: 12, borderRadius: 16, backgroundColor: accent, justifyContent: 'center' }}
+      >
+        <Text style={{ color: isDark ? '#201A17' : '#FFFFFF', fontFamily: Typography.bold, fontSize: 16, textAlign: 'center' }}>
+          {hasTotalFavorites ? 'Limpiar filtros' : 'Explorar anime'}
         </Text>
       </Pressable>
-    </View>
+    </ScrollView>
   );
 }

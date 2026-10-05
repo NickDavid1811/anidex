@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  Dimensions,
+  useWindowDimensions,
   RefreshControl,
   ScrollView,
   Text,
@@ -38,7 +38,7 @@ export default function HomeScreen() {
 
   const [rouletteVisible, setRouletteVisible] = useState(false);
 
-  const screenWidth = Dimensions.get('window').width;
+  const { width: screenWidth } = useWindowDimensions();
   const contentWidth = Math.min(screenWidth, 800);
 
   if (isLoading && !isRefreshing) {

@@ -9,14 +9,12 @@ import { useAppTheme } from '@/features/theme';
 import { AnimeMedia } from '../types/anime.types';
 
 interface M3RankCardProps {
-  rank: number;
   anime: AnimeMedia;
   isFavorite: boolean;
   onToggleFavorite: () => void;
 }
 
 export function M3RankCard({
-  rank,
   anime,
   isFavorite,
   onToggleFavorite,
@@ -40,50 +38,6 @@ export function M3RankCard({
   const year = anime.seasonYear || anime.startDate?.year || '';
   const eps = anime.episodes ? `${anime.episodes} eps` : '';
   const genres = anime.genres ? anime.genres.slice(0, 2).join(' • ') : '';
-
-  // Configuración de estilo del Podio Top 3
-  const getPodiumConfig = (r: number) => {
-    switch (r) {
-      case 1:
-        return {
-          cardBg: isDark ? 'bg-[#2A2016]' : 'bg-[#FFFDF5]',
-          cardBorder: isDark ? 'border-[#F59E0B]/60' : 'border-[#F59E0B]/70',
-          badgeBg: 'bg-[#F59E0B]',
-          badgeText: 'text-black',
-          crown: '👑',
-          shadow: 'shadow-md',
-        };
-      case 2:
-        return {
-          cardBg: isDark ? 'bg-[#23201D]' : 'bg-[#F8FAFC]',
-          cardBorder: isDark ? 'border-[#94A3B8]/50' : 'border-[#CBD5E1]/70',
-          badgeBg: 'bg-[#94A3B8]',
-          badgeText: 'text-black',
-          crown: '🥈',
-          shadow: 'shadow-sm',
-        };
-      case 3:
-        return {
-          cardBg: isDark ? 'bg-[#251C17]' : 'bg-[#FFF7ED]',
-          cardBorder: isDark ? 'border-[#D97706]/45' : 'border-[#D97706]/55',
-          badgeBg: 'bg-[#D97706]',
-          badgeText: 'text-white',
-          crown: '🥉',
-          shadow: 'shadow-sm',
-        };
-      default:
-        return {
-          cardBg: isDark ? 'bg-[#221A16]' : 'bg-[#FFFFFF]',
-          cardBorder: isDark ? 'border-[#3E3028]' : 'border-[#D8CDC5]',
-          badgeBg: isDark ? 'bg-[#362922]' : 'bg-[#E5DCD4]',
-          badgeText: isDark ? 'text-[#D0C3BC]' : 'text-[#53433C]',
-          crown: null,
-          shadow: 'shadow-sm',
-        };
-    }
-  };
-
-  const podium = getPodiumConfig(rank);
 
   const handleFavoritePress = (e: any) => {
     e.stopPropagation();
@@ -110,24 +64,13 @@ export function M3RankCard({
 
   return (
     <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={`Ver detalles de ${title}`}
       onPress={() => router.push(`/anime/${anime.id}` as any)}
-      className={`will-change-variable flex-row items-center p-3 rounded-2xl mb-2.5 border active:opacity-90 ${podium.cardBg} ${podium.cardBorder} ${podium.shadow}`}
+      className={`will-change-variable flex-row items-center p-3 rounded-2xl mb-2.5 border active:opacity-90 ${isDark ? 'bg-[#221A16] border-[#3E3028]' : 'bg-white border-[#D8CDC5]'}`}
     >
-      {/* Rank Badge with Trophy/Medal icon for top 3 */}
-      <View
-        className={`w-9 h-9 rounded-xl items-center justify-center mr-3 ${podium.badgeBg}`}
-      >
-        {rank === 1 ? (
-          <Ionicons name="trophy" size={16} color="#000000" />
-        ) : (
-          <Text className={`text-xs font-manrope-bold ${podium.badgeText}`}>
-            #{rank}
-          </Text>
-        )}
-      </View>
-
       {/* Thumbnail */}
-      <View className="w-12 h-16 rounded-xl overflow-hidden bg-neutral-900 mr-3 border border-black/10 shadow-sm">
+      <View className="w-16 h-24 rounded-xl overflow-hidden bg-neutral-900 mr-3 border border-black/10 shadow-sm">
         {coverUrl ? (
           <Image
             source={{ uri: coverUrl }}
@@ -146,10 +89,10 @@ export function M3RankCard({
       {/* Anime Info */}
       <View className="flex-1 mr-2 gap-1 justify-center">
         <Text
-          className={`text-sm font-manrope-bold leading-4 ${
+          className={`text-base font-manrope-bold leading-6 ${
             isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
           }`}
-          numberOfLines={1}
+          numberOfLines={2}
         >
           {title}
         </Text>
@@ -157,16 +100,16 @@ export function M3RankCard({
         <View className="flex-row items-center flex-wrap gap-1">
           {score && (
             <View className="flex-row items-center">
-              <Ionicons name="star" size={10} color="#F59E0B" />
-              <Text className="text-xs font-manrope-bold text-[#F59E0B] ml-1">
+              <Ionicons name="star" size={10} color={isDark ? '#FBBF24' : '#8B4F26'} />
+              <Text className={`text-sm font-manrope-bold ml-1 ${isDark ? 'text-[#FBBF24]' : 'text-[#8B4F26]'}`}>
                 {score}
               </Text>
             </View>
           )}
           {score && (year || eps) && (
             <Text
-              className={`font-manrope text-xs ${
-                isDark ? 'text-[#A89C94]' : 'text-[#776962]'
+              className={`font-manrope text-sm ${
+                isDark ? 'text-[#D0C3BC]' : 'text-[#53433C]'
               }`}
             >
               •
@@ -174,8 +117,8 @@ export function M3RankCard({
           )}
           {year ? (
             <Text
-              className={`font-manrope text-xs ${
-                isDark ? 'text-[#A89C94]' : 'text-[#776962]'
+              className={`font-manrope text-sm ${
+                isDark ? 'text-[#D0C3BC]' : 'text-[#53433C]'
               }`}
             >
               {year}
@@ -183,8 +126,8 @@ export function M3RankCard({
           ) : null}
           {year && eps && (
             <Text
-              className={`font-manrope text-xs ${
-                isDark ? 'text-[#A89C94]' : 'text-[#776962]'
+              className={`font-manrope text-sm ${
+                isDark ? 'text-[#D0C3BC]' : 'text-[#53433C]'
               }`}
             >
               •
@@ -192,8 +135,8 @@ export function M3RankCard({
           )}
           {eps ? (
             <Text
-              className={`font-manrope text-xs ${
-                isDark ? 'text-[#A89C94]' : 'text-[#776962]'
+              className={`font-manrope text-sm ${
+                isDark ? 'text-[#D0C3BC]' : 'text-[#53433C]'
               }`}
             >
               {eps}
@@ -203,10 +146,10 @@ export function M3RankCard({
 
         {genres ? (
           <Text
-            className={`text-xs font-manrope-medium ${
-              isDark ? 'text-[#A89C94]' : 'text-[#776962]'
+            className={`text-sm font-manrope-medium ${
+              isDark ? 'text-[#D0C3BC]' : 'text-[#53433C]'
             }`}
-            numberOfLines={1}
+            numberOfLines={2}
           >
             {genres}
           </Text>
@@ -219,8 +162,8 @@ export function M3RankCard({
         accessibilityLabel={`${isFavorite ? 'Quitar' : 'Guardar'} ${title} ${isFavorite ? 'de' : 'en'} favoritos`}
         accessibilityState={{ selected: isFavorite }}
         onPress={handleFavoritePress}
-        hitSlop={10}
-        className="p-2"
+        style={{ width: 48, height: 48 }}
+        className="items-center justify-center"
       >
         <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
           <Ionicons

@@ -5,10 +5,12 @@ import React from 'react';
 import { Pressable, Text, View } from 'react-native';
 
 import { useAppTheme } from '@/features/theme';
+import { GENRE_LABELS } from '../constants/genres';
 import { AnimeMedia } from '../types/anime.types';
 
 interface M3AnimeCardProps {
   anime: AnimeMedia;
+  compact?: boolean;
   isFavorite?: boolean;
   actionType?: 'favorite' | 'delete';
   onActionPress?: () => void;
@@ -16,6 +18,7 @@ interface M3AnimeCardProps {
 
 export function M3AnimeCard({
   anime,
+  compact = false,
   isFavorite = false,
   actionType = 'favorite',
   onActionPress,
@@ -52,6 +55,49 @@ export function M3AnimeCard({
   const handleCardPress = () => {
     router.push(`/anime/${anime.id}` as any);
   };
+
+  if (compact) {
+    const active = actionType === 'delete' || isFavorite;
+    const metadata = [
+      anime.averageScore != null ? `★ ${(anime.averageScore / 10).toFixed(1)}` : null,
+      year,
+      anime.episodes ? `${anime.episodes} episodios` : null,
+    ].filter(Boolean).join(' · ');
+
+    return (
+      <View className={`flex-row items-center rounded-2xl mb-2 border ${isDark ? 'bg-[#221A16] border-[#3E3028]' : 'bg-white border-[#D8CDC5]'}`}>
+        <Pressable
+          onPress={handleCardPress}
+          accessibilityRole="button"
+          accessibilityLabel={`Ver detalles de ${title}`}
+          className="flex-1 flex-row items-center gap-3 p-3 pr-1 active:opacity-75"
+        >
+          <View style={{ width: 64, height: 88, borderRadius: 10, overflow: 'hidden', backgroundColor: anime.coverImage.color || '#333' }}>
+            {coverUrl ? <Image source={{ uri: coverUrl }} style={{ width: '100%', height: '100%' }} contentFit="cover" transition={150} /> : null}
+          </View>
+          <View className="flex-1 gap-1.5">
+            <Text numberOfLines={2} style={{ fontSize: 16, lineHeight: 22 }} className={`font-manrope-bold ${isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'}`}>
+              {title}
+            </Text>
+            {metadata ? <Text style={{ fontSize: 14, lineHeight: 20 }} className={`font-manrope-medium ${isDark ? 'text-[#D0C3BC]' : 'text-[#53433C]'}`}>{metadata}</Text> : null}
+            {genre ? <Text numberOfLines={1} className={`text-sm font-manrope ${isDark ? 'text-[#D0C3BC]' : 'text-[#53433C]'}`}>{GENRE_LABELS[genre] ?? genre}</Text> : null}
+          </View>
+        </Pressable>
+        {onActionPress && (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={`${active ? 'Quitar' : 'Guardar'} ${title} ${active ? 'de' : 'en'} favoritos`}
+            accessibilityState={{ selected: isFavorite }}
+            onPress={onActionPress}
+            style={{ width: 48, height: 48 }}
+            className={`items-center justify-center rounded-full mr-2 ${active ? (isDark ? 'bg-[#58392B]' : 'bg-[#FFDCC2]') : ''}`}
+          >
+            <Ionicons name={active ? 'heart' : 'heart-outline'} size={22} color={isDark ? '#FFDCC2' : '#8B4F26'} />
+          </Pressable>
+        )}
+      </View>
+    );
+  }
 
   return (
     <Pressable

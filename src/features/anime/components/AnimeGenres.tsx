@@ -3,6 +3,8 @@ import { Text, View } from 'react-native';
 
 import { useAppTheme } from '@/features/theme';
 
+import { GENRE_LABELS } from '../constants/genres';
+
 interface AnimeGenresProps {
   genres?: string[];
 }
@@ -18,18 +20,18 @@ export function AnimeGenres({ genres }: AnimeGenresProps) {
       {genres.map((genre) => (
         <View
           key={genre}
-          className={`px-3 py-1 rounded-xl border ${
+          className={`px-3 py-1.5 rounded-xl border ${
             isDark
               ? 'bg-[#2F241E] border-[#3E3028]'
               : 'bg-[#EDE5DF] border-[#D8CDC5]'
           }`}
         >
           <Text
-            className={`font-manrope-semibold text-xs ${
+            className={`font-manrope-semibold text-sm ${
               isDark ? 'text-[#E09F7D]' : 'text-[#8B4F26]'
             }`}
           >
-            {genre}
+            {GENRE_LABELS[genre] ?? genre}
           </Text>
         </View>
       ))}

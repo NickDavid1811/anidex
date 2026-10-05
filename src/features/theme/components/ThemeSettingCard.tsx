@@ -6,27 +6,25 @@ import { ThemePreference, useAppTheme } from '../context/theme-context';
 interface OptionItem {
   id: ThemePreference;
   title: string;
-  subtitle: string;
+  subtitle?: string;
   icon: string;
 }
 
 const THEME_OPTIONS: OptionItem[] = [
   {
     id: 'system',
-    title: 'Automático (Sistema)',
-    subtitle: 'Sigue la configuración de tema de tu dispositivo',
+    title: 'Sistema',
+    subtitle: 'Usar la apariencia del dispositivo',
     icon: '⚙️',
   },
   {
     id: 'light',
-    title: 'Modo Claro',
-    subtitle: 'Superficies cálidas y limpias Material Design 3',
+    title: 'Claro',
     icon: '☀️',
   },
   {
     id: 'dark',
-    title: 'Modo Oscuro',
-    subtitle: 'Tonalidad cálida café y carbón Material Design 3',
+    title: 'Oscuro',
     icon: '🌙',
   },
 ];
@@ -43,38 +41,19 @@ export function ThemeSettingCard() {
           : 'bg-[#FFFFFF] border-[#D8CDC5] shadow-sm'
       }`}
     >
-      <View className="flex-row items-center gap-3">
-        <View
-          className={`w-11 h-11 rounded-2xl items-center justify-center ${
-            isDark ? 'bg-[#2F241E]' : 'bg-[#EDE5DF]'
-          }`}
-        >
-          <Text className="font-manrope text-xl">🎨</Text>
-        </View>
-        <View className="flex-1 gap-0.5">
-          <Text
-            className={`text-base font-manrope-bold ${
-              isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
-            }`}
-          >
-            Tema de la aplicación
-          </Text>
-          <Text
-            className={`font-manrope text-xs ${
-              isDark ? 'text-[#A89C94]' : 'text-[#776962]'
-            }`}
-          >
-            Material Design 3 Palette
-          </Text>
-        </View>
-      </View>
+      <Text accessibilityRole="header" className={`text-lg font-manrope-bold ${isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'}`}>
+        Apariencia
+      </Text>
 
-      <View className="gap-2.5 mt-1">
+      <View accessibilityRole="radiogroup" accessibilityLabel="Tema de la aplicación" className="gap-2.5 mt-1">
         {THEME_OPTIONS.map((opt) => {
           const isSelected = preference === opt.id;
           return (
             <Pressable
               key={opt.id}
+              accessibilityRole="radio"
+              accessibilityState={{ checked: isSelected }}
+              style={{ minHeight: 56 }}
               onPress={(e) =>
                 setPreference(opt.id, {
                   x: e.nativeEvent.pageX,
@@ -94,7 +73,7 @@ export function ThemeSettingCard() {
               <Text className="font-manrope text-xl mr-3">{opt.icon}</Text>
               <View className="flex-1 gap-0.5">
                 <Text
-                  className={`text-sm font-manrope-bold ${
+                  className={`text-base font-manrope-bold ${
                     isSelected
                       ? isDark
                         ? 'text-[#FFDCC2]'
@@ -106,13 +85,13 @@ export function ThemeSettingCard() {
                 >
                   {opt.title}
                 </Text>
-                <Text
-                  className={`font-manrope text-xs ${
-                    isDark ? 'text-[#A89C94]' : 'text-[#776962]'
+                {opt.subtitle && <Text
+                  className={`font-manrope text-sm ${
+                    isDark ? 'text-[#D0C3BC]' : 'text-[#53433C]'
                   }`}
                 >
                   {opt.subtitle}
-                </Text>
+                </Text>}
               </View>
               <View
                 className={`w-5 h-5 rounded-full border-2 items-center justify-center ${

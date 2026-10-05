@@ -1,9 +1,9 @@
-import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import { AnimeMedia } from '../types/anime.types';
+import { HomeSectionHeader } from './HomeSectionHeader';
 import { M3RankCard } from './M3RankCard';
 
 interface HomeRankingSectionProps {
@@ -23,58 +23,13 @@ export function HomeRankingSection({
 
   return (
     <View className="mt-6 px-4">
-      <View className="flex-row items-center justify-between mb-2">
-        <View className="flex-row items-center gap-2">
-          <View className="w-7 h-7 rounded-lg items-center justify-center bg-[#F59E0B]/20">
-            <Ionicons name="trophy" size={16} color="#F59E0B" />
-          </View>
-          <View>
-            <Text
-              className={`text-base font-manrope-bold ${
-                isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
-              }`}
-            >
-              Más tendencias
-            </Text>
-            <Text
-              className={`font-manrope text-xs ${
-                isDark ? 'text-[#A89C94]' : 'text-[#776962]'
-              }`}
-            >
-              Lo que está llamando la atención
-            </Text>
-          </View>
-        </View>
-
-        <Pressable
-          onPress={() =>
-            router.push({
-              pathname: '/(tabs)/explore',
-              params: { sort: 'trending', genre: '' },
-            })
-          }
-          className="flex-row items-center gap-1"
-        >
-          <Text
-            className={`text-xs font-manrope-semibold ${
-              isDark ? 'text-[#E09F7D]' : 'text-[#8B4F26]'
-            }`}
-          >
-            Ver más
-          </Text>
-          <Ionicons
-            name="arrow-forward"
-            size={12}
-            color={isDark ? '#E09F7D' : '#8B4F26'}
-          />
-        </Pressable>
-      </View>
+      <HomeSectionHeader title="Más tendencias" action="Ver más" accessibilityLabel="Explorar más tendencias" isDark={isDark}
+        onPress={() => router.push({ pathname: '/(tabs)/explore', params: { sort: 'trending', genre: '' } })} />
 
       <View className="mt-2">
-        {animes.map((anime, index) => (
+        {animes.map((anime) => (
           <M3RankCard
             key={`rank-${anime.id}`}
-            rank={index + 6}
             anime={anime}
             isFavorite={isFavorite(anime.id)}
             onToggleFavorite={() => onToggleFavorite(anime)}

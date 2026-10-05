@@ -1,7 +1,8 @@
-import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
+
+import { HomeSectionHeader } from './HomeSectionHeader';
 
 export const POPULAR_CATEGORIES = [
   { id: 'Action', label: 'Acción', icon: '⚔️', color: '#EF4444' },
@@ -35,32 +36,7 @@ export function HomeCategories({ isDark }: HomeCategoriesProps) {
 
   return (
     <View className="mt-5 px-4">
-      <View className="flex-row items-center justify-between mb-2">
-        <Text
-          className={`text-base font-manrope-bold ${
-            isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
-          }`}
-        >
-          Categorías Populares
-        </Text>
-        <Pressable
-          onPress={handleExploreAll}
-          className="flex-row items-center gap-1 active:opacity-75"
-        >
-          <Text
-            className={`text-xs font-manrope-semibold ${
-              isDark ? 'text-[#E09F7D]' : 'text-[#8B4F26]'
-            }`}
-          >
-            Ver todas
-          </Text>
-          <Ionicons
-            name="arrow-forward"
-            size={12}
-            color={isDark ? '#E09F7D' : '#8B4F26'}
-          />
-        </Pressable>
-      </View>
+      <HomeSectionHeader title="Categorías" action="Ver todas" accessibilityLabel="Explorar todas las categorías" onPress={handleExploreAll} isDark={isDark} />
 
       <ScrollView
         horizontal
@@ -69,17 +45,19 @@ export function HomeCategories({ isDark }: HomeCategoriesProps) {
       >
         {POPULAR_CATEGORIES.map((cat) => (
           <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={`Explorar ${cat.label}`}
             key={cat.id}
             onPress={() => handleCategoryPress(cat.id)}
             style={{
               backgroundColor: isDark ? `${cat.color}15` : `${cat.color}12`,
               borderColor: isDark ? `${cat.color}35` : `${cat.color}30`,
             }}
-            className="flex-row items-center px-3.5 py-2 rounded-2xl border active:scale-95 shadow-sm"
+            className="min-h-12 flex-row items-center px-3.5 py-2 rounded-2xl border active:scale-95 shadow-sm"
           >
             <Text className="font-manrope text-sm mr-1.5">{cat.icon}</Text>
             <Text
-              className={`text-xs font-manrope-bold ${
+              className={`text-sm font-manrope-bold ${
                 isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
               }`}
             >

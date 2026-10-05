@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams } from 'expo-router';
 import React, { useEffect } from 'react';
 import {
@@ -78,16 +79,17 @@ export default function ExploreScreen() {
             onSearchChange={setSearchTerm}
             isDark={isDark}
           />
-          <View className="flex-row gap-2">
+          <View accessibilityRole="radiogroup" accessibilityLabel="Ordenar animes" className={`flex-row rounded-2xl p-1 ${isDark ? 'bg-[#221A16]' : 'bg-[#EDE5DF]'}`}>
             {(['POPULARITY_DESC', 'TRENDING_DESC'] as const).map((value) => (
               <Pressable
                 key={value}
-                accessibilityRole="button"
-                accessibilityState={{ selected: sort === value }}
+                accessibilityRole="radio"
+                accessibilityState={{ checked: sort === value }}
                 onPress={() => setSort(value)}
-                className={`min-h-12 px-4 justify-center rounded-full ${sort === value ? (isDark ? 'bg-[#58392B]' : 'bg-[#FFDCC2]') : isDark ? 'bg-[#221A16]' : 'bg-[#EDE5DF]'}`}
+                className={`min-h-12 flex-1 flex-row gap-2 items-center justify-center px-2 py-2 rounded-xl ${sort === value ? (isDark ? 'bg-[#58392B]' : 'bg-[#FFDCC2]') : isDark ? 'bg-[#221A16]' : 'bg-[#EDE5DF]'}`}
               >
-                <Text className={`text-sm font-manrope-semibold ${textClass}`}>
+                {sort === value && <Ionicons name="checkmark" size={18} color={accent} />}
+                <Text className={`shrink text-center text-sm font-manrope-semibold ${textClass}`}>
                   {value === 'POPULARITY_DESC' ? 'Populares' : 'Tendencias'}
                 </Text>
               </Pressable>
@@ -102,34 +104,32 @@ export default function ExploreScreen() {
             }
             isDark={isDark}
           />
-          <View className="flex-row items-center justify-between">
-            <Text
-              accessibilityLiveRegion="polite"
-              className={`font-manrope text-sm ${textClass}`}
-            >
-              {isLoading && results.length
-                ? 'Actualizando resultados…'
-                : hasFilters
-                  ? `${results.length} resultados cargados`
-                  : sort === 'TRENDING_DESC'
-                    ? 'Tendencias del momento'
-                    : 'Descubre los más populares'}
-            </Text>
-            {hasFilters && (
-              <Pressable
-                accessibilityRole="button"
-                onPress={clearFilters}
-                className="min-h-12 px-2 justify-center"
+          {(hasFilters || (isLoading && results.length > 0)) && (
+            <View className="flex-row flex-wrap items-center justify-between gap-x-2">
+              <Text
+                accessibilityLiveRegion="polite"
+                className={`font-manrope text-sm shrink ${textClass}`}
               >
-                <Text
-                  style={{ color: accent }}
-                  className="text-sm font-manrope-bold"
+                {isLoading
+                  ? 'Buscando animes…'
+                  : error
+                    ? 'No se pudieron actualizar los resultados'
+                    : `${results.length} resultados cargados`}
+              </Text>
+              {hasFilters && (
+                <Pressable
+                  accessibilityRole="button"
+                  onPress={clearFilters}
+                  style={{ minHeight: 48 }}
+                  className="px-2 justify-center"
                 >
-                  Limpiar filtros
-                </Text>
-              </Pressable>
-            )}
-          </View>
+                  <Text style={{ color: accent }} className="text-sm font-manrope-bold">
+                    Limpiar filtros
+                  </Text>
+                </Pressable>
+              )}
+            </View>
+          )}
         </View>
         {favoritesError && (
           <Text
@@ -168,6 +168,7 @@ export default function ExploreScreen() {
             renderItem={({ item }) => (
               <M3AnimeCard
                 anime={item}
+                compact
                 isFavorite={isFavorite(item.id)}
                 onActionPress={() => {
                   void toggleFavorite(item).catch(() => {});

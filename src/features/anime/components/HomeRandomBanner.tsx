@@ -11,7 +11,7 @@ export function HomeRandomBanner({ onSpin, isDark }: HomeRandomBannerProps) {
   return (
     <View className="mt-5 px-4">
       <View
-        className={`p-4 rounded-3xl border flex-row items-center justify-between ${
+        className={`p-4 rounded-3xl border gap-3 ${
           isDark
             ? 'bg-[#221A16] border-[#3E3028]'
             : 'bg-[#FFF9F5] border-[#D8CDC5] shadow-sm'
@@ -34,32 +34,35 @@ export function HomeRandomBanner({ onSpin, isDark }: HomeRandomBannerProps) {
               ¿No sabes qué ver hoy?
             </Text>
             <Text
-              className={`font-manrope text-xs mt-0.5 ${
-                isDark ? 'text-[#A89C94]' : 'text-[#776962]'
+              className={`font-manrope text-sm mt-0.5 ${
+                isDark ? 'text-[#D0C3BC]' : 'text-[#53433C]'
               }`}
             >
-              Descubre un anime al azar con la ruleta
+              Prueba un anime al azar
             </Text>
           </View>
         </View>
 
         <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Elegir un anime al azar"
+          style={{ minHeight: 48 }}
           onPress={onSpin}
-          className={`flex-row items-center px-4 py-2.5 rounded-2xl active:scale-95 ${
+          className={`flex-row items-center justify-center gap-2 px-4 py-2.5 rounded-2xl active:scale-95 ${
             isDark ? 'bg-[#3A2D25]' : 'bg-[#8B4F26]'
           }`}
         >
           <Text
-            className={`text-xs font-manrope-bold mr-1 ${
+            className={`text-sm font-manrope-bold mr-1 ${
               isDark ? 'text-[#EDE0DB]' : 'text-white'
             }`}
           >
-            Girar
+            Sorpréndeme
           </Text>
           <Ionicons
-            name="flash"
-            size={12}
-            color={isDark ? '#F59E0B' : '#FFFFFF'}
+            name="dice-outline"
+            size={20}
+            color={isDark ? '#EDE0DB' : '#FFFFFF'}
           />
         </Pressable>
       </View>

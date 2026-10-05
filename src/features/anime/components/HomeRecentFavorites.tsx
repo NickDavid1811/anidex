@@ -1,10 +1,10 @@
-import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import React from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 
 import { AnimeMedia } from '../types/anime.types';
+import { HomeSectionHeader } from './HomeSectionHeader';
 
 interface HomeRecentFavoritesProps {
   favorites: AnimeMedia[];
@@ -23,32 +23,7 @@ export function HomeRecentFavorites({
 
   return (
     <View className="mt-5 px-4">
-      <View className="flex-row items-center justify-between mb-2.5">
-        <Text
-          className={`text-base font-manrope-bold ${
-            isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
-          }`}
-        >
-          Mis Favoritos Recientes
-        </Text>
-        <Pressable
-          onPress={() => router.push('/(tabs)/favorites' as any)}
-          className="flex-row items-center gap-1"
-        >
-          <Text
-            className={`text-xs font-manrope-semibold ${
-              isDark ? 'text-[#E09F7D]' : 'text-[#8B4F26]'
-            }`}
-          >
-            Ver todos ({favoritesCount})
-          </Text>
-          <Ionicons
-            name="arrow-forward"
-            size={12}
-            color={isDark ? '#E09F7D' : '#8B4F26'}
-          />
-        </Pressable>
-      </View>
+      <HomeSectionHeader title="Tus favoritos" action="Ver todos" accessibilityLabel={`Ver tus ${favoritesCount} favoritos`} onPress={() => router.push('/(tabs)/favorites')} isDark={isDark} />
 
       <ScrollView
         horizontal
@@ -64,6 +39,8 @@ export function HomeRecentFavorites({
           const cover = fav.coverImage.medium || fav.coverImage.large;
           return (
             <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={`Ver detalles de ${title}`}
               key={`recent-fav-${fav.id}`}
               onPress={() => router.push(`/anime/${fav.id}` as any)}
               className="w-24 active:opacity-85"
@@ -80,8 +57,8 @@ export function HomeRecentFavorites({
                 )}
               </View>
               <Text
-                numberOfLines={1}
-                className={`text-xs font-manrope-semibold ${
+                numberOfLines={2}
+                className={`text-sm leading-5 font-manrope-semibold ${
                   isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
                 }`}
               >

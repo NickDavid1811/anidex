@@ -3,7 +3,6 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { FlatList, Pressable, Text, View } from 'react-native';
 import {
   SafeAreaView,
-  useSafeAreaInsets,
 } from 'react-native-safe-area-context';
 
 import { AnimeMedia, M3AnimeCard } from '@/features/anime';
@@ -28,9 +27,9 @@ export default function FavoritesScreen() {
   } = useFavorites();
   const { activeScheme } = useAppTheme();
   const isDark = activeScheme === 'dark';
-  const insets = useSafeAreaInsets();
 
   const [removedAnime, setRemovedAnime] = useState<AnimeMedia | null>(null);
+  const [noticeHeight, setNoticeHeight] = useState(0);
   const [isUndoing, setIsUndoing] = useState(false);
   const [filterText, setFilterText] = useState('');
   const [selectedGenre, setSelectedGenre] = useState('Todos');
@@ -121,7 +120,11 @@ export default function FavoritesScreen() {
             )}
           </View>
 
-          <FavoritesFilterBar
+          <Text className={`font-manrope text-sm ${isDark ? 'text-[#D0C3BC]' : 'text-[#53433C]'}`}>
+            Guardados en este dispositivo
+          </Text>
+
+          {favorites.length > 0 && <FavoritesFilterBar
             filterText={filterText}
             onFilterTextChange={setFilterText}
             sortType={sortType}
@@ -129,7 +132,7 @@ export default function FavoritesScreen() {
             selectedGenre={selectedGenre}
             onGenreSelect={setSelectedGenre}
             isDark={isDark}
-          />
+          />}
         </View>
 
         {error && (
@@ -162,12 +165,13 @@ export default function FavoritesScreen() {
             contentContainerStyle={{
               paddingHorizontal: 16,
               paddingTop: 8,
-              paddingBottom: insets.bottom + 90,
+              paddingBottom: removedAnime ? noticeHeight + 24 : 16,
             }}
             showsVerticalScrollIndicator={false}
             renderItem={({ item }) => (
               <M3AnimeCard
                 anime={item}
+                compact
                 isFavorite={true}
                 actionType="delete"
                 onActionPress={() => {
@@ -183,16 +187,19 @@ export default function FavoritesScreen() {
       {removedAnime && (
         <View
           accessibilityLiveRegion="polite"
-          style={{ bottom: insets.bottom + 80 }}
+          onLayout={(event) => setNoticeHeight(event.nativeEvent.layout.height)}
+          style={{ bottom: 12, left: 16, right: 16, position: 'absolute' }}
           className={`absolute left-4 right-4 rounded-2xl p-3 flex-row items-center gap-2 ${isDark ? 'bg-[#EDE0DB]' : 'bg-[#30241E]'}`}
         >
           <Text
+            numberOfLines={3}
             className={`font-manrope flex-1 text-sm ${isDark ? 'text-[#201A17]' : 'text-white'}`}
           >
-            Quitado de favoritos
+            {removedAnime.title.english || removedAnime.title.userPreferred || removedAnime.title.romaji || 'Anime'} quitado de favoritos
           </Text>
           <Pressable
             accessibilityRole="button"
+            accessibilityState={{ disabled: isUndoing, busy: isUndoing }}
             disabled={isUndoing}
             className="min-h-12 px-3 justify-center"
             onPress={async () => {

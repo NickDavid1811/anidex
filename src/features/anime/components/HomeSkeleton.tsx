@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { Animated, Dimensions, ScrollView, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Animated, ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface HomeSkeletonProps {
@@ -7,9 +7,7 @@ interface HomeSkeletonProps {
 }
 
 export function HomeSkeleton({ isDark }: HomeSkeletonProps) {
-  const pulseAnim = useRef(new Animated.Value(0.35)).current;
-  const screenWidth = Dimensions.get('window').width;
-  const contentWidth = Math.min(screenWidth, 800);
+  const [pulseAnim] = useState(() => new Animated.Value(0.35));
 
   useEffect(() => {
     const loop = Animated.loop(
@@ -49,18 +47,9 @@ export function HomeSkeleton({ isDark }: HomeSkeletonProps) {
               style={{
                 opacity: pulseAnim,
                 backgroundColor: blockColor,
-                width: 170,
+                width: '85%',
                 height: 28,
                 borderRadius: 8,
-              }}
-            />
-            <Animated.View
-              style={{
-                opacity: pulseAnim,
-                backgroundColor: blockColor,
-                width: 220,
-                height: 14,
-                borderRadius: 6,
               }}
             />
           </View>
@@ -93,7 +82,7 @@ export function HomeSkeleton({ isDark }: HomeSkeletonProps) {
                 opacity: pulseAnim,
                 backgroundColor: blockColor,
                 width: '100%',
-                height: 195,
+                height: 310,
                 borderRadius: 28,
               }}
             />
@@ -130,7 +119,7 @@ export function HomeSkeleton({ isDark }: HomeSkeletonProps) {
                     opacity: pulseAnim,
                     backgroundColor: blockColor,
                     width: w,
-                    height: 36,
+                    height: 48,
                     borderRadius: 16,
                   }}
                 />

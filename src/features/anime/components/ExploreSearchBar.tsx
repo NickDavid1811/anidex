@@ -15,24 +15,24 @@ export function ExploreSearchBar({
 }: ExploreSearchBarProps) {
   return (
     <View
-      className={`will-change-variable flex-row items-center rounded-2xl px-3.5 h-12 border ${
+      className={`will-change-variable flex-row items-center rounded-2xl pl-4 pr-1 min-h-14 border ${
         isDark
-          ? 'bg-[#221A16] border-[#3E3028]'
-          : 'bg-[#FFFFFF] border-[#D8CDC5] shadow-sm'
+          ? 'bg-[#221A16] border-[#776962]'
+          : 'bg-[#FFFFFF] border-[#A89C94] shadow-sm'
       }`}
     >
       <Ionicons
         name="search"
-        size={18}
-        color={isDark ? '#A89C94' : '#776962'}
+        size={22}
+        color={isDark ? '#D0C3BC' : '#53433C'}
         style={{ marginRight: 8 }}
       />
       <TextInput
-        className={`flex-1 text-sm font-manrope-medium ${
+        className={`flex-1 text-base font-manrope-medium ${
           isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
         }`}
-        placeholder="Buscar animes..."
-        placeholderTextColor={isDark ? '#7E736C' : '#9E928B'}
+        placeholder="Buscar por título…"
+        placeholderTextColor={isDark ? '#D0C3BC' : '#53433C'}
         value={searchTerm}
         onChangeText={onSearchChange}
         accessibilityLabel="Buscar anime por título"
@@ -49,8 +49,8 @@ export function ExploreSearchBar({
         >
           <Ionicons
             name="close-circle"
-            size={18}
-            color={isDark ? '#A89C94' : '#776962'}
+            size={22}
+            color={isDark ? '#D0C3BC' : '#53433C'}
           />
         </Pressable>
       )}

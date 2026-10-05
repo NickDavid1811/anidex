@@ -1,4 +1,5 @@
 import React from 'react';
+import { GENRE_LABELS } from '../constants/genres';
 import { Pressable, ScrollView, Text } from 'react-native';
 
 export const EXPLORE_GENRES = [
@@ -52,17 +53,17 @@ export function ExploreGenreChips({
             }`}
           >
             <Text
-              className={`text-xs font-manrope-semibold ${
+              className={`text-sm font-manrope-semibold ${
                 isSelected
                   ? isDark
                     ? 'text-[#FFDCC2]'
                     : 'text-[#351A08]'
                   : isDark
-                    ? 'text-[#A89C94]'
+                    ? 'text-[#D0C3BC]'
                     : 'text-[#53433C]'
               }`}
             >
-              {g}
+              {GENRE_LABELS[g] ?? g}
             </Text>
           </Pressable>
         );

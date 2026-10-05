@@ -10,6 +10,7 @@ import { LoadingState } from '@/components/ui/loading-state';
 import { AnimeGenres, AnimeScoreBadge, useAnimeDetail } from '@/features/anime';
 import { useFavorites } from '@/features/favorites';
 import { useAppTheme } from '@/features/theme';
+import { AnimeSynopsis } from '@/features/anime/components/AnimeSynopsis';
 
 export default function AnimeDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -19,7 +20,6 @@ export default function AnimeDetailScreen() {
 
   const { activeScheme } = useAppTheme();
   const isDark = activeScheme === 'dark';
-  const [expandedDescription, setExpandedDescription] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const goBack = () => {
@@ -76,10 +76,6 @@ export default function AnimeDetailScreen() {
     anime.title.userPreferred ||
     anime.title.romaji ||
     'Anime';
-  const cleanDescription = anime.description
-    ? anime.description.replace(/<[^>]*>?/gm, '')
-    : 'Sin descripción disponible.';
-
   const isFav = isFavorite(anime.id);
   const saveFavorite = async () => {
     if (isSaving) return;
@@ -111,8 +107,8 @@ export default function AnimeDetailScreen() {
     TV_SHORT: 'Serie corta',
     MOVIE: 'Película',
     SPECIAL: 'Especial',
-    OVA: 'OVA',
-    ONA: 'ONA',
+    OVA: 'Vídeo original (OVA)',
+    ONA: 'Serie web (ONA)',
     MUSIC: 'Música',
   };
 
@@ -186,7 +182,7 @@ export default function AnimeDetailScreen() {
         {anime.bannerImage ? (
           <Image
             source={{ uri: anime.bannerImage }}
-            style={{ width: '100%', height: 192 }}
+            style={{ width: '100%', height: 128 }}
             contentFit="cover"
           />
         ) : null}
@@ -198,13 +194,13 @@ export default function AnimeDetailScreen() {
               source={{
                 uri: anime.coverImage.large || anime.coverImage.medium,
               }}
-              style={{ width: 112, height: 160 }}
+              style={{ width: 88, height: 124, borderRadius: 12 }}
               className="rounded-2xl"
               contentFit="cover"
               transition={200}
             />
 
-            <View className="flex-1 justify-center gap-1.5">
+            <View className="flex-1 justify-center gap-2">
               <Text
                 className={`text-xl font-manrope-bold leading-6 ${
                   isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
@@ -214,27 +210,27 @@ export default function AnimeDetailScreen() {
               </Text>
               {anime.title.native && (
                 <Text
-                  className={`font-manrope text-xs ${
-                    isDark ? 'text-[#A89C94]' : 'text-[#776962]'
+                  className={`font-manrope text-sm ${
+                    isDark ? 'text-[#D0C3BC]' : 'text-[#53433C]'
                   }`}
                 >
                   {anime.title.native}
                 </Text>
               )}
-              <View className="flex-row gap-2 items-center mt-1">
-                <AnimeScoreBadge score={anime.averageScore} />
+              <View className="flex-row flex-wrap gap-2 items-center mt-1">
+                <AnimeScoreBadge score={anime.averageScore} showSource />
                 <View
                   className={`px-2 py-0.5 rounded-lg ${
                     isDark ? 'bg-[#2F241E]' : 'bg-[#EDE5DF]'
                   }`}
                 >
                   <Text
-                    className={`text-[11px] font-manrope-bold ${
+                    className={`text-sm font-manrope-bold ${
                       isDark ? 'text-[#D0C3BC]' : 'text-[#53433C]'
                     }`}
                   >
                     {anime.status
-                      ? statusLabels[anime.status]
+                      ? (statusLabels[anime.status] || 'Estado desconocido')
                       : 'Estado desconocido'}
                   </Text>
                 </View>
@@ -255,12 +251,12 @@ export default function AnimeDetailScreen() {
               color={isDark ? '#FFDCC2' : '#8B4F26'}
             />
             <Text
-              className={`text-base font-manrope-bold ${isDark ? 'text-[#FFDCC2]' : 'text-[#351A08]'}`}
+              className={`shrink text-center text-base font-manrope-bold ${isDark ? 'text-[#FFDCC2]' : 'text-[#351A08]'}`}
             >
               {isSaving
                 ? 'Guardando…'
                 : isFav
-                  ? 'Guardado en favoritos'
+                  ? 'Quitar de favoritos'
                   : 'Guardar en favoritos'}
             </Text>
           </Pressable>
@@ -275,107 +271,28 @@ export default function AnimeDetailScreen() {
           {/* Chips de Géneros */}
           <AnimeGenres genres={anime.genres} />
 
-          {/* Grid de Metadatos estilo Material Design 3 */}
           <View
-            className={`will-change-variable flex-row justify-around p-3.5 rounded-2xl border ${
-              isDark
-                ? 'bg-[#221A16] border-[#3E3028]'
-                : 'bg-[#FFFFFF] border-[#D8CDC5] shadow-sm'
+            className={`flex-row flex-wrap gap-4 p-4 rounded-2xl border ${
+              isDark ? 'bg-[#221A16] border-[#3E3028]' : 'bg-white border-[#D8CDC5]'
             }`}
           >
-            <View className="items-center gap-1">
-              <Text
-                className={`font-manrope text-xs ${
-                  isDark ? 'text-[#A89C94]' : 'text-[#776962]'
-                }`}
-              >
-                Episodios
-              </Text>
-              <Text
-                className={`text-sm font-manrope-bold ${
-                  isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
-                }`}
-              >
-                {anime.episodes ?? 'Por confirmar'}
-              </Text>
-            </View>
-
-            <View className="items-center gap-1">
-              <Text
-                className={`font-manrope text-xs ${
-                  isDark ? 'text-[#A89C94]' : 'text-[#776962]'
-                }`}
-              >
-                Formato
-              </Text>
-              <Text
-                className={`text-sm font-manrope-bold ${
-                  isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
-                }`}
-              >
-                {anime.format ? formatLabels[anime.format] : 'Por confirmar'}
-              </Text>
-            </View>
-
-            <View className="items-center gap-1">
-              <Text
-                className={`font-manrope text-xs ${
-                  isDark ? 'text-[#A89C94]' : 'text-[#776962]'
-                }`}
-              >
-                Temporada
-              </Text>
-              <Text
-                className={`text-sm font-manrope-bold ${
-                  isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
-                }`}
-              >
-                {anime.season
-                  ? `${seasonLabels[anime.season]} ${anime.seasonYear ?? ''}`
-                  : (anime.seasonYear ?? 'Por confirmar')}
-              </Text>
-            </View>
-          </View>
-
-          {/* Sección de Sinopsis */}
-          <View
-            className={`will-change-variable gap-2 p-4 rounded-2xl border ${
-              isDark
-                ? 'bg-[#221A16] border-[#3E3028]'
-                : 'bg-[#FFFFFF] border-[#D8CDC5] shadow-sm'
-            }`}
-          >
-            <Text
-              className={`text-base font-manrope-bold ${
-                isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
-              }`}
-            >
-              Sinopsis
-            </Text>
-            <Text
-              className={`font-manrope text-base leading-6 ${
-                isDark ? 'text-[#D0C3BC]' : 'text-[#53433C]'
-              }`}
-            >
-              {expandedDescription || cleanDescription.length <= 280
-                ? cleanDescription
-                : `${cleanDescription.slice(0, 280).trim()}…`}
-            </Text>
-            {cleanDescription.length > 280 && (
-              <Pressable
-                accessibilityRole="button"
-                accessibilityState={{ expanded: expandedDescription }}
-                onPress={() => setExpandedDescription((value) => !value)}
-                className="min-h-12 justify-center"
-              >
-                <Text
-                  className={`text-sm font-manrope-bold ${isDark ? 'text-[#E09F7D]' : 'text-[#8B4F26]'}`}
-                >
-                  {expandedDescription ? 'Leer menos' : 'Leer más'}
+            {[
+              { label: 'Episodios', value: anime.episodes ?? 'Por confirmar' },
+              { label: 'Formato', value: anime.format ? (formatLabels[anime.format] || anime.format) : 'Por confirmar' },
+              { label: 'Temporada', value: anime.season ? `${seasonLabels[anime.season]} ${anime.seasonYear ?? ''}`.trim() : (anime.seasonYear ?? 'Por confirmar') },
+            ].map(({ label, value }) => (
+              <View key={label} style={{ flexGrow: 1, flexBasis: 96 }} className="gap-1">
+                <Text className={`font-manrope text-sm ${isDark ? 'text-[#D0C3BC]' : 'text-[#53433C]'}`}>
+                  {label}
                 </Text>
-              </Pressable>
-            )}
+                <Text className={`text-base font-manrope-semibold ${isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'}`}>
+                  {value}
+                </Text>
+              </View>
+            ))}
           </View>
+
+          <AnimeSynopsis key={anime.id} description={anime.description} isDark={isDark} />
         </View>
       </ScrollView>
     </View>

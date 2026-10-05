@@ -1,9 +1,9 @@
-import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
-import { FlatList, Pressable, Text, View } from 'react-native';
+import { FlatList, View } from 'react-native';
 
 import { AnimeMedia } from '../types/anime.types';
+import { HomeSectionHeader } from './HomeSectionHeader';
 import { M3FeaturedCard } from './M3FeaturedCard';
 
 interface HomeFeaturedCarouselProps {
@@ -23,36 +23,9 @@ export function HomeFeaturedCarousel({
 
   return (
     <View className="mt-3">
-      <View className="flex-row items-center justify-between px-4 mb-2.5">
-        <Text
-          className={`text-base font-manrope-bold ${
-            isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
-          }`}
-        >
-          Tendencias del momento
-        </Text>
-        <Pressable
-          onPress={() =>
-            router.push({
-              pathname: '/(tabs)/explore',
-              params: { sort: 'trending', genre: '' },
-            })
-          }
-          className="flex-row items-center gap-1"
-        >
-          <Text
-            className={`text-xs font-manrope-semibold ${
-              isDark ? 'text-[#E09F7D]' : 'text-[#8B4F26]'
-            }`}
-          >
-            Ver todo
-          </Text>
-          <Ionicons
-            name="arrow-forward"
-            size={12}
-            color={isDark ? '#E09F7D' : '#8B4F26'}
-          />
-        </Pressable>
+      <View className="px-4">
+        <HomeSectionHeader title="Tendencias" action="Ver todo" accessibilityLabel="Ver todas las tendencias" isDark={isDark}
+          onPress={() => router.push({ pathname: '/(tabs)/explore', params: { sort: 'trending', genre: '' } })} />
       </View>
 
       {/* Carrusel */}
