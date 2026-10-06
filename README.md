@@ -2,6 +2,14 @@
 
 Aplicación multiplataforma para descubrir anime, consultar información detallada y crear una colección personal de favoritos. AniDex obtiene su catálogo desde la API GraphQL de [AniList](https://anilist.co) y está construida con Expo y React Native.
 
+## Vista previa
+
+<p align="center">
+  <img src="./assets/screenshots/home.png" width="30%" alt="Pantalla de inicio de AniDex con tendencias, categorías y recomendación aleatoria" />
+  <img src="./assets/screenshots/explore.png" width="30%" alt="Pantalla para explorar, buscar y filtrar anime" />
+  <img src="./assets/screenshots/favorites.png" width="30%" alt="Pantalla de favoritos guardados en AniDex" />
+</p>
+
 ## Funcionalidades
 
 - Consulta de anime en tendencia y rankings destacados.
