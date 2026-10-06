@@ -10,13 +10,35 @@ export function useTrendingAnime() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchTrending = useCallback(async (isRefresh = false) => {
+  useEffect(() => {
+    let isActive = true;
+
+    void getTrendingAnime(1, 20)
+      .then((response) => {
+        if (!isActive) return;
+        setAnimes(response.media);
+        setPageInfo(response.pageInfo);
+      })
+      .catch((cause) => {
+        if (!isActive) return;
+        setError(
+          cause instanceof Error
+            ? cause.message
+            : 'Error desconocido al cargar animes'
+        );
+      })
+      .finally(() => {
+        if (isActive) setIsLoading(false);
+      });
+
+    return () => {
+      isActive = false;
+    };
+  }, []);
+
+  const refetch = useCallback(async () => {
     try {
-      if (isRefresh) {
-        setIsRefreshing(true);
-      } else {
-        setIsLoading(true);
-      }
+      setIsRefreshing(true);
       setError(null);
 
       const response = await getTrendingAnime(1, 20);
@@ -25,18 +47,9 @@ export function useTrendingAnime() {
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido al cargar animes');
     } finally {
-      setIsLoading(false);
       setIsRefreshing(false);
     }
   }, []);
-
-  useEffect(() => {
-    fetchTrending();
-  }, [fetchTrending]);
-
-  const refetch = useCallback(() => {
-    return fetchTrending(true);
-  }, [fetchTrending]);
 
   return {
     animes,

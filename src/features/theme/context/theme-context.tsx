@@ -54,7 +54,7 @@ export function ThemeProviderWrapper({ children }: { children: React.ReactNode }
       // 1. Cambiar el tema e interfaz de forma INMEDIATA (0ms de retraso)
       setPreferenceState(newPref);
       if (newPref === 'system') {
-        Appearance.setColorScheme('unspecified' as any);
+        Appearance.setColorScheme('unspecified');
       } else {
         Appearance.setColorScheme(newPref);
       }

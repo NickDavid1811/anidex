@@ -42,7 +42,7 @@ Aplicación multiplataforma para descubrir anime, consultar información detalla
 1. Clona el repositorio y entra en su directorio:
 
    ```bash
-   git clone <URL_DEL_REPOSITORIO>
+   git clone https://github.com/NickDavid1811/anidex.git
    cd anidex
    ```
 

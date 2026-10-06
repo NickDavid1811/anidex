@@ -61,7 +61,7 @@ export function ThemeTransitionOverlay({
         }
       }
     );
-  }, [onComplete]);
+  }, [onComplete, opacity, scale]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
