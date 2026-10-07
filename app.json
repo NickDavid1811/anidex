@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "anidex",
+    "name": "Anidex",
     "slug": "anidex",
     "version": "0.1.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/brand/app-icon.png",
     "scheme": "anidex",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/icon.png",
+      "icon": "./assets/brand/app-icon.png",
       "bundleIdentifier": "com.nickydavis.anidex",
       "appleTeamId": "V9HN6H2Q99",
       "supportsTablet": true,
@@ -20,16 +20,18 @@
       }
     },
     "android": {
+      "icon": "./assets/brand/app-icon.png",
       "adaptiveIcon": {
-        "backgroundColor": "#000000",
-        "foregroundImage": "./assets/icon.png"
+        "backgroundColor": "#21120D",
+        "foregroundImage": "./assets/brand/android-foreground.png",
+        "monochromeImage": "./assets/brand/android-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.nickydavis.anidex"
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/brand/favicon.png"
     },
     "plugins": [
       "expo-router",
@@ -37,7 +39,7 @@
         "expo-splash-screen",
         {
           "backgroundColor": "#141211",
-          "image": "./assets/icon.png",
+          "image": "./assets/brand/anidex-mark.png",
           "imageWidth": 128
         }
       ],

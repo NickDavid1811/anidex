@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 
-import { AnimatedSplashOverlay } from '@/components/animated-icon';
+import { SplashOverlay } from '@/components/splash-overlay';
 import { AuthProvider } from '@/features/auth';
 import { FavoritesProvider } from '@/features/favorites';
 import { ThemeProviderWrapper, useAppTheme } from '@/features/theme';
@@ -19,7 +19,7 @@ function ThemeContent() {
   return (
     <ThemeProvider value={activeScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <StatusBar hidden={true} />
-      <AnimatedSplashOverlay />
+      <SplashOverlay />
       <Stack
         screenOptions={{
           headerShown: false,
