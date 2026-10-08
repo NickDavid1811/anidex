@@ -1,11 +1,11 @@
-import { Image } from 'expo-image';
-import * as SplashScreen from 'expo-splash-screen';
-import { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import Animated, { Easing, Keyframe } from 'react-native-reanimated';
-import { scheduleOnRN } from 'react-native-worklets';
+import { Image } from "expo-image";
+import * as SplashScreen from "expo-splash-screen";
+import { useState } from "react";
+import { StyleSheet, View } from "react-native";
+import Animated, { Easing, Keyframe } from "react-native-reanimated";
+import { scheduleOnRN } from "react-native-worklets";
 
-const DURATION = 600;
+const DURATION = 4000;
 
 const exitAnimation = new Keyframe({
   0: {
@@ -36,7 +36,7 @@ export function SplashOverlay() {
     <Image
       contentFit="contain"
       style={styles.logo}
-      source={require('@/assets/brand/anidex-mark.png')}
+      source={require("@/assets/brand/anidex-mark.png")}
     />
   );
 
@@ -44,7 +44,7 @@ export function SplashOverlay() {
     return (
       <Animated.View
         entering={exitAnimation.duration(DURATION).withCallback((finished) => {
-          'worklet';
+          "worklet";
           if (finished) scheduleOnRN(setVisible, false);
         })}
         style={styles.overlay}
@@ -73,9 +73,9 @@ const styles = StyleSheet.create({
   },
   overlay: {
     ...StyleSheet.absoluteFill,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#141211',
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#141211",
     zIndex: 1000,
   },
 });
