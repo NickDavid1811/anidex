@@ -1,12 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
-import * as Haptics from 'expo-haptics';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
-import React, { useState } from 'react';
-import { Animated, Pressable, Text, View } from 'react-native';
+import React from 'react';
+import { Pressable, Text, View } from 'react-native';
 
 import { useAppTheme } from '@/features/theme';
 import { AnimeMedia } from '../types/anime.types';
+import { FavoriteActionButton } from './FavoriteActionButton';
 
 interface M3RankCardProps {
   anime: AnimeMedia;
@@ -21,7 +21,6 @@ export function M3RankCard({
 }: M3RankCardProps) {
   const { activeScheme } = useAppTheme();
   const isDark = activeScheme === 'dark';
-  const [scaleAnim] = useState(() => new Animated.Value(1));
 
   const title =
     anime.title.english ||
@@ -38,29 +37,6 @@ export function M3RankCard({
   const year = anime.seasonYear || anime.startDate?.year || '';
   const eps = anime.episodes ? `${anime.episodes} eps` : '';
   const genres = anime.genres ? anime.genres.slice(0, 2).join(' • ') : '';
-
-  const handleFavoritePress = (e: any) => {
-    e.stopPropagation();
-    try {
-      Haptics?.impactAsync?.(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
-    } catch {}
-
-    Animated.sequence([
-      Animated.timing(scaleAnim, {
-        toValue: 1.4,
-        duration: 110,
-        useNativeDriver: true,
-      }),
-      Animated.spring(scaleAnim, {
-        toValue: 1,
-        friction: 4,
-        tension: 120,
-        useNativeDriver: true,
-      }),
-    ]).start();
-
-    onToggleFavorite();
-  };
 
   return (
     <Pressable
@@ -157,22 +133,13 @@ export function M3RankCard({
       </View>
 
       {/* Bouncy Heart Action Button */}
-      <Pressable
-        accessibilityRole="button"
+      <FavoriteActionButton
         accessibilityLabel={`${isFavorite ? 'Quitar' : 'Guardar'} ${title} ${isFavorite ? 'de' : 'en'} favoritos`}
-        accessibilityState={{ selected: isFavorite }}
-        onPress={handleFavoritePress}
-        style={{ width: 48, height: 48 }}
-        className="items-center justify-center"
-      >
-        <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
-          <Ionicons
-            name={isFavorite ? 'heart' : 'heart-outline'}
-            size={22}
-            color={isFavorite ? '#E53935' : isDark ? '#A89C94' : '#776962'}
-          />
-        </Animated.View>
-      </Pressable>
+        active={isFavorite}
+        isDark={isDark}
+        onPress={onToggleFavorite}
+        contained={false}
+      />
     </Pressable>
   );
 }

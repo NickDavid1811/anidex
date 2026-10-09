@@ -1,6 +1,7 @@
 import { useFocusEffect } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { FlatList, Pressable, Text, View } from 'react-native';
+import Animated, { FadeOutLeft, LinearTransition } from 'react-native-reanimated';
 import {
   SafeAreaView,
 } from 'react-native-safe-area-context';
@@ -174,7 +175,12 @@ export default function FavoritesScreen() {
                 />
               </View>
             ) : (
-              <View className="px-4">
+              <Animated.View
+                className="px-4"
+                collapsable={false}
+                layout={LinearTransition.springify().damping(18).stiffness(180)}
+                exiting={FadeOutLeft.duration(180)}
+              >
                 <M3AnimeCard
                   anime={item.anime}
                   compact
@@ -186,7 +192,7 @@ export default function FavoritesScreen() {
                       .catch(() => {});
                   }}
                 />
-              </View>
+              </Animated.View>
             )
           )}
         />

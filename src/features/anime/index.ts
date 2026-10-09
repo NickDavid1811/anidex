@@ -16,6 +16,7 @@ export * from './components/ExploreSearchBar';
 export * from './components/ExploreGenreChips';
 export * from './components/ExploreEmptyState';
 export * from './components/ExploreHeader';
+export * from './components/FavoriteActionButton';
 
 export * from './hooks/useAnimeDetail';
 export * from './hooks/useSearchAnime';

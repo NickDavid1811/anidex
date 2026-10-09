@@ -67,11 +67,13 @@ export function FavoritesProvider({ children }: { children: React.ReactNode }) {
       update: (list: AnimeMedia[]) => AnimeMedia[]
     ) =>
       enqueue(async () => {
+        const previous = currentFavorites.current;
+        publish(update(previous));
         try {
           await operation();
-          publish(update(currentFavorites.current));
           setError(null);
         } catch (err) {
+          publish(previous);
           setError(
             'No pudimos guardar el cambio en favoritos. Inténtalo otra vez.'
           );
@@ -104,17 +106,19 @@ export function FavoritesProvider({ children }: { children: React.ReactNode }) {
         const exists = currentFavorites.current.some(
           (item) => item.id === anime.id
         );
+        const previous = currentFavorites.current;
+        publish(
+          exists
+            ? previous.filter((item) => item.id !== anime.id)
+            : [anime, ...previous]
+        );
         try {
           if (exists) await removeFavoriteFromDb(anime.id);
           else await addFavoriteToDb(anime);
-          publish(
-            exists
-              ? currentFavorites.current.filter((item) => item.id !== anime.id)
-              : [anime, ...currentFavorites.current]
-          );
           setError(null);
           return !exists;
         } catch (err) {
+          publish(previous);
           setError(
             'No pudimos guardar el cambio en favoritos. Inténtalo otra vez.'
           );

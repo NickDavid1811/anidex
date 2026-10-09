@@ -7,6 +7,7 @@ import { Pressable, Text, View } from 'react-native';
 import { useAppTheme } from '@/features/theme';
 import { GENRE_LABELS } from '../constants/genres';
 import { AnimeMedia } from '../types/anime.types';
+import { FavoriteActionButton } from './FavoriteActionButton';
 
 interface M3AnimeCardProps {
   anime: AnimeMedia;
@@ -84,16 +85,15 @@ export function M3AnimeCard({
           </View>
         </Pressable>
         {onActionPress && (
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={`${active ? 'Quitar' : 'Guardar'} ${title} ${active ? 'de' : 'en'} favoritos`}
-            accessibilityState={{ selected: isFavorite }}
-            onPress={onActionPress}
-            style={{ width: 48, height: 48 }}
-            className={`items-center justify-center rounded-full mr-2 ${active ? (isDark ? 'bg-[#58392B]' : 'bg-[#FFDCC2]') : ''}`}
-          >
-            <Ionicons name={active ? 'heart' : 'heart-outline'} size={22} color={isDark ? '#FFDCC2' : '#8B4F26'} />
-          </Pressable>
+          <View className="mr-2">
+            <FavoriteActionButton
+              active={active}
+              accessibilityLabel={`${active ? 'Quitar' : 'Guardar'} ${title} ${active ? 'de' : 'en'} favoritos`}
+              isDark={isDark}
+              onPress={onActionPress}
+              contained={active}
+            />
+          </View>
         )}
       </View>
     );
@@ -228,48 +228,13 @@ export function M3AnimeCard({
 
           {/* Action Button: Favorite or Delete */}
           {onActionPress && (
-            <Pressable
-              accessibilityRole="button"
+            <FavoriteActionButton
+              active={actionType === 'delete' || isFavorite}
               accessibilityLabel={`${actionType === 'delete' || isFavorite ? 'Quitar' : 'Guardar'} ${title} ${actionType === 'delete' || isFavorite ? 'de' : 'en'} favoritos`}
-              accessibilityState={{ selected: isFavorite }}
-              onPress={(e) => {
-                e.stopPropagation();
-                onActionPress();
-              }}
-              className={`will-change-variable w-12 h-12 rounded-full items-center justify-center shadow-md active:scale-95 ${
-                actionType === 'delete'
-                  ? isDark
-                    ? 'bg-[#58392B]'
-                    : 'bg-[#FFDCC2]'
-                  : isFavorite
-                    ? isDark
-                      ? 'bg-[#58392B]'
-                      : 'bg-[#FFDCC2]'
-                    : isDark
-                      ? 'bg-[#2F241E] border border-[#44352C]'
-                      : 'bg-[#EDE5DF] border border-[#D8CDC5]'
-              }`}
-            >
-              <Ionicons
-                name={
-                  actionType === 'delete'
-                    ? 'heart'
-                    : isFavorite
-                      ? 'heart'
-                      : 'heart-outline'
-                }
-                size={18}
-                color={
-                  actionType === 'delete' || isFavorite
-                    ? isDark
-                      ? '#FFDCC2'
-                      : '#8B4F26'
-                    : isDark
-                      ? '#EDE0DB'
-                      : '#53433C'
-                }
-              />
-            </Pressable>
+              isDark={isDark}
+              onPress={onActionPress}
+              size={18}
+            />
           )}
         </View>
       </View>
