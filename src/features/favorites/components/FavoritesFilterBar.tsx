@@ -27,6 +27,7 @@ interface FavoritesFilterBarProps {
   selectedGenre: string;
   onGenreSelect: (genre: string) => void;
   isDark: boolean;
+  mode?: 'all' | 'search' | 'controls';
 }
 
 export function FavoritesFilterBar({
@@ -37,11 +38,12 @@ export function FavoritesFilterBar({
   selectedGenre,
   onGenreSelect,
   isDark,
+  mode = 'all',
 }: FavoritesFilterBarProps) {
   return (
     <View className="gap-3">
       {/* Fila con Barra de filtrado + Botón de Ordenamiento M3 interactivo */}
-      <View className="gap-2">
+      {mode !== 'controls' && (
         <View
           className={`flex-row items-center rounded-2xl pl-3.5 pr-1 min-h-14 border ${
             isDark
@@ -78,57 +80,61 @@ export function FavoritesFilterBar({
             </Pressable>
           )}
         </View>
+      )}
 
-        <View className="self-start">
-        <FavoritesSortButton
-          currentSort={sortType}
-          onSortChange={onSortTypeChange}
-          isDark={isDark}
-        />
-        </View>
-      </View>
+      {mode !== 'search' && (
+        <>
+          <View className="self-start">
+            <FavoritesSortButton
+              currentSort={sortType}
+              onSortChange={onSortTypeChange}
+              isDark={isDark}
+            />
+          </View>
 
-      {/* Chips de filtro por categoría */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ gap: 8, paddingVertical: 2 }}
-      >
-        {FAVORITES_FILTER_GENRES.map((g) => {
-          const isSelected = selectedGenre === g;
-          return (
-            <Pressable
-              accessibilityRole="button"
-              accessibilityState={{ selected: isSelected }}
-              key={g}
-              onPress={() => onGenreSelect(g)}
-              className={`min-h-12 justify-center px-3.5 py-2 rounded-full border active:opacity-80 ${
-                isSelected
-                  ? isDark
-                    ? 'bg-[#58392B] border-[#E09F7D]'
-                    : 'bg-[#FFDCC2] border-[#8B4F26]'
-                  : isDark
-                    ? 'bg-[#221A16] border-[#3E3028]'
-                    : 'bg-[#FFFFFF] border-[#D8CDC5]'
-              }`}
-            >
-              <Text
-                className={`text-sm font-manrope-semibold ${
-                  isSelected
-                    ? isDark
-                      ? 'text-[#FFDCC2]'
-                      : 'text-[#351A08]'
-                    : isDark
-                      ? 'text-[#A89C94]'
-                      : 'text-[#53433C]'
-                }`}
-              >
-                {GENRE_LABELS[g] ?? g}
-              </Text>
-            </Pressable>
-          );
-        })}
-      </ScrollView>
+          {/* Chips de filtro por categoría */}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ gap: 8, paddingVertical: 2 }}
+          >
+            {FAVORITES_FILTER_GENRES.map((g) => {
+              const isSelected = selectedGenre === g;
+              return (
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: isSelected }}
+                  key={g}
+                  onPress={() => onGenreSelect(g)}
+                  className={`min-h-12 justify-center px-3.5 py-2 rounded-full border active:opacity-80 ${
+                    isSelected
+                      ? isDark
+                        ? 'bg-[#58392B] border-[#E09F7D]'
+                        : 'bg-[#FFDCC2] border-[#8B4F26]'
+                      : isDark
+                        ? 'bg-[#221A16] border-[#3E3028]'
+                        : 'bg-[#FFFFFF] border-[#D8CDC5]'
+                  }`}
+                >
+                  <Text
+                    className={`text-sm font-manrope-semibold ${
+                      isSelected
+                        ? isDark
+                          ? 'text-[#FFDCC2]'
+                          : 'text-[#351A08]'
+                        : isDark
+                          ? 'text-[#A89C94]'
+                          : 'text-[#53433C]'
+                    }`}
+                  >
+                    {GENRE_LABELS[g] ?? g}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+        </>
+      )}
     </View>
   );
 }

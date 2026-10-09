@@ -15,6 +15,10 @@ import {
 import { LoadingState } from '@/components/ui/loading-state';
 import { useAppTheme } from '@/features/theme';
 
+type FavoritesListItem =
+  | { type: 'controls'; id: 'controls' }
+  | { type: 'anime'; id: number; anime: AnimeMedia };
+
 export default function FavoritesScreen() {
   const {
     favorites,
@@ -87,102 +91,157 @@ export default function FavoritesScreen() {
     }
   }, [favorites, filterText, selectedGenre, sortType]);
 
+  const listData = useMemo<FavoritesListItem[]>(() => {
+    if (isLoading || favorites.length === 0) return [];
+
+    return [
+      { type: 'controls', id: 'controls' },
+      ...filteredAndSortedFavorites.map((anime) => ({
+        type: 'anime' as const,
+        id: anime.id,
+        anime,
+      })),
+    ];
+  }, [favorites.length, filteredAndSortedFavorites, isLoading]);
+
   return (
     <View className={`flex-1 ${isDark ? 'bg-[#141211]' : 'bg-[#FCF8F6]'}`}>
       <SafeAreaView
         className="flex-1 w-full max-w-[800px] self-center"
         edges={['top', 'left', 'right']}
       >
-        {/* Header Mis Favoritos */}
-        <View className="px-4 pt-3 pb-2 gap-3">
-          <View className="flex-row items-center gap-2.5">
-            <Text
-              className={`text-2xl font-manrope-bold tracking-tight ${
-                isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
-              }`}
-            >
-              Mis Favoritos
-            </Text>
-            {count > 0 && (
+        <FlatList
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
+          data={listData}
+          keyExtractor={(item) =>
+            item.type === 'controls' ? item.id : `fav-${item.id}`
+          }
+          stickyHeaderIndices={listData.length > 0 ? [1] : undefined}
+          contentContainerStyle={{
+            paddingBottom: removedAnime ? noticeHeight + 24 : 24,
+          }}
+          showsVerticalScrollIndicator={false}
+          ListHeaderComponent={(
+            <>
+              <View className="px-4 pt-3 pb-2 gap-3">
+                <View className="flex-row items-center gap-2.5">
+                  <Text
+                    className={`text-2xl font-manrope-bold tracking-tight ${
+                      isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
+                    }`}
+                  >
+                    Mis Favoritos
+                  </Text>
+                  {count > 0 && (
+                    <View
+                      className={`px-2.5 py-0.5 rounded-full ${
+                        isDark ? 'bg-[#8B4F26]' : 'bg-[#FFDCC2]'
+                      }`}
+                    >
+                      <Text
+                        className={`text-xs font-manrope-bold ${
+                          isDark ? 'text-[#FFDCC2]' : 'text-[#351A08]'
+                        }`}
+                      >
+                        {count}
+                      </Text>
+                    </View>
+                  )}
+                </View>
+
+                <Text
+                  className={`font-manrope text-sm ${isDark ? 'text-[#D0C3BC]' : 'text-[#53433C]'}`}
+                >
+                  Guardados en este dispositivo
+                </Text>
+
+                {favorites.length > 0 && (
+                  <FavoritesFilterBar
+                    filterText={filterText}
+                    onFilterTextChange={setFilterText}
+                    sortType={sortType}
+                    onSortTypeChange={setSortType}
+                    selectedGenre={selectedGenre}
+                    onGenreSelect={setSelectedGenre}
+                    isDark={isDark}
+                    mode="search"
+                  />
+                )}
+              </View>
+              {error && (
+                <Text
+                  accessibilityRole="alert"
+                  className="font-manrope px-4 py-2 text-sm text-red-600"
+                >
+                  {error}
+                </Text>
+              )}
+            </>
+          )}
+          ListEmptyComponent={
+            isLoading ? (
+              <LoadingState message="Cargando tus favoritos…" />
+            ) : (
+              <FavoritesEmptyState
+                hasTotalFavorites={favorites.length > 0}
+                onClearFilters={() => {
+                  setFilterText('');
+                  setSelectedGenre('Todos');
+                }}
+                isDark={isDark}
+              />
+            )
+          }
+          ListFooterComponent={
+            !isLoading &&
+            favorites.length > 0 &&
+            filteredAndSortedFavorites.length === 0 ? (
+              <FavoritesEmptyState
+                hasTotalFavorites
+                onClearFilters={() => {
+                  setFilterText('');
+                  setSelectedGenre('Todos');
+                }}
+                isDark={isDark}
+              />
+            ) : null
+          }
+          renderItem={({ item }) => (
+            item.type === 'controls' ? (
               <View
-                className={`px-2.5 py-0.5 rounded-full ${
-                  isDark ? 'bg-[#8B4F26]' : 'bg-[#FFDCC2]'
+                className={`px-4 pt-2 pb-3 ${
+                  isDark ? 'bg-[#141211]' : 'bg-[#FCF8F6]'
                 }`}
               >
-                <Text
-                  className={`text-xs font-manrope-bold ${
-                    isDark ? 'text-[#FFDCC2]' : 'text-[#351A08]'
-                  }`}
-                >
-                  {count}
-                </Text>
+                <FavoritesFilterBar
+                  filterText={filterText}
+                  onFilterTextChange={setFilterText}
+                  sortType={sortType}
+                  onSortTypeChange={setSortType}
+                  selectedGenre={selectedGenre}
+                  onGenreSelect={setSelectedGenre}
+                  isDark={isDark}
+                  mode="controls"
+                />
               </View>
-            )}
-          </View>
-
-          <Text className={`font-manrope text-sm ${isDark ? 'text-[#D0C3BC]' : 'text-[#53433C]'}`}>
-            Guardados en este dispositivo
-          </Text>
-
-          {favorites.length > 0 && <FavoritesFilterBar
-            filterText={filterText}
-            onFilterTextChange={setFilterText}
-            sortType={sortType}
-            onSortTypeChange={setSortType}
-            selectedGenre={selectedGenre}
-            onGenreSelect={setSelectedGenre}
-            isDark={isDark}
-          />}
-        </View>
-
-        {error && (
-          <Text
-            accessibilityRole="alert"
-            className="font-manrope px-4 py-2 text-sm text-red-600"
-          >
-            {error}
-          </Text>
-        )}
-        {/* Lista de Favoritos */}
-        {isLoading ? (
-          <LoadingState message="Cargando tus favoritos…" />
-        ) : favorites.length === 0 ||
-          filteredAndSortedFavorites.length === 0 ? (
-          <FavoritesEmptyState
-            hasTotalFavorites={favorites.length > 0}
-            onClearFilters={() => {
-              setFilterText('');
-              setSelectedGenre('Todos');
-            }}
-            isDark={isDark}
-          />
-        ) : (
-          <FlatList
-            keyboardShouldPersistTaps="handled"
-            keyboardDismissMode="on-drag"
-            data={filteredAndSortedFavorites}
-            keyExtractor={(item) => `fav-${item.id}`}
-            contentContainerStyle={{
-              paddingHorizontal: 16,
-              paddingTop: 8,
-              paddingBottom: removedAnime ? noticeHeight + 24 : 16,
-            }}
-            showsVerticalScrollIndicator={false}
-            renderItem={({ item }) => (
-              <M3AnimeCard
-                anime={item}
-                compact
-                isFavorite={true}
-                actionType="delete"
-                onActionPress={() => {
-                  void removeFavorite(item.id)
-                    .then(() => setRemovedAnime(item))
-                    .catch(() => {});
-                }}
-              />
-            )}
-          />
-        )}
+            ) : (
+              <View className="px-4">
+                <M3AnimeCard
+                  anime={item.anime}
+                  compact
+                  isFavorite={true}
+                  actionType="delete"
+                  onActionPress={() => {
+                    void removeFavorite(item.anime.id)
+                      .then(() => setRemovedAnime(item.anime))
+                      .catch(() => {});
+                  }}
+                />
+              </View>
+            )
+          )}
+        />
       </SafeAreaView>
       {removedAnime && (
         <View
