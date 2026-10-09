@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Pressable, TextInput, View } from 'react-native';
+import { useLocalization } from '@/features/localization';
 
 interface FavoritesSearchBarProps {
   filterText: string;
@@ -12,6 +13,7 @@ export function FavoritesSearchBar({
   onFilterTextChange,
   isDark,
 }: FavoritesSearchBarProps) {
+  const { t } = useLocalization();
   return (
     <View
       className={`flex-row items-center rounded-2xl pl-3.5 pr-1 min-h-14 border ${
@@ -30,11 +32,11 @@ export function FavoritesSearchBar({
         className={`flex-1 text-base font-manrope-medium ${
           isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
         }`}
-        placeholder="Buscar en favoritos…"
+        placeholder={t('favorites.searchPlaceholder')}
         placeholderTextColor={isDark ? '#D0C3BC' : '#53433C'}
         value={filterText}
         onChangeText={onFilterTextChange}
-        accessibilityLabel="Buscar favoritos por título"
+        accessibilityLabel={t('favorites.searchAccessibility')}
         autoCorrect={false}
         autoCapitalize="none"
         returnKeyType="done"
@@ -42,7 +44,7 @@ export function FavoritesSearchBar({
       {filterText.length > 0 && (
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Limpiar búsqueda"
+          accessibilityLabel={t('favorites.clearSearch')}
           onPress={() => onFilterTextChange('')}
           style={{ width: 48, height: 48 }}
           className="items-center justify-center"

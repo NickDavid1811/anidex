@@ -5,6 +5,7 @@ import React from 'react';
 import { Pressable, Text, View } from 'react-native';
 
 import { useAppTheme } from '@/features/theme';
+import { useLocalization } from '@/features/localization';
 import { AnimeMedia } from '../types/anime.types';
 import { FavoriteActionButton } from './FavoriteActionButton';
 
@@ -20,6 +21,7 @@ export function M3RankCard({
   onToggleFavorite,
 }: M3RankCardProps) {
   const { activeScheme } = useAppTheme();
+  const { t } = useLocalization();
   const isDark = activeScheme === 'dark';
 
   const title =
@@ -41,7 +43,7 @@ export function M3RankCard({
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={`Ver detalles de ${title}`}
+      accessibilityLabel={t('anime.viewDetails', { title })}
       onPress={() => router.push(`/anime/${anime.id}` as any)}
       className={`will-change-variable flex-row items-center p-3 rounded-2xl mb-2.5 border active:opacity-90 ${isDark ? 'bg-[#221A16] border-[#3E3028]' : 'bg-white border-[#D8CDC5]'}`}
     >
@@ -134,7 +136,7 @@ export function M3RankCard({
 
       {/* Bouncy Heart Action Button */}
       <FavoriteActionButton
-        accessibilityLabel={`${isFavorite ? 'Quitar' : 'Guardar'} ${title} ${isFavorite ? 'de' : 'en'} favoritos`}
+        accessibilityLabel={t(isFavorite ? 'anime.remove' : 'anime.save', { title })}
         active={isFavorite}
         isDark={isDark}
         onPress={onToggleFavorite}

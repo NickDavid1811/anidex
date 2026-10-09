@@ -5,21 +5,23 @@ import React from 'react';
 import { Pressable, Text, View } from 'react-native';
 
 import { useAppTheme } from '@/features/theme';
+import { useLocalization } from '@/features/localization';
 import { AnimeMedia } from '../types/anime.types';
 
 export function M3FeaturedCard({ anime }: { anime: AnimeMedia }) {
   const { activeScheme } = useAppTheme();
+  const { t } = useLocalization();
   const isDark = activeScheme === 'dark';
   const title = anime.title.english || anime.title.userPreferred || anime.title.romaji || 'Anime';
   const imageUrl = anime.bannerImage || anime.coverImage.extraLarge || anime.coverImage.large || anime.coverImage.medium;
   const year = anime.seasonYear || anime.startDate?.year;
-  const episodes = anime.episodes ? `${anime.episodes} episodios` : anime.status === 'RELEASING' ? 'En emisión' : '';
+  const episodes = anime.episodes ? t('anime.episodes', { count: anime.episodes }) : anime.status === 'RELEASING' ? t('anime.airing') : '';
   const metadata = [year, episodes].filter(Boolean).join(' · ');
 
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={`Ver detalles de ${title}`}
+      accessibilityLabel={t('anime.viewDetails', { title })}
       onPress={() => router.push(`/anime/${anime.id}`)}
       className={`rounded-3xl overflow-hidden border active:opacity-90 ${isDark ? 'bg-[#221A16] border-[#3E3028]' : 'bg-white border-[#D8CDC5]'}`}
     >
@@ -44,7 +46,7 @@ export function M3FeaturedCard({ anime }: { anime: AnimeMedia }) {
           {metadata ? <Text className={`text-sm font-manrope ${isDark ? 'text-[#D0C3BC]' : 'text-[#53433C]'}`}>{metadata}</Text> : null}
         </View>
         <View className="flex-row items-center gap-2 pt-1">
-          <Text className={`text-sm font-manrope-bold ${isDark ? 'text-[#E09F7D]' : 'text-[#8B4F26]'}`}>Ver detalles</Text>
+          <Text className={`text-sm font-manrope-bold ${isDark ? 'text-[#E09F7D]' : 'text-[#8B4F26]'}`}>{t('anime.viewDetailsShort')}</Text>
           <Ionicons name="arrow-forward" size={18} color={isDark ? '#E09F7D' : '#8B4F26'} />
         </View>
       </View>

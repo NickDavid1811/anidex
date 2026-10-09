@@ -16,6 +16,7 @@ import {
 } from '@/features/favorites';
 import { LoadingState } from '@/components/ui/loading-state';
 import { useAppTheme } from '@/features/theme';
+import { useLocalization } from '@/features/localization';
 
 type FavoritesListItem =
   | { type: 'controls'; id: 'controls' }
@@ -32,6 +33,7 @@ export default function FavoritesScreen() {
     error,
   } = useFavorites();
   const { activeScheme } = useAppTheme();
+  const { t } = useLocalization();
   const isDark = activeScheme === 'dark';
 
   const [removedAnime, setRemovedAnime] = useState<AnimeMedia | null>(null);
@@ -94,7 +96,7 @@ export default function FavoritesScreen() {
                       isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
                     }`}
                   >
-                    Mis Favoritos
+                    {t('favorites.title')}
                   </Text>
                   {count > 0 && (
                     <View
@@ -116,7 +118,7 @@ export default function FavoritesScreen() {
                 <Text
                   className={`font-manrope text-sm ${isDark ? 'text-[#D0C3BC]' : 'text-[#53433C]'}`}
                 >
-                  Guardados en este dispositivo
+                  {t('favorites.savedHere')}
                 </Text>
 
                 {favorites.length > 0 && (
@@ -139,7 +141,7 @@ export default function FavoritesScreen() {
           )}
           ListEmptyComponent={
             isLoading ? (
-              <LoadingState message="Cargando tus favoritos…" />
+              <LoadingState message={t('favorites.loading')} />
             ) : (
               <FavoritesEmptyState
                 hasTotalFavorites={favorites.length > 0}
@@ -208,7 +210,7 @@ export default function FavoritesScreen() {
             numberOfLines={3}
             className={`font-manrope flex-1 text-sm ${isDark ? 'text-[#201A17]' : 'text-white'}`}
           >
-            {removedAnime.title.english || removedAnime.title.userPreferred || removedAnime.title.romaji || 'Anime'} quitado de favoritos
+            {t('favorites.removed', { title: removedAnime.title.english || removedAnime.title.userPreferred || removedAnime.title.romaji || 'Anime' })}
           </Text>
           <Pressable
             accessibilityRole="button"
@@ -233,12 +235,12 @@ export default function FavoritesScreen() {
             <Text
               className={`text-sm font-manrope-bold ${isDark ? 'text-[#8B4F26]' : 'text-[#FFDCC2]'}`}
             >
-              {isUndoing ? 'Restaurando…' : 'Deshacer'}
+              {isUndoing ? t('favorites.restoring') : t('favorites.undo')}
             </Text>
           </Pressable>
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Cerrar aviso"
+            accessibilityLabel={t('favorites.closeNotice')}
             onPress={() => setRemovedAnime(null)}
             className="min-h-12 px-3 justify-center"
           >

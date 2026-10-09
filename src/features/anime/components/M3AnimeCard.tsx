@@ -5,6 +5,7 @@ import React from 'react';
 import { Pressable, Text, View } from 'react-native';
 
 import { useAppTheme } from '@/features/theme';
+import { useLocalization } from '@/features/localization';
 import { GENRE_LABELS } from '../constants/genres';
 import { AnimeMedia } from '../types/anime.types';
 import { FavoriteActionButton } from './FavoriteActionButton';
@@ -25,6 +26,7 @@ export function M3AnimeCard({
   onActionPress,
 }: M3AnimeCardProps) {
   const { activeScheme } = useAppTheme();
+  const { t } = useLocalization();
   const isDark = activeScheme === 'dark';
 
   const title =
@@ -62,7 +64,7 @@ export function M3AnimeCard({
     const metadata = [
       anime.averageScore != null ? `★ ${(anime.averageScore / 10).toFixed(1)}` : null,
       year,
-      anime.episodes ? `${anime.episodes} episodios` : null,
+      anime.episodes ? t('anime.episodes', { count: anime.episodes }) : null,
     ].filter(Boolean).join(' · ');
 
     return (
@@ -70,7 +72,7 @@ export function M3AnimeCard({
         <Pressable
           onPress={handleCardPress}
           accessibilityRole="button"
-          accessibilityLabel={`Ver detalles de ${title}`}
+          accessibilityLabel={t('anime.viewDetails', { title })}
           className="flex-1 flex-row items-center gap-3 p-3 pr-1 active:opacity-75"
         >
           <View style={{ width: 64, height: 88, borderRadius: 10, overflow: 'hidden', backgroundColor: anime.coverImage.color || '#333' }}>
@@ -88,7 +90,7 @@ export function M3AnimeCard({
           <View className="mr-2">
             <FavoriteActionButton
               active={active}
-              accessibilityLabel={`${active ? 'Quitar' : 'Guardar'} ${title} ${active ? 'de' : 'en'} favoritos`}
+              accessibilityLabel={t(active ? 'anime.remove' : 'anime.save', { title })}
               isDark={isDark}
               onPress={onActionPress}
               contained={active}
@@ -103,7 +105,7 @@ export function M3AnimeCard({
     <Pressable
       onPress={handleCardPress}
       accessibilityRole="button"
-      accessibilityLabel={`Ver detalles de ${title}`}
+      accessibilityLabel={t('anime.viewDetails', { title })}
       className={`will-change-variable flex-row p-3 rounded-2xl mb-3 border active:opacity-90 ${
         isDark
           ? 'bg-[#221A16] border-[#3E3028]'
@@ -230,7 +232,7 @@ export function M3AnimeCard({
           {onActionPress && (
             <FavoriteActionButton
               active={actionType === 'delete' || isFavorite}
-              accessibilityLabel={`${actionType === 'delete' || isFavorite ? 'Quitar' : 'Guardar'} ${title} ${actionType === 'delete' || isFavorite ? 'de' : 'en'} favoritos`}
+              accessibilityLabel={t(actionType === 'delete' || isFavorite ? 'anime.remove' : 'anime.save', { title })}
               isDark={isDark}
               onPress={onActionPress}
               size={18}

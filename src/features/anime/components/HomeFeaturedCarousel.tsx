@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { FlatList, View } from 'react-native';
+import { useLocalization } from '@/features/localization';
 
 import { AnimeMedia } from '../types/anime.types';
 import { HomeSectionHeader } from './HomeSectionHeader';
@@ -17,6 +18,7 @@ export function HomeFeaturedCarousel({
   contentWidth,
   isDark,
 }: HomeFeaturedCarouselProps) {
+  const { t } = useLocalization();
   const [activeSlide, setActiveSlide] = useState(0);
 
   if (animes.length === 0) return null;
@@ -24,7 +26,7 @@ export function HomeFeaturedCarousel({
   return (
     <View className="mt-3">
       <View className="px-4">
-        <HomeSectionHeader title="Tendencias" action="Ver todo" accessibilityLabel="Ver todas las tendencias" isDark={isDark}
+        <HomeSectionHeader title={t('home.trending')} action={t('home.viewAll')} accessibilityLabel={t('home.viewAllTrends')} isDark={isDark}
           onPress={() => router.push({ pathname: '/(tabs)/explore', params: { sort: 'trending', genre: '' } })} />
       </View>
 

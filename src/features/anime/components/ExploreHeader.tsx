@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Pressable, Text, View } from 'react-native';
+import { useLocalization } from '@/features/localization';
 
 import { ExploreGenreChips } from './ExploreGenreChips';
 import { ExploreSearchBar } from './ExploreSearchBar';
@@ -37,6 +38,7 @@ export function ExploreHeader({
   onClearFilters,
   isDark,
 }: ExploreHeaderProps) {
+  const { t } = useLocalization();
   const accent = isDark ? '#E09F7D' : '#8B4F26';
   const textClass = isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]';
 
@@ -44,7 +46,7 @@ export function ExploreHeader({
     <>
       <View className="px-4 pt-3 pb-2 gap-3">
         <Text className={`text-2xl font-manrope-bold tracking-tight ${textClass}`}>
-          Explorar
+          {t('explore.title')}
         </Text>
         <ExploreSearchBar
           searchTerm={searchTerm}
@@ -53,7 +55,7 @@ export function ExploreHeader({
         />
         <View
           accessibilityRole="radiogroup"
-          accessibilityLabel="Ordenar animes"
+          accessibilityLabel={t('explore.sortAccessibility')}
           className={`flex-row rounded-2xl p-1 ${isDark ? 'bg-[#221A16]' : 'bg-[#EDE5DF]'}`}
         >
           {(['POPULARITY_DESC', 'TRENDING_DESC'] as const).map((value) => (
@@ -76,7 +78,7 @@ export function ExploreHeader({
                 <Ionicons name="checkmark" size={18} color={accent} />
               )}
               <Text className={`shrink text-center text-sm font-manrope-semibold ${textClass}`}>
-                {value === 'POPULARITY_DESC' ? 'Populares' : 'Tendencias'}
+                {value === 'POPULARITY_DESC' ? t('explore.popular') : t('explore.trending')}
               </Text>
             </Pressable>
           ))}
@@ -93,10 +95,10 @@ export function ExploreHeader({
               className={`font-manrope text-sm shrink ${textClass}`}
             >
               {isLoading
-                ? 'Buscando animes…'
+                ? t('explore.searching')
                 : error
-                  ? 'No se pudieron actualizar los resultados'
-                  : `${resultCount} resultados cargados`}
+                  ? t('explore.updateError')
+                  : t('explore.results', { count: resultCount })}
             </Text>
             {hasFilters && (
               <Pressable
@@ -106,7 +108,7 @@ export function ExploreHeader({
                 className="px-2 justify-center"
               >
                 <Text style={{ color: accent }} className="text-sm font-manrope-bold">
-                  Limpiar filtros
+                  {t('common.clearFilters')}
                 </Text>
               </Pressable>
             )}

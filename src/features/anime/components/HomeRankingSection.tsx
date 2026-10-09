@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import React from 'react';
 import { View } from 'react-native';
+import { useLocalization } from '@/features/localization';
 
 import { AnimeMedia } from '../types/anime.types';
 import { HomeSectionHeader } from './HomeSectionHeader';
@@ -19,11 +20,12 @@ export function HomeRankingSection({
   onToggleFavorite,
   isDark,
 }: HomeRankingSectionProps) {
+  const { t } = useLocalization();
   if (animes.length === 0) return null;
 
   return (
     <View className="mt-6 px-4">
-      <HomeSectionHeader title="Más tendencias" action="Ver más" accessibilityLabel="Explorar más tendencias" isDark={isDark}
+      <HomeSectionHeader title={t('home.moreTrending')} action={t('home.viewMore')} accessibilityLabel={t('home.exploreMoreTrending')} isDark={isDark}
         onPress={() => router.push({ pathname: '/(tabs)/explore', params: { sort: 'trending', genre: '' } })} />
 
       <View className="mt-2">

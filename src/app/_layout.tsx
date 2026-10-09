@@ -9,6 +9,7 @@ import { StatusBar } from 'expo-status-bar';
 import { SplashOverlay } from '@/components/splash-overlay';
 import { AuthProvider } from '@/features/auth';
 import { FavoritesProvider } from '@/features/favorites';
+import { LocalizationProvider } from '@/features/localization';
 import { ThemeProviderWrapper, useAppTheme } from '@/features/theme';
 
 SplashScreen.preventAutoHideAsync();
@@ -54,12 +55,14 @@ export default function RootLayout() {
   if (!fontsLoaded && !fontError) return null;
 
   return (
-    <ThemeProviderWrapper>
-      <AuthProvider>
-      <FavoritesProvider>
-        <ThemeContent />
-      </FavoritesProvider>
-      </AuthProvider>
-    </ThemeProviderWrapper>
+    <LocalizationProvider>
+      <ThemeProviderWrapper>
+        <AuthProvider>
+          <FavoritesProvider>
+            <ThemeContent />
+          </FavoritesProvider>
+        </AuthProvider>
+      </ThemeProviderWrapper>
+    </LocalizationProvider>
   );
 }

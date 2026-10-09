@@ -1,6 +1,7 @@
 import React from 'react';
 import { GENRE_LABELS } from '../constants/genres';
 import { Pressable, ScrollView, Text } from 'react-native';
+import { useLocalization } from '@/features/localization';
 
 export const EXPLORE_GENRES = [
   'Action',
@@ -28,6 +29,7 @@ export function ExploreGenreChips({
   onGenreSelect,
   isDark,
 }: ExploreGenreChipsProps) {
+  const { language } = useLocalization();
   return (
     <ScrollView
       horizontal
@@ -63,7 +65,7 @@ export function ExploreGenreChips({
                     : 'text-[#53433C]'
               }`}
             >
-              {GENRE_LABELS[g] ?? g}
+              {language === 'es' ? (GENRE_LABELS[g] ?? g) : g}
             </Text>
           </Pressable>
         );

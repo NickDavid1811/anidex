@@ -1,36 +1,36 @@
 import React from 'react';
 import { Pressable, Text, View } from 'react-native';
+import { useLocalization } from '@/features/localization';
 
 import { ThemePreference, useAppTheme } from '../context/theme-context';
 
 interface OptionItem {
   id: ThemePreference;
-  title: string;
-  subtitle?: string;
+  label: 'system' | 'light' | 'dark';
   icon: string;
 }
 
 const THEME_OPTIONS: OptionItem[] = [
   {
     id: 'system',
-    title: 'Sistema',
-    subtitle: 'Usar la apariencia del dispositivo',
+    label: 'system',
     icon: '⚙️',
   },
   {
     id: 'light',
-    title: 'Claro',
+    label: 'light',
     icon: '☀️',
   },
   {
     id: 'dark',
-    title: 'Oscuro',
+    label: 'dark',
     icon: '🌙',
   },
 ];
 
 export function ThemeSettingCard() {
   const { preference, setPreference, activeScheme } = useAppTheme();
+  const { t } = useLocalization();
   const isDark = activeScheme === 'dark';
 
   return (
@@ -42,10 +42,10 @@ export function ThemeSettingCard() {
       }`}
     >
       <Text accessibilityRole="header" className={`text-lg font-manrope-bold ${isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'}`}>
-        Apariencia
+        {t('theme.title')}
       </Text>
 
-      <View accessibilityRole="radiogroup" accessibilityLabel="Tema de la aplicación" className="gap-2.5 mt-1">
+      <View accessibilityRole="radiogroup" accessibilityLabel={t('theme.accessibility')} className="gap-2.5 mt-1">
         {THEME_OPTIONS.map((opt) => {
           const isSelected = preference === opt.id;
           return (
@@ -83,14 +83,14 @@ export function ThemeSettingCard() {
                         : 'text-[#201A17]'
                   }`}
                 >
-                  {opt.title}
+                  {t(`theme.${opt.label}`)}
                 </Text>
-                {opt.subtitle && <Text
+                {opt.id === 'system' && <Text
                   className={`font-manrope text-sm ${
                     isDark ? 'text-[#D0C3BC]' : 'text-[#53433C]'
                   }`}
                 >
-                  {opt.subtitle}
+                  {t('theme.systemHint')}
                 </Text>}
               </View>
               <View

@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { Pressable, Text, View } from 'react-native';
+import { useLocalization } from '@/features/localization';
 
 interface HomeRandomBannerProps {
   onSpin: () => void;
@@ -8,6 +9,7 @@ interface HomeRandomBannerProps {
 }
 
 export function HomeRandomBanner({ onSpin, isDark }: HomeRandomBannerProps) {
+  const { t } = useLocalization();
   return (
     <View className="mt-5 px-4">
       <View
@@ -31,21 +33,21 @@ export function HomeRandomBanner({ onSpin, isDark }: HomeRandomBannerProps) {
                 isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
               }`}
             >
-              ¿No sabes qué ver hoy?
+              {t('home.randomTitle')}
             </Text>
             <Text
               className={`font-manrope text-sm mt-0.5 ${
                 isDark ? 'text-[#D0C3BC]' : 'text-[#53433C]'
               }`}
             >
-              Prueba un anime al azar
+              {t('home.randomHint')}
             </Text>
           </View>
         </View>
 
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Elegir un anime al azar"
+          accessibilityLabel={t('home.randomAccessibility')}
           style={{ minHeight: 48 }}
           onPress={onSpin}
           className={`flex-row items-center justify-center gap-2 px-4 py-2.5 rounded-2xl active:scale-95 ${
@@ -57,7 +59,7 @@ export function HomeRandomBanner({ onSpin, isDark }: HomeRandomBannerProps) {
               isDark ? 'text-[#EDE0DB]' : 'text-white'
             }`}
           >
-            Sorpréndeme
+            {t('home.surpriseMe')}
           </Text>
           <Ionicons
             name="dice-outline"

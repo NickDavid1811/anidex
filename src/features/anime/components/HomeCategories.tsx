@@ -3,6 +3,8 @@ import React from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 
 import { HomeSectionHeader } from './HomeSectionHeader';
+import { GENRE_LABELS } from '../constants/genres';
+import { useLocalization } from '@/features/localization';
 
 export const POPULAR_CATEGORIES = [
   { id: 'Action', label: 'Acción', icon: '⚔️', color: '#EF4444' },
@@ -20,6 +22,7 @@ interface HomeCategoriesProps {
 }
 
 export function HomeCategories({ isDark }: HomeCategoriesProps) {
+  const { language, t } = useLocalization();
   const handleCategoryPress = (genreId: string) => {
     router.navigate({
       pathname: '/(tabs)/explore' as any,
@@ -36,7 +39,7 @@ export function HomeCategories({ isDark }: HomeCategoriesProps) {
 
   return (
     <View className="mt-5 px-4">
-      <HomeSectionHeader title="Categorías" action="Ver todas" accessibilityLabel="Explorar todas las categorías" onPress={handleExploreAll} isDark={isDark} />
+      <HomeSectionHeader title={t('home.categories')} action={t('home.viewAllCategories')} accessibilityLabel={t('home.exploreCategories')} onPress={handleExploreAll} isDark={isDark} />
 
       <ScrollView
         horizontal
@@ -46,7 +49,7 @@ export function HomeCategories({ isDark }: HomeCategoriesProps) {
         {POPULAR_CATEGORIES.map((cat) => (
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel={`Explorar ${cat.label}`}
+            accessibilityLabel={t('home.exploreGenre', { genre: language === 'es' ? (GENRE_LABELS[cat.id] ?? cat.id) : cat.id })}
             key={cat.id}
             onPress={() => handleCategoryPress(cat.id)}
             style={{
@@ -61,7 +64,7 @@ export function HomeCategories({ isDark }: HomeCategoriesProps) {
                 isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
               }`}
             >
-              {cat.label}
+              {language === 'es' ? (GENRE_LABELS[cat.id] ?? cat.id) : cat.id}
             </Text>
           </Pressable>
         ))}

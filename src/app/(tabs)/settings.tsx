@@ -5,11 +5,13 @@ import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-nati
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useAuth } from '@/features/auth';
+import { LanguageSettingCard, useLocalization } from '@/features/localization';
 import { ThemeSettingCard, useAppTheme } from '@/features/theme';
 import { version } from '../../../package.json';
 
 export default function SettingsScreen() {
   const { activeScheme } = useAppTheme();
+  const { t } = useLocalization();
   const auth = useAuth();
   const [isDisconnecting, setDisconnecting] = useState(false);
   const isDark = activeScheme === 'dark';
@@ -34,15 +36,23 @@ export default function SettingsScreen() {
     <View className={`flex-1 ${isDark ? 'bg-[#141211]' : 'bg-[#FCF8F6]'}`}>
       <SafeAreaView className="flex-1 w-full max-w-[800px] self-center" edges={['top', 'left', 'right']}>
         <View className="px-4 pt-3 pb-4">
-          <Text accessibilityRole="header" style={{ color: foreground }} className="text-2xl font-manrope-bold">Ajustes</Text>
+          <Text accessibilityRole="header" style={{ color: foreground }} className="text-2xl font-manrope-bold">{t('settings.title')}</Text>
         </View>
-        <ScrollView contentContainerStyle={{ paddingHorizontal: 16, gap: 20, paddingBottom: 32 }}>
+        <ScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={{
+            paddingHorizontal: 16,
+            gap: 20,
+            paddingBottom: 112,
+          }}
+          showsVerticalScrollIndicator={false}
+        >
           <View className={`rounded-3xl border p-4 gap-4 ${isDark ? 'bg-[#221A16] border-[#3E3028]' : 'bg-white border-[#D8CDC5]'}`}>
-            <Text accessibilityRole="header" style={{ color: foreground }} className="font-manrope-bold text-lg">Cuenta de AniList</Text>
+            <Text accessibilityRole="header" style={{ color: foreground }} className="font-manrope-bold text-lg">{t('settings.account')}</Text>
             {auth.isRestoring ? (
               <View className="flex-row items-center gap-3">
                 <ActivityIndicator color={accent} />
-                <Text style={{ color: secondary }} className="font-manrope text-base">Recuperando tu sesión…</Text>
+                <Text style={{ color: secondary }} className="font-manrope text-base">{t('settings.restoring')}</Text>
               </View>
             ) : auth.user ? (
               <View className="flex-row items-center gap-3">
@@ -53,22 +63,22 @@ export default function SettingsScreen() {
                   <Text style={{ color: foreground }} className="font-manrope-bold text-lg">{auth.user.name}</Text>
                   <View className="flex-row items-center gap-1.5">
                     <Ionicons name="checkmark-circle-outline" size={18} color={accent} />
-                    <Text style={{ color: secondary }} className="font-manrope text-sm">Cuenta conectada</Text>
+                    <Text style={{ color: secondary }} className="font-manrope text-sm">{t('settings.connected')}</Text>
                   </View>
                 </View>
               </View>
             ) : (
               <Text style={{ color: secondary, lineHeight: 24 }} className="font-manrope text-base">
-                Conecta AniList para identificar tu perfil en Anidex.
+                {t('settings.connectHint')}
               </Text>
             )}
             <Text style={{ color: secondary, lineHeight: 22 }} className="font-manrope text-sm">
-              Tus favoritos se guardan en este dispositivo. Todavía no se sincronizan con AniList.
+              {t('settings.localFavorites')}
             </Text>
             {auth.error && <Text accessibilityRole="alert" style={{ color: isDark ? '#FFB4AB' : '#B3261E' }} className="font-manrope text-sm">{auth.error}</Text>}
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel={auth.user ? 'Desconectar cuenta de AniList' : 'Conectar con AniList'}
+              accessibilityLabel={auth.user ? t('settings.disconnectAccessibility') : t('settings.connectAccessibility')}
               accessibilityState={{ disabled: busy, busy }}
               disabled={busy}
               onPress={() => { void handleAccountPress(); }}
@@ -77,16 +87,17 @@ export default function SettingsScreen() {
             >
               {busy && <ActivityIndicator color={auth.user ? accent : isDark ? '#201A17' : '#FFFFFF'} />}
               <Text style={{ color: auth.user ? foreground : isDark ? '#201A17' : '#FFFFFF' }} className="font-manrope-semibold text-base shrink text-center">
-                {auth.isRestoring ? 'Recuperando sesión…' : auth.isConnecting ? 'Conectando…' : isDisconnecting ? 'Desconectando…' : auth.user ? 'Desconectar cuenta' : 'Conectar con AniList'}
+                {auth.isRestoring ? t('settings.restoringShort') : auth.isConnecting ? t('settings.connecting') : isDisconnecting ? t('settings.disconnecting') : auth.user ? t('settings.disconnect') : t('settings.connect')}
               </Text>
             </Pressable>
           </View>
 
           <ThemeSettingCard />
+          <LanguageSettingCard isDark={isDark} />
 
           <View className="px-1 py-2 gap-2">
-            <Text accessibilityRole="header" style={{ color: foreground }} className="font-manrope-semibold text-base">Acerca de Anidex</Text>
-            <Text style={{ color: secondary }} className="font-manrope text-sm">Versión {version} · Datos de AniList</Text>
+            <Text accessibilityRole="header" style={{ color: foreground }} className="font-manrope-semibold text-base">{t('settings.about')}</Text>
+            <Text style={{ color: secondary }} className="font-manrope text-sm">{t('settings.version', { version })}</Text>
           </View>
         </ScrollView>
       </SafeAreaView>

@@ -1,6 +1,7 @@
 import { Pressable, ScrollView, Text, View } from 'react-native';
 
 import { GENRE_LABELS } from '@/features/anime';
+import { useLocalization } from '@/features/localization';
 
 import { FavoritesSortButton, SortType } from './FavoritesSortButton';
 
@@ -32,6 +33,7 @@ export function FavoritesFilterControls({
   onGenreSelect,
   isDark,
 }: FavoritesFilterControlsProps) {
+  const { language, t } = useLocalization();
   return (
     <View className="gap-3">
       <View className="self-start">
@@ -75,7 +77,7 @@ export function FavoritesFilterControls({
                       : 'text-[#53433C]'
                 }`}
               >
-                {GENRE_LABELS[genre] ?? genre}
+                {genre === 'Todos' ? t('common.all') : language === 'es' ? (GENRE_LABELS[genre] ?? genre) : genre}
               </Text>
             </Pressable>
           );

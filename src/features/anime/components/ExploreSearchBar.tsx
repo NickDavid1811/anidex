@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { Pressable, TextInput, View } from 'react-native';
+import { useLocalization } from '@/features/localization';
 
 interface ExploreSearchBarProps {
   searchTerm: string;
@@ -13,6 +14,7 @@ export function ExploreSearchBar({
   onSearchChange,
   isDark,
 }: ExploreSearchBarProps) {
+  const { t } = useLocalization();
   return (
     <View
       className={`will-change-variable flex-row items-center rounded-2xl pl-4 pr-1 min-h-14 border ${
@@ -31,11 +33,11 @@ export function ExploreSearchBar({
         className={`flex-1 text-base font-manrope-medium ${
           isDark ? 'text-[#EDE0DB]' : 'text-[#201A17]'
         }`}
-        placeholder="Buscar por título…"
+        placeholder={t('explore.searchPlaceholder')}
         placeholderTextColor={isDark ? '#D0C3BC' : '#53433C'}
         value={searchTerm}
         onChangeText={onSearchChange}
-        accessibilityLabel="Buscar anime por título"
+        accessibilityLabel={t('explore.searchAccessibility')}
         autoCorrect={false}
         autoCapitalize="none"
         returnKeyType="search"
@@ -43,7 +45,7 @@ export function ExploreSearchBar({
       {searchTerm.length > 0 && (
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Limpiar búsqueda"
+          accessibilityLabel={t('explore.clearSearch')}
           onPress={() => onSearchChange('')}
           className="w-12 h-12 items-center justify-center"
         >

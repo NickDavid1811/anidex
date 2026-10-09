@@ -5,6 +5,7 @@ import { Platform, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Typography, useAppTheme } from '@/features/theme';
+import { useLocalization } from '@/features/localization';
 
 interface TabIconProps {
   name: keyof typeof Ionicons.glyphMap;
@@ -55,6 +56,7 @@ function TabPillIcon({
 
 export default function TabLayout() {
   const { activeScheme } = useAppTheme();
+  const { t } = useLocalization();
   const insets = useSafeAreaInsets();
   const isDark = activeScheme === 'dark';
 
@@ -107,7 +109,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Inicio',
+          title: t('tabs.home'),
           tabBarIcon: ({ focused }) => (
             <TabPillIcon
               name="home-outline"
@@ -121,7 +123,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="explore"
         options={{
-          title: 'Explorar',
+          title: t('tabs.explore'),
           tabBarIcon: ({ focused }) => (
             <TabPillIcon
               name="compass-outline"
@@ -135,7 +137,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="favorites"
         options={{
-          title: 'Favoritos',
+          title: t('tabs.favorites'),
           tabBarIcon: ({ focused }) => (
             <TabPillIcon
               name="heart-outline"
@@ -149,7 +151,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="settings"
         options={{
-          title: 'Ajustes',
+          title: t('tabs.settings'),
           tabBarIcon: ({ focused }) => (
             <TabPillIcon
               name="settings-outline"

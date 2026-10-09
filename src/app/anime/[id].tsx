@@ -11,6 +11,7 @@ import { AnimeGenres, AnimeScoreBadge, useAnimeDetail } from '@/features/anime';
 import { useFavorites } from '@/features/favorites';
 import { useAppTheme } from '@/features/theme';
 import { AnimeSynopsis } from '@/features/anime/components/AnimeSynopsis';
+import { useLocalization } from '@/features/localization';
 
 export default function AnimeDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -19,6 +20,7 @@ export default function AnimeDetailScreen() {
   const insets = useSafeAreaInsets();
 
   const { activeScheme } = useAppTheme();
+  const { t } = useLocalization();
   const isDark = activeScheme === 'dark';
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -29,7 +31,7 @@ export default function AnimeDetailScreen() {
   const backControl = (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel="Volver"
+      accessibilityLabel={t('detail.back')}
       onPress={goBack}
       style={{ position: 'absolute', top: insets.top + 8, left: 16 }}
       className="w-12 h-12 rounded-full items-center justify-center"
@@ -50,7 +52,7 @@ export default function AnimeDetailScreen() {
         }`}
       >
         {backControl}
-        <LoadingState message="Cargando detalles del anime..." />
+        <LoadingState message={t('detail.loading')} />
       </View>
     );
   }
@@ -64,7 +66,7 @@ export default function AnimeDetailScreen() {
       >
         {backControl}
         <ErrorState
-          message={error || 'No se encontró el anime'}
+          message={error || t('detail.notFound')}
           onRetry={refetch}
         />
       </View>
@@ -84,32 +86,19 @@ export default function AnimeDetailScreen() {
     try {
       await toggleFavorite(anime);
     } catch {
-      setSaveError('No pudimos guardar el cambio. Inténtalo otra vez.');
+      setSaveError(t('detail.saveError'));
     } finally {
       setIsSaving(false);
     }
   };
   const statusLabels: Record<string, string> = {
-    FINISHED: 'Finalizado',
-    RELEASING: 'En emisión',
-    NOT_YET_RELEASED: 'Próximamente',
-    CANCELLED: 'Cancelado',
-    HIATUS: 'En pausa',
+    FINISHED: t('detail.finished'), RELEASING: t('detail.releasing'), NOT_YET_RELEASED: t('detail.upcoming'), CANCELLED: t('detail.cancelled'), HIATUS: t('detail.hiatus'),
   };
   const seasonLabels: Record<string, string> = {
-    WINTER: 'Invierno',
-    SPRING: 'Primavera',
-    SUMMER: 'Verano',
-    FALL: 'Otoño',
+    WINTER: t('detail.winter'), SPRING: t('detail.spring'), SUMMER: t('detail.summer'), FALL: t('detail.fall'),
   };
   const formatLabels: Record<string, string> = {
-    TV: 'Serie',
-    TV_SHORT: 'Serie corta',
-    MOVIE: 'Película',
-    SPECIAL: 'Especial',
-    OVA: 'Vídeo original (OVA)',
-    ONA: 'Serie web (ONA)',
-    MUSIC: 'Música',
+    TV: t('detail.series'), TV_SHORT: t('detail.shortSeries'), MOVIE: t('detail.movie'), SPECIAL: t('detail.special'), OVA: t('detail.ova'), ONA: t('detail.ona'), MUSIC: t('detail.music'),
   };
 
   return (
@@ -126,7 +115,7 @@ export default function AnimeDetailScreen() {
         <View className="flex-row items-center flex-1 mr-3 gap-3">
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Volver"
+            accessibilityLabel={t('detail.back')}
             onPress={goBack}
             className={`w-12 h-12 rounded-full items-center justify-center active:opacity-70 ${
               isDark ? 'bg-[#2F241E]' : 'bg-[#EDE5DF]'
@@ -152,7 +141,7 @@ export default function AnimeDetailScreen() {
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={
-            isFav ? 'Quitar de favoritos' : 'Guardar en favoritos'
+            isFav ? t('detail.remove') : t('detail.save')
           }
           accessibilityState={{ selected: isFav, disabled: isSaving }}
           disabled={isSaving}
@@ -230,8 +219,8 @@ export default function AnimeDetailScreen() {
                     }`}
                   >
                     {anime.status
-                      ? (statusLabels[anime.status] || 'Estado desconocido')
-                      : 'Estado desconocido'}
+                      ? (statusLabels[anime.status] || t('detail.unknownStatus'))
+                      : t('detail.unknownStatus')}
                   </Text>
                 </View>
               </View>
@@ -254,10 +243,10 @@ export default function AnimeDetailScreen() {
               className={`shrink text-center text-base font-manrope-bold ${isDark ? 'text-[#FFDCC2]' : 'text-[#351A08]'}`}
             >
               {isSaving
-                ? 'Guardando…'
+                ? t('detail.saving')
                 : isFav
-                  ? 'Quitar de favoritos'
-                  : 'Guardar en favoritos'}
+                  ? t('detail.remove')
+                  : t('detail.save')}
             </Text>
           </Pressable>
           {saveError && (
@@ -277,9 +266,9 @@ export default function AnimeDetailScreen() {
             }`}
           >
             {[
-              { label: 'Episodios', value: anime.episodes ?? 'Por confirmar' },
-              { label: 'Formato', value: anime.format ? (formatLabels[anime.format] || anime.format) : 'Por confirmar' },
-              { label: 'Temporada', value: anime.season ? `${seasonLabels[anime.season]} ${anime.seasonYear ?? ''}`.trim() : (anime.seasonYear ?? 'Por confirmar') },
+              { label: t('detail.episodes'), value: anime.episodes ?? t('detail.pending') },
+              { label: t('detail.format'), value: anime.format ? (formatLabels[anime.format] || anime.format) : t('detail.pending') },
+              { label: t('detail.season'), value: anime.season ? `${seasonLabels[anime.season]} ${anime.seasonYear ?? ''}`.trim() : (anime.seasonYear ?? t('detail.pending')) },
             ].map(({ label, value }) => (
               <View key={label} style={{ flexGrow: 1, flexBasis: 96 }} className="gap-1">
                 <Text className={`font-manrope text-sm ${isDark ? 'text-[#D0C3BC]' : 'text-[#53433C]'}`}>

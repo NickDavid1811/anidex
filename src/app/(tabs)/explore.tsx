@@ -21,6 +21,7 @@ import {
 } from '@/features/anime';
 import { useFavorites } from '@/features/favorites';
 import { useAppTheme } from '@/features/theme';
+import { useLocalization } from '@/features/localization';
 
 export default function ExploreScreen() {
   const params = useLocalSearchParams<{ genre?: string; sort?: string }>();
@@ -42,6 +43,7 @@ export default function ExploreScreen() {
   } = useSearchAnime();
   const { isFavorite, toggleFavorite, error: favoritesError } = useFavorites();
   const { activeScheme } = useAppTheme();
+  const { t } = useLocalization();
   const isDark = activeScheme === 'dark';
   const insets = useSafeAreaInsets();
   const accent = isDark ? '#E09F7D' : '#8B4F26';
@@ -106,7 +108,7 @@ export default function ExploreScreen() {
           ListHeaderComponent={exploreHeader}
           ListEmptyComponent={
             isLoading ? (
-              <LoadingState message="Descubriendo animes…" />
+              <LoadingState message={t('explore.loading')} />
             ) : error ? (
               <ErrorState message={error} onRetry={refresh} />
             ) : (
@@ -130,7 +132,7 @@ export default function ExploreScreen() {
               <View className="py-3 items-center gap-2">
                 {error ? (
                   <ErrorState
-                    message="No pudimos actualizar la lista. Puedes intentarlo otra vez."
+                    message={t('explore.retryUpdate')}
                     onRetry={retry}
                   />
                 ) : isLoadingMore ? (
@@ -143,7 +145,7 @@ export default function ExploreScreen() {
                     style={{ backgroundColor: isDark ? '#58392B' : '#FFDCC2' }}
                   >
                     <Text className={`text-sm font-manrope-bold ${textClass}`}>
-                      Cargar más animes
+                      {t('explore.loadMore')}
                     </Text>
                   </Pressable>
                 ) : null}
