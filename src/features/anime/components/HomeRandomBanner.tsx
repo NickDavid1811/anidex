@@ -19,7 +19,7 @@ export function HomeRandomBanner({ onSpin, isDark }: HomeRandomBannerProps) {
             : 'bg-[#FFF9F5] border-[#D8CDC5] shadow-sm'
         }`}
       >
-        <View className="flex-row items-center flex-1 mr-3">
+        <View className="flex-row items-center">
           <View
             className={`w-12 h-12 rounded-2xl items-center justify-center mr-3 ${
               isDark ? 'bg-[#2F241E]' : 'bg-[#EDE5DF]'
