@@ -1,7 +1,7 @@
 import React, { createContext, useCallback, useContext, useRef, useState } from 'react';
 import { Appearance, useColorScheme as useDeviceColorScheme } from 'react-native';
 
-import { ThemeTransitionOverlay } from '@/components/ui/theme-transition-overlay';
+import { ThemeTransitionOverlay } from '../components/ThemeTransitionOverlay';
 
 export type ThemePreference = 'system' | 'light' | 'dark';
 

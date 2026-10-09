@@ -15,6 +15,7 @@ export * from './components/HomeRankingSection';
 export * from './components/ExploreSearchBar';
 export * from './components/ExploreGenreChips';
 export * from './components/ExploreEmptyState';
+export * from './components/ExploreHeader';
 
 export * from './hooks/useAnimeDetail';
 export * from './hooks/useSearchAnime';
@@ -24,3 +25,4 @@ export * from './services/anilistClient';
 export * from './services/animeApi';
 
 export * from './types/anime.types';
+export * from './constants/genres';

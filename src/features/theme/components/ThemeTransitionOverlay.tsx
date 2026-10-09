@@ -25,21 +25,16 @@ export function ThemeTransitionOverlay({
   onCovered,
   onComplete,
 }: ThemeTransitionOverlayProps) {
-  const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('screen');
-
-  // Calcular el radio máximo necesario desde el punto de toque hasta la esquina más lejana
-  const maxDistX = Math.max(x, SCREEN_WIDTH - x);
-  const maxDistY = Math.max(y, SCREEN_HEIGHT - y);
+  const { width: screenWidth, height: screenHeight } = Dimensions.get('screen');
+  const maxDistX = Math.max(x, screenWidth - x);
+  const maxDistY = Math.max(y, screenHeight - y);
   const radius = Math.ceil(Math.hypot(maxDistX, maxDistY)) + 20;
   const diameter = radius * 2;
-
   const scale = useSharedValue(0);
   const opacity = useSharedValue(1);
 
   useEffect(() => {
     scale.value = 0;
-
-    // Cubrir primero la interfaz anterior antes de aplicar el tema nuevo.
     scale.value = withTiming(
       1,
       {
@@ -47,9 +42,7 @@ export function ThemeTransitionOverlay({
         easing: Easing.out(Easing.cubic),
       },
       (finished) => {
-        if (finished) {
-          runOnJS(onCovered)();
-        }
+        if (finished) runOnJS(onCovered)();
       }
     );
   }, [onCovered, scale]);
@@ -57,7 +50,6 @@ export function ThemeTransitionOverlay({
   useEffect(() => {
     if (!covered) return;
 
-    // El nuevo tema ya está renderizado debajo: revelarlo suavemente.
     opacity.value = withTiming(
       0,
       {
@@ -65,9 +57,7 @@ export function ThemeTransitionOverlay({
         easing: Easing.inOut(Easing.ease),
       },
       (finished) => {
-        if (finished) {
-          runOnJS(onComplete)();
-        }
+        if (finished) runOnJS(onComplete)();
       }
     );
   }, [covered, onComplete, opacity]);
@@ -76,8 +66,7 @@ export function ThemeTransitionOverlay({
     transform: [{ scale: scale.value }],
     opacity: opacity.value,
   }));
-
-  const bgColor = targetScheme === 'dark' ? '#141211' : '#FCF8F6';
+  const backgroundColor = targetScheme === 'dark' ? '#141211' : '#FCF8F6';
 
   return (
     <View
@@ -89,7 +78,8 @@ export function ThemeTransitionOverlay({
           elevation: 99999,
           overflow: 'hidden',
         },
-      ]}>
+      ]}
+    >
       <Animated.View
         style={[
           {
@@ -99,7 +89,7 @@ export function ThemeTransitionOverlay({
             width: diameter,
             height: diameter,
             borderRadius: radius,
-            backgroundColor: bgColor,
+            backgroundColor,
             borderColor: '#E09F7D',
             borderWidth: 2.5,
           },

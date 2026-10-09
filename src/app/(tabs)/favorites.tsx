@@ -8,8 +8,9 @@ import {
 import { AnimeMedia, M3AnimeCard } from '@/features/anime';
 import {
   FavoritesEmptyState,
-  FavoritesFilterBar,
-  SortType,
+  FavoritesFilterControls,
+  FavoritesSearchBar,
+  useFilteredFavorites,
   useFavorites,
 } from '@/features/favorites';
 import { LoadingState } from '@/components/ui/loading-state';
@@ -35,9 +36,16 @@ export default function FavoritesScreen() {
   const [removedAnime, setRemovedAnime] = useState<AnimeMedia | null>(null);
   const [noticeHeight, setNoticeHeight] = useState(0);
   const [isUndoing, setIsUndoing] = useState(false);
-  const [filterText, setFilterText] = useState('');
-  const [selectedGenre, setSelectedGenre] = useState('Todos');
-  const [sortType, setSortType] = useState<SortType>('recent');
+  const {
+    filterText,
+    setFilterText,
+    selectedGenre,
+    setSelectedGenre,
+    sortType,
+    setSortType,
+    filteredFavorites,
+    clearFilters,
+  } = useFilteredFavorites(favorites);
 
   useFocusEffect(
     useCallback(() => {
@@ -45,64 +53,18 @@ export default function FavoritesScreen() {
     }, [refreshFavorites])
   );
 
-  const filteredAndSortedFavorites = useMemo(() => {
-    const list = favorites.filter((anime) => {
-      const title = (
-        anime.title.english ||
-        anime.title.userPreferred ||
-        anime.title.romaji ||
-        ''
-      ).toLowerCase();
-      const matchesSearch =
-        filterText.trim().length === 0 ||
-        title.includes(filterText.toLowerCase().trim());
-
-      const matchesGenre =
-        selectedGenre === 'Todos' ||
-        (anime.genres && anime.genres.includes(selectedGenre));
-
-      return matchesSearch && matchesGenre;
-    });
-
-    switch (sortType) {
-      case 'alphabetical':
-        return [...list].sort((a, b) => {
-          const titleA = (
-            a.title.english ||
-            a.title.userPreferred ||
-            a.title.romaji ||
-            ''
-          ).toLowerCase();
-          const titleB = (
-            b.title.english ||
-            b.title.userPreferred ||
-            b.title.romaji ||
-            ''
-          ).toLowerCase();
-          return titleA.localeCompare(titleB);
-        });
-      case 'ranking':
-        return [...list].sort(
-          (a, b) => (b.averageScore ?? 0) - (a.averageScore ?? 0)
-        );
-      case 'recent':
-      default:
-        return list; // Preserva orden según fecha de agregado a la base de datos
-    }
-  }, [favorites, filterText, selectedGenre, sortType]);
-
   const listData = useMemo<FavoritesListItem[]>(() => {
     if (isLoading || favorites.length === 0) return [];
 
     return [
       { type: 'controls', id: 'controls' },
-      ...filteredAndSortedFavorites.map((anime) => ({
+      ...filteredFavorites.map((anime) => ({
         type: 'anime' as const,
         id: anime.id,
         anime,
       })),
     ];
-  }, [favorites.length, filteredAndSortedFavorites, isLoading]);
+  }, [favorites.length, filteredFavorites, isLoading]);
 
   return (
     <View className={`flex-1 ${isDark ? 'bg-[#141211]' : 'bg-[#FCF8F6]'}`}>
@@ -157,15 +119,10 @@ export default function FavoritesScreen() {
                 </Text>
 
                 {favorites.length > 0 && (
-                  <FavoritesFilterBar
+                  <FavoritesSearchBar
                     filterText={filterText}
                     onFilterTextChange={setFilterText}
-                    sortType={sortType}
-                    onSortTypeChange={setSortType}
-                    selectedGenre={selectedGenre}
-                    onGenreSelect={setSelectedGenre}
                     isDark={isDark}
-                    mode="search"
                   />
                 )}
               </View>
@@ -185,10 +142,7 @@ export default function FavoritesScreen() {
             ) : (
               <FavoritesEmptyState
                 hasTotalFavorites={favorites.length > 0}
-                onClearFilters={() => {
-                  setFilterText('');
-                  setSelectedGenre('Todos');
-                }}
+                onClearFilters={clearFilters}
                 isDark={isDark}
               />
             )
@@ -196,13 +150,10 @@ export default function FavoritesScreen() {
           ListFooterComponent={
             !isLoading &&
             favorites.length > 0 &&
-            filteredAndSortedFavorites.length === 0 ? (
+            filteredFavorites.length === 0 ? (
               <FavoritesEmptyState
                 hasTotalFavorites
-                onClearFilters={() => {
-                  setFilterText('');
-                  setSelectedGenre('Todos');
-                }}
+                onClearFilters={clearFilters}
                 isDark={isDark}
               />
             ) : null
@@ -214,15 +165,12 @@ export default function FavoritesScreen() {
                   isDark ? 'bg-[#141211]' : 'bg-[#FCF8F6]'
                 }`}
               >
-                <FavoritesFilterBar
-                  filterText={filterText}
-                  onFilterTextChange={setFilterText}
+                <FavoritesFilterControls
                   sortType={sortType}
                   onSortTypeChange={setSortType}
                   selectedGenre={selectedGenre}
                   onGenreSelect={setSelectedGenre}
                   isDark={isDark}
-                  mode="controls"
                 />
               </View>
             ) : (

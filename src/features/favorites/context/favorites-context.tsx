@@ -7,7 +7,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { AnimeMedia } from '@/features/anime/types/anime.types';
+import type { AnimeMedia } from '@/features/anime';
 import {
   addFavoriteToDb,
   getAllFavoritesFromDb,

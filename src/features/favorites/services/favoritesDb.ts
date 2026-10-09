@@ -2,7 +2,7 @@ import * as FileSystem from 'expo-file-system/legacy';
 import * as SQLite from 'expo-sqlite';
 import { Platform } from 'react-native';
 
-import { AnimeMedia } from '@/features/anime/types/anime.types';
+import type { AnimeMedia } from '@/features/anime';
 
 let dbInstance: SQLite.SQLiteDatabase | null = null;
 let sqliteDisabled = false;
