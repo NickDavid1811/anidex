@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useState } from 'react';
+import React, { createContext, useCallback, useContext, useRef, useState } from 'react';
 import { Appearance, useColorScheme as useDeviceColorScheme } from 'react-native';
 
 import { ThemeTransitionOverlay } from '@/components/ui/theme-transition-overlay';
@@ -26,12 +26,14 @@ interface TransitionState {
   x: number;
   y: number;
   targetScheme: 'light' | 'dark';
+  covered: boolean;
 }
 
 export function ThemeProviderWrapper({ children }: { children: React.ReactNode }) {
   const deviceScheme = useDeviceColorScheme();
   const [preference, setPreferenceState] = useState<ThemePreference>('system');
   const [transition, setTransition] = useState<TransitionState | null>(null);
+  const pendingPreferenceRef = useRef<ThemePreference | null>(null);
 
   const activeScheme: 'light' | 'dark' =
     preference === 'system'
@@ -40,9 +42,16 @@ export function ThemeProviderWrapper({ children }: { children: React.ReactNode }
         : 'dark'
       : preference;
 
+  const applyPreference = useCallback((newPref: ThemePreference) => {
+    setPreferenceState(newPref);
+    Appearance.setColorScheme(
+      newPref === 'system' ? 'unspecified' : newPref
+    );
+  }, []);
+
   const setPreference = useCallback(
     (newPref: ThemePreference, coords?: TouchCoords) => {
-      if (newPref === preference) return;
+      if (newPref === preference || transition) return;
 
       const targetScheme: 'light' | 'dark' =
         newPref === 'system'
@@ -51,27 +60,34 @@ export function ThemeProviderWrapper({ children }: { children: React.ReactNode }
 
       const schemeChanged = targetScheme !== activeScheme;
 
-      // 1. Cambiar el tema e interfaz de forma INMEDIATA (0ms de retraso)
-      setPreferenceState(newPref);
-      if (newPref === 'system') {
-        Appearance.setColorScheme('unspecified');
-      } else {
-        Appearance.setColorScheme(newPref);
-      }
-
-      // 2. Si el esquema visual cambia y tenemos coordenadas, activar el barrido ultra rápido
       if (schemeChanged && coords) {
+        pendingPreferenceRef.current = newPref;
         setTransition({
           x: coords.x,
           y: coords.y,
           targetScheme,
+          covered: false,
         });
+        return;
       }
+
+      applyPreference(newPref);
     },
-    [preference, activeScheme, deviceScheme]
+    [activeScheme, applyPreference, deviceScheme, preference, transition]
   );
 
+  const handleTransitionCovered = useCallback(() => {
+    const pendingPreference = pendingPreferenceRef.current;
+    if (!pendingPreference) return;
+
+    applyPreference(pendingPreference);
+    setTransition((current) =>
+      current ? { ...current, covered: true } : null
+    );
+  }, [applyPreference]);
+
   const handleTransitionComplete = useCallback(() => {
+    pendingPreferenceRef.current = null;
     setTransition(null);
   }, []);
 
@@ -83,6 +99,8 @@ export function ThemeProviderWrapper({ children }: { children: React.ReactNode }
           x={transition.x}
           y={transition.y}
           targetScheme={transition.targetScheme}
+          covered={transition.covered}
+          onCovered={handleTransitionCovered}
           onComplete={handleTransitionComplete}
         />
       )}

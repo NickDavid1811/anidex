@@ -12,6 +12,8 @@ interface ThemeTransitionOverlayProps {
   x: number;
   y: number;
   targetScheme: 'light' | 'dark';
+  covered: boolean;
+  onCovered: () => void;
   onComplete: () => void;
 }
 
@@ -19,6 +21,8 @@ export function ThemeTransitionOverlay({
   x,
   y,
   targetScheme,
+  covered,
+  onCovered,
   onComplete,
 }: ThemeTransitionOverlayProps) {
   const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('screen');
@@ -34,34 +38,39 @@ export function ThemeTransitionOverlay({
 
   useEffect(() => {
     scale.value = 0;
-    opacity.value = 1;
 
-    // Animación de barrido expansivo ultra rápida y fluida (180ms)
+    // Cubrir primero la interfaz anterior antes de aplicar el tema nuevo.
     scale.value = withTiming(
       1,
       {
-        duration: 180,
+        duration: 220,
         easing: Easing.out(Easing.cubic),
       },
       (finished) => {
         if (finished) {
-          // Desvanecimiento rápido (70ms)
-          opacity.value = withTiming(
-            0,
-            {
-              duration: 70,
-              easing: Easing.linear,
-            },
-            (fadeFinished) => {
-              if (fadeFinished) {
-                runOnJS(onComplete)();
-              }
-            }
-          );
+          runOnJS(onCovered)();
         }
       }
     );
-  }, [onComplete, opacity, scale]);
+  }, [onCovered, scale]);
+
+  useEffect(() => {
+    if (!covered) return;
+
+    // El nuevo tema ya está renderizado debajo: revelarlo suavemente.
+    opacity.value = withTiming(
+      0,
+      {
+        duration: 120,
+        easing: Easing.inOut(Easing.ease),
+      },
+      (finished) => {
+        if (finished) {
+          runOnJS(onComplete)();
+        }
+      }
+    );
+  }, [covered, onComplete, opacity]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],

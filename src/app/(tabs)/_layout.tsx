@@ -62,6 +62,13 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
+        animation: 'fade',
+        transitionSpec: {
+          animation: 'timing',
+          config: {
+            duration: 180,
+          },
+        },
         tabBarActiveTintColor: isDark ? '#FFDCC2' : '#351A08',
         tabBarInactiveTintColor: isDark ? '#A89C94' : '#776962',
         // Desactiva el ripple gris gigante nativo de Android
