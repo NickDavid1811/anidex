@@ -4,6 +4,7 @@
 ![React Native](https://img.shields.io/badge/React%20Native-0.86-61DAFB?logo=react&logoColor=black)
 ![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?logo=typescript&logoColor=white)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![Download Android Beta](https://img.shields.io/badge/Download-Android_Beta-8B4F26?logo=android&logoColor=white)](https://github.com/NickDavid1811/anidex/releases/tag/v0.1.0-beta.1)
 
 AniDex is a cross-platform mobile app for discovering anime, exploring detailed information, and building a personal favorites collection. It uses the [AniList GraphQL API](https://anilist.co) and is built with Expo and React Native.
 
