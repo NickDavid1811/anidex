@@ -39,7 +39,6 @@ export default function SettingsScreen() {
           <Text accessibilityRole="header" style={{ color: foreground }} className="text-2xl font-manrope-bold">{t('settings.title')}</Text>
         </View>
         <ScrollView
-          style={{ flex: 1 }}
           contentContainerStyle={{
             paddingHorizontal: 16,
             gap: 20,
